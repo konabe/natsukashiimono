@@ -1,3 +1,5 @@
+import { Content } from 'src/content/content.entity';
+import { Score } from 'src/score/score.entity';
 import { DataSource } from 'typeorm';
 
 export const databaseProviders = [
@@ -11,7 +13,9 @@ export const databaseProviders = [
         username: 'root',
         password: 'root',
         database: 'natsukashiimono',
-        entities: [__dirname + '/../**/*.entity{.ts,.js}'],
+        // FIXME: Windows10だとパスで指定する方法が通らないというバグがある。型の列挙で暫定対応
+        // entities: [__dirname + '/../**/*.entity{.ts,.js}'],
+        entities: [Content, Score],
         synchronize: true, // 本番ではfalseにするべき
       });
 
