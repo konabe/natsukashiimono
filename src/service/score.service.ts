@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { Repository } from 'typeorm';
-import { Score } from './score.entity';
+import { Score } from '../infrastructure/database/score/score.entity';
 
 @Injectable()
 export class ScoreService {

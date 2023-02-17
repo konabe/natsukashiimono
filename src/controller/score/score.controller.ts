@@ -1,5 +1,5 @@
 import { Controller, HttpStatus, Post, Req, Res } from '@nestjs/common';
-import { ScoreService } from './score.service';
+import { ScoreService } from '../../service/score.service';
 import { Request, Response } from 'express';
 
 @Controller('score')

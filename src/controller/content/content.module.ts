@@ -1,9 +1,9 @@
 import { Module } from '@nestjs/common';
 import { ContentController } from './content.controller';
-import { DatabaseModule } from 'src/database/database.module';
-import { ContentService } from './content.service';
-import { contentProviders } from './content.providers';
-import { ScoreModule } from 'src/score/score.module';
+import { DatabaseModule } from 'src/infrastructure/database/database.module';
+import { ContentService } from '../../service/content.service';
+import { contentProviders } from '../../infrastructure/database/content/content.providers';
+import { ScoreModule } from '../score/score.module';
 
 @Module({
   controllers: [ContentController],

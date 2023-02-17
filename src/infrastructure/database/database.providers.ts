@@ -1,5 +1,5 @@
-import { Content } from 'src/content/content.entity';
-import { Score } from 'src/score/score.entity';
+import { Content } from 'src/infrastructure/database/content/content.entity';
+import { Score } from 'src/infrastructure/database/score/score.entity';
 import { DataSource } from 'typeorm';
 
 export const databaseProviders = [

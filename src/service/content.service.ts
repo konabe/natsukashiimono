@@ -1,8 +1,8 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { Repository } from 'typeorm';
-import { Content } from './content.entity';
-import { Score } from 'src/score/score.entity';
-import { ContentResponse } from './content.response';
+import { Content } from '../infrastructure/database/content/content.entity';
+import { Score } from 'src/infrastructure/database/score/score.entity';
+import { ContentResponse } from '../infrastructure/api/content.response';
 
 @Injectable()
 export class ContentService {
