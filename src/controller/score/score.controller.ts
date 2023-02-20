@@ -7,13 +7,13 @@ export class ScoreController {
   constructor(private scoreService: ScoreService) {}
 
   @Post()
-  create(@Req() req: Request, @Res() res: Response) {
+  async create(@Req() req: Request, @Res() res: Response) {
     const { contentId, userId } = req.body;
     if (contentId === undefined || userId === undefined) {
       res.status(HttpStatus.BAD_REQUEST).json();
       return;
     }
-    this.scoreService.save(contentId, userId);
-    res.status(HttpStatus.OK).json();
+    const totalScore = await this.scoreService.save(contentId, userId);
+    res.status(HttpStatus.OK).json(totalScore);
   }
 }

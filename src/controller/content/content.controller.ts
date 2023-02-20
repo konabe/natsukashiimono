@@ -14,7 +14,7 @@ export class ContentController {
   }
 
   @Post()
-  save(@Req() req: Request, @Res() res: Response) {
+  async save(@Req() req: Request, @Res() res: Response) {
     const { name, description, imageUrl } = req.body;
     if (
       name === undefined ||
@@ -28,7 +28,8 @@ export class ContentController {
     content.name = name;
     content.description = description;
     content.imageUrl = imageUrl;
-    this.contentService.save(content);
-    res.status(HttpStatus.OK).json();
+    const savedContent = await this.contentService.save(content);
+    const newContent = await this.contentService.findOne(savedContent.id);
+    res.status(HttpStatus.OK).json(newContent);
   }
 }

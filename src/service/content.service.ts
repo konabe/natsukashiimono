@@ -25,7 +25,25 @@ export class ContentService {
     return resultContents;
   }
 
-  async save(content: Content) {
-    this.contentRepository.save(content);
+  async findOne(contentId: number): Promise<ContentResponse> {
+    const content = await this.contentRepository.findOne({
+      where: {
+        id: contentId,
+      },
+    });
+    const scores = await this.scoreRepository.find({
+      where: {
+        contentId,
+      },
+    });
+    const resultContent = {
+      ...content,
+      score: scores.length,
+    };
+    return resultContent;
+  }
+
+  async save(content: Content): Promise<Content> {
+    return await this.contentRepository.save(content);
   }
 }
