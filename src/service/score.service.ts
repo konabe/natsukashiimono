@@ -17,7 +17,7 @@ export class ScoreService {
     const score = new Score();
     score.contentId = contentId;
     score.userId = userId;
-    this.scoreRepository.save(score);
+    await this.scoreRepository.save(score);
     const scoreEntities = await this.scoreRepository.find({
       where: {
         contentId,
