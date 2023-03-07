@@ -16,6 +16,6 @@ const app: express.Express = express();
 app.use(cors());
 const port = 9000;
 app.get('/', (_: express.Request, res: express.Response) => {
-  res.json({ message: 'ok' });
+  res.json({ message: 'Hello World!' });
 });
 app.listen(port, () => console.log(`ok, port = ${port}`));
