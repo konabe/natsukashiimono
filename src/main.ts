@@ -1,8 +1,8 @@
 import * as express from 'express';
 import * as cors from 'cors';
-import { DataSource } from 'typeorm';
 import { Content } from './infrastructure/database/content.entity';
 import { Score } from './infrastructure/database/score.entity';
+import { getDataSource } from './infrastructure/database/dataSource';
 
 const app: express.Express = express();
 app.use(cors());
@@ -17,21 +17,9 @@ app.get('/', (_: express.Request, res: express.Response) => {
   res.json({ message: 'Hello World!' });
 });
 app.get('/content', async (_: express.Request, res: express.Response) => {
-  const dataSource = new DataSource({
-    type: 'mysql',
-    host: '127.0.0.1',
-    port: 3306,
-    username: 'root',
-    password: 'root',
-    database: 'natsukashiimono',
-    // FIXME: Windows10だとパスで指定する方法が通らないというバグがある。型の列挙で暫定対応
-    // entities: [__dirname + '/../**/*.entity{.ts,.js}'],
-    entities: [Content, Score],
-    synchronize: true, // 本番ではfalseにするべき
-  });
-  const newDataSource = await dataSource.initialize();
-  const contentRepository = newDataSource.getRepository(Content);
-  const scoreRepository = newDataSource.getRepository(Score);
+  const dataSource = await getDataSource();
+  const contentRepository = dataSource.getRepository(Content);
+  const scoreRepository = dataSource.getRepository(Score);
   const contents = await contentRepository.find();
   const scores = await scoreRepository.find();
   const resultContents = contents.map((content) => {
@@ -43,21 +31,9 @@ app.get('/content', async (_: express.Request, res: express.Response) => {
 });
 
 app.post('/content', async (req: express.Request, res: express.Response) => {
-  const dataSource = new DataSource({
-    type: 'mysql',
-    host: '127.0.0.1',
-    port: 3306,
-    username: 'root',
-    password: 'root',
-    database: 'natsukashiimono',
-    // FIXME: Windows10だとパスで指定する方法が通らないというバグがある。型の列挙で暫定対応
-    // entities: [__dirname + '/../**/*.entity{.ts,.js}'],
-    entities: [Content, Score],
-    synchronize: true, // 本番ではfalseにするべき
-  });
-  const newDataSource = await dataSource.initialize();
-  const contentRepository = newDataSource.getRepository(Content);
-  const scoreRepository = newDataSource.getRepository(Score);
+  const dataSource = await getDataSource();
+  const contentRepository = dataSource.getRepository(Content);
+  const scoreRepository = dataSource.getRepository(Score);
   const { name, description, imageUrl } = req.body;
   if (
     name === undefined ||
@@ -91,20 +67,8 @@ app.post('/content', async (req: express.Request, res: express.Response) => {
 });
 
 app.post('/score', async (req: express.Request, res: express.Response) => {
-  const dataSource = new DataSource({
-    type: 'mysql',
-    host: '127.0.0.1',
-    port: 3306,
-    username: 'root',
-    password: 'root',
-    database: 'natsukashiimono',
-    // FIXME: Windows10だとパスで指定する方法が通らないというバグがある。型の列挙で暫定対応
-    // entities: [__dirname + '/../**/*.entity{.ts,.js}'],
-    entities: [Content, Score],
-    synchronize: true, // 本番ではfalseにするべき
-  });
-  const newDataSource = await dataSource.initialize();
-  const scoreRepository = newDataSource.getRepository(Score);
+  const dataSource = await getDataSource();
+  const scoreRepository = dataSource.getRepository(Score);
   const { contentId, userId } = req.body;
   if (contentId === undefined || userId === undefined) {
     res.status(400).json();
