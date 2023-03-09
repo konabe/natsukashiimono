@@ -3,16 +3,15 @@ import { getDataSource } from '../../infrastructure/database/dataSource';
 import { Score } from '../../infrastructure/database/score.entity';
 import { ContentEntity } from '../../infrastructure/database/content.entity';
 import { GetContentController } from './content/getContentController';
+import { ContentFactory } from '../../infrastructure/database/contentFactory';
 
 const router = express.Router();
 
 router.get('/', async (req: express.Request, res: express.Response) => {
   const dataSource = await getDataSource();
-  const contentRepository = dataSource.getRepository(ContentEntity);
-  const scoreRepository = dataSource.getRepository(Score);
+  const contentsFactory = new ContentFactory(dataSource);
   new GetContentController({
-    contentRepository,
-    scoreRepository,
+    contentsFactory,
   }).invoke(req, res);
 });
 
