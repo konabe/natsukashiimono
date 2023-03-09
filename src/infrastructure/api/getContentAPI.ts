@@ -1,6 +1,6 @@
 import { Content } from 'src/domain/content';
 
-export type ContentResponseParameters = {
+export type GetContentResponseParameters = {
   id: number;
   name: string;
   description: string;
@@ -8,7 +8,7 @@ export type ContentResponseParameters = {
   score: number;
 };
 
-export class ContentResponse {
+export class GetContentResponse {
   readonly id: number;
   readonly name: string;
   readonly description: string;
@@ -21,7 +21,7 @@ export class ContentResponse {
     description,
     imageUrl,
     score,
-  }: ContentResponseParameters) {
+  }: GetContentResponseParameters) {
     this.id = id;
     this.name = name;
     this.description = description;
@@ -29,11 +29,11 @@ export class ContentResponse {
     this.score = score;
   }
 
-  static instantiateBy(content: Content): ContentResponse | undefined {
+  static instantiateBy(content: Content): GetContentResponse | undefined {
     if (content.id == null) {
       return undefined;
     }
-    return new ContentResponse({
+    return new GetContentResponse({
       id: content.id,
       name: content.name,
       description: content.description,

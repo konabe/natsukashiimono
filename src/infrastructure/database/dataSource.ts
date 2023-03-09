@@ -1,5 +1,5 @@
 import { DataSource } from 'typeorm';
-import { Score } from './score.entity';
+import { ScoreEntity } from './score.entity';
 import { ContentEntity } from './content.entity';
 
 let dataSource: DataSource;
@@ -14,7 +14,7 @@ export async function getDataSource() {
       database: 'natsukashiimono',
       // FIXME: Windows10だとパスで指定する方法が通らないというバグがある。型の列挙で暫定対応
       // entities: [__dirname + '/../**/*.entity{.ts,.js}'],
-      entities: [ContentEntity, Score],
+      entities: [ContentEntity, ScoreEntity],
       synchronize: true, // 本番ではfalseにするべき
     });
     dataSource = await _dataSource.initialize();
