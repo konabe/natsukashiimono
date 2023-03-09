@@ -1,6 +1,6 @@
 import * as express from 'express';
-import { getDataSource } from '../infrastructure/database/dataSource';
-import { Score } from '../infrastructure/database/score.entity';
+import { getDataSource } from '../../infrastructure/database/dataSource';
+import { Score } from '../../infrastructure/database/score.entity';
 
 const router = express.Router();
 

@@ -1,17 +1,19 @@
 import { Vote } from './vote';
 
 export type ContentParameters = {
-  id?: string;
+  id?: number;
   name: string;
   description: string;
+  imageUrl: string;
   votes: Vote[];
 };
 
 export class Content {
   private constructor(
-    readonly id: string,
+    readonly id: number,
     readonly name: string,
     readonly description: string,
+    readonly imageUrl: string,
     readonly votes: Vote[],
   ) {}
 
@@ -19,6 +21,7 @@ export class Content {
     id,
     name,
     description,
+    imageUrl,
     votes,
   }: ContentParameters): Content | undefined {
     if (!(name.length > 0 && name.length <= 50)) {
@@ -31,7 +34,7 @@ export class Content {
     if (id != null) {
       filteredVotes = votes.filter((v) => v.contentId === id);
     }
-    return new Content(id, name, description, filteredVotes);
+    return new Content(id, name, description, imageUrl, filteredVotes);
   }
 
   calculateScore(): number {

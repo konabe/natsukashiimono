@@ -1,27 +1,24 @@
 import * as express from 'express';
-import { getDataSource } from '../infrastructure/database/dataSource';
-import { Score } from '../infrastructure/database/score.entity';
-import { Content } from '../infrastructure/database/content.entity';
+import { getDataSource } from '../../infrastructure/database/dataSource';
+import { Score } from '../../infrastructure/database/score.entity';
+import { ContentEntity } from '../../infrastructure/database/content.entity';
+import { GetContentController } from './content/getContentController';
 
 const router = express.Router();
 
-router.get('/', async (_: express.Request, res: express.Response) => {
+router.get('/', async (req: express.Request, res: express.Response) => {
   const dataSource = await getDataSource();
-  const contentRepository = dataSource.getRepository(Content);
+  const contentRepository = dataSource.getRepository(ContentEntity);
   const scoreRepository = dataSource.getRepository(Score);
-  const contents = await contentRepository.find();
-  const scores = await scoreRepository.find();
-  const resultContents = contents.map((content) => {
-    const contentId = content.id;
-    const contentScore = scores.filter((s) => s.contentId === contentId).length;
-    return { ...content, score: contentScore };
-  });
-  res.status(200).json(resultContents);
+  new GetContentController({
+    contentRepository,
+    scoreRepository,
+  }).invoke(req, res);
 });
 
 router.post('/', async (req: express.Request, res: express.Response) => {
   const dataSource = await getDataSource();
-  const contentRepository = dataSource.getRepository(Content);
+  const contentRepository = dataSource.getRepository(ContentEntity);
   const scoreRepository = dataSource.getRepository(Score);
   const { name, description, imageUrl } = req.body;
   if (
@@ -32,7 +29,7 @@ router.post('/', async (req: express.Request, res: express.Response) => {
     res.status(200).json();
     return;
   }
-  const content = new Content();
+  const content = new ContentEntity();
   content.name = name;
   content.description = description;
   content.imageUrl = imageUrl;
