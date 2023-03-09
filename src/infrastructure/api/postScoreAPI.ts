@@ -1,0 +1,3 @@
+type PostScoreResponse = {
+  total: number;
+};

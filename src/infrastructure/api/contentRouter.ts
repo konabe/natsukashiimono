@@ -1,10 +1,10 @@
 import * as express from 'express';
-import { getDataSource } from '../../infrastructure/database/dataSource';
-import { GetContentController } from './content/getContentController';
-import { ContentFactory } from '../../infrastructure/database/contentFactory';
-import { GetContentResponse } from '../../infrastructure/api/getContentAPI';
-import { PostContentController } from './content/postContentController';
-import { ContentRepository } from '../../infrastructure/database/contentRepository';
+import { getDataSource } from '../database/dataSource';
+import { GetContentController } from '../../controller/resources/content/getContentController';
+import { ContentFactory } from '../database/contentFactory';
+import { GetContentResponse } from './getContentAPI';
+import { PostContentController } from '../../controller/resources/content/postContentController';
+import { ContentRepository } from '../database/contentRepository';
 
 const router = express.Router();
 
