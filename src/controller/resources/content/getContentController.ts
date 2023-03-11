@@ -1,24 +1,24 @@
 import * as express from 'express';
 import { GetContentResponse } from '../../../infrastructure/api/getContentAPI';
-import { IContentFactory } from '../../../domain/contentFactoryInterface';
+import { IContentRepository } from '../../../domain/contentRepositoryInterface';
 
 export type GetContentControllerDependencies = {
-  contentsFactory: IContentFactory;
+  contentRepository: IContentRepository;
 };
 
 export class GetContentController {
-  private readonly contentsFactory: IContentFactory;
+  private readonly contentRepository: IContentRepository;
 
-  constructor({ contentsFactory }: GetContentControllerDependencies) {
-    this.contentsFactory = contentsFactory;
+  constructor({ contentRepository }: GetContentControllerDependencies) {
+    this.contentRepository = contentRepository;
   }
 
   async invoke(
     _: express.Request,
     res: express.Response<GetContentResponse[]>,
   ): Promise<void> {
-    const resultContents = await this.contentsFactory.create();
-    const response: GetContentResponse[] = resultContents.map((content) =>
+    const resultContents = await this.contentRepository.find();
+    const response = resultContents.map((content) =>
       GetContentResponse.instantiateBy(content),
     );
     res.status(200).json(response);

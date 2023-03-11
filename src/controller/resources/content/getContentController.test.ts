@@ -1,19 +1,20 @@
 import { content1 } from '../../../../data/content.data';
-import { IContentFactory } from '../../../domain/contentFactoryInterface';
+import { IContentRepository } from '../../../domain/contentRepositoryInterface';
 import { GetContentController } from './getContentController';
 import { getMockReq, getMockRes } from '@jest-mock/express';
 
 describe('getContentController', () => {
-  let contentsFactory: IContentFactory;
   let getContentController: GetContentController;
+  let contentRepository: IContentRepository;
   let { res, clearMockRes } = getMockRes();
 
   beforeEach(() => {
-    contentsFactory = {
-      create: jest.fn().mockResolvedValue([content1]),
-      createOne: jest.fn(),
+    contentRepository = {
+      find: jest.fn().mockResolvedValue([content1]),
+      findOne: jest.fn(),
+      save: jest.fn(),
     };
-    getContentController = new GetContentController({ contentsFactory });
+    getContentController = new GetContentController({ contentRepository });
     clearMockRes();
   });
 
