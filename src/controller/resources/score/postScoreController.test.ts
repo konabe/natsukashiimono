@@ -3,8 +3,8 @@ import { IScoreRepository } from '../../../domain/scoreRepositoryInterface';
 import { PostScoreController } from './postScoreController';
 
 describe('PostScoreController', () => {
-  let scoreRepository: IScoreRepository;
   let postScoreController: PostScoreController;
+  let scoreRepository: IScoreRepository;
   let { res, clearMockRes } = getMockRes();
 
   beforeEach(() => {
@@ -21,32 +21,6 @@ describe('PostScoreController', () => {
     clearMockRes();
   });
 
-  it('should invoke without body', async () => {
-    const req = getMockReq();
-    await postScoreController.invoke(req, res);
-    expect(res.status).toBeCalledWith(400);
-  });
-
-  it('should invoke without name', async () => {
-    const req = getMockReq({
-      body: {
-        contentId: 1,
-      },
-    });
-    await postScoreController.invoke(req, res);
-    expect(res.status).toBeCalledWith(400);
-  });
-
-  it('should invoke without description', async () => {
-    const req = getMockReq({
-      body: {
-        userId: 1,
-      },
-    });
-    await postScoreController.invoke(req, res);
-    expect(res.status).toBeCalledWith(400);
-  });
-
   it('should invoke normally', async () => {
     const req = getMockReq({
       body: {
@@ -61,4 +35,28 @@ describe('PostScoreController', () => {
       total: 2,
     });
   });
+
+  it('should notify 400 error when body is undefined', async () => {
+    const req = getMockReq();
+    await postScoreController.invoke(req, res);
+    expect(res.status).toBeCalledWith(400);
+  });
+
+  test.each`
+    removedKey     | expected
+    ${'contentId'} | ${400}
+    ${'userId'}    | ${400}
+  `(
+    'should notify 400 error when $removedKey is rack',
+    async ({ removedKey, expected }) => {
+      const preBody = {
+        contentId: 1,
+        userId: 1,
+      };
+      delete preBody[removedKey];
+      const req = getMockReq({ body: preBody });
+      await postScoreController.invoke(req, res);
+      expect(res.status).toBeCalledWith(expected);
+    },
+  );
 });
