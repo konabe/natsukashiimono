@@ -1,5 +1,5 @@
 import * as express from 'express';
-import { IScoreRepository } from '../../../domain/scoreRepositoryInterface';
+import { IScoreRepository } from '../../../domain/repository/scoreRepositoryInterface';
 import { Vote } from '../../../domain/vote';
 
 export type PostScoreControllerDependencies = {

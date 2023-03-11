@@ -1,7 +1,7 @@
 import * as express from 'express';
-import { IContentRepository } from '../../../domain/contentRepositoryInterface';
+import { IContentRepository } from '../../../domain/repository/contentRepositoryInterface';
 import { Content } from '../../../domain/content';
-import { GetContentResponse } from '../../../infrastructure/api/getContentAPI';
+import { GetContentResponse } from '../../../infrastructure/api/model/getContentAPI';
 
 export type PostContentControllerDependencies = {
   contentRepository: IContentRepository;

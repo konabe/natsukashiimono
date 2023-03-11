@@ -1,7 +1,7 @@
 import * as express from 'express';
 import * as cors from 'cors';
-import contentRouter from './infrastructure/api/contentRouter';
-import scoreRouter from './infrastructure/api/scoreRouter';
+import contentRouter from './infrastructure/api/router/contentRouter';
+import scoreRouter from './infrastructure/api/router/scoreRouter';
 
 const app: express.Express = express();
 app.use(cors());

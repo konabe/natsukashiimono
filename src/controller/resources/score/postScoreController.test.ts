@@ -1,5 +1,5 @@
 import { getMockReq, getMockRes } from '@jest-mock/express';
-import { IScoreRepository } from '../../../domain/scoreRepositoryInterface';
+import { IScoreRepository } from '../../../domain/repository/scoreRepositoryInterface';
 import { PostScoreController } from './postScoreController';
 
 describe('PostScoreController', () => {

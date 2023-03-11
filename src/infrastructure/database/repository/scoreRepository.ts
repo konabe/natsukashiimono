@@ -1,7 +1,7 @@
 import { DataSource } from 'typeorm';
-import { IScoreRepository } from '../../domain/scoreRepositoryInterface';
-import { Vote } from '../../domain/vote';
-import { ScoreEntity } from './score.entity';
+import { IScoreRepository } from '../../../domain/repository/scoreRepositoryInterface';
+import { Vote } from '../../../domain/vote';
+import { ScoreEntity } from '../entity/score.entity';
 
 export class ScoreRepository implements IScoreRepository {
   constructor(private readonly dataSource: DataSource) {}

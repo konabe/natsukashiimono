@@ -1,9 +1,9 @@
 import { DataSource } from 'typeorm';
-import { Content } from '../../domain/content';
-import { IContentRepository } from '../../domain/contentRepositoryInterface';
-import { ContentEntity } from './content.entity';
-import { ScoreEntity } from './score.entity';
-import { Vote } from '../../domain/vote';
+import { Content } from '../../../domain/content';
+import { IContentRepository } from '../../../domain/repository/contentRepositoryInterface';
+import { ContentEntity } from '../entity/content.entity';
+import { ScoreEntity } from '../entity/score.entity';
+import { Vote } from '../../../domain/vote';
 
 export class ContentRepository implements IContentRepository {
   constructor(private readonly dataSource: DataSource) {}

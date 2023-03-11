@@ -1,5 +1,5 @@
 import { content1 } from '../../../../data/content.data';
-import { IContentRepository } from '../../../domain/contentRepositoryInterface';
+import { IContentRepository } from '../../../domain/repository/contentRepositoryInterface';
 import { GetContentController } from './getContentController';
 import { getMockReq, getMockRes } from '@jest-mock/express';
 
