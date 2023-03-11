@@ -2,6 +2,7 @@ import * as express from 'express';
 import * as cors from 'cors';
 import contentRouter from './infrastructure/api/router/contentRouter';
 import scoreRouter from './infrastructure/api/router/scoreRouter';
+import rootRouter from './infrastructure/api/router/rootRouter';
 
 const app: express.Express = express();
 app.use(cors());
@@ -11,11 +12,9 @@ app.use(
     extended: true,
   }),
 );
+app.use('/', rootRouter);
 app.use('/content', contentRouter);
 app.use('/score', scoreRouter);
-app.get('/', (_: express.Request, res: express.Response) => {
-  res.json({ message: 'Hello World!' });
-});
 
 const port = 3000;
 app.listen(port, () => console.log(`ok, port = ${port}`));
