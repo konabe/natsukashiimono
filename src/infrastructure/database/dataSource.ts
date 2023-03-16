@@ -1,6 +1,6 @@
 import { DataSource } from 'typeorm';
-import { ScoreEntity } from './score.entity';
-import { ContentEntity } from './content.entity';
+import { ScoreEntity } from './entity/score.entity';
+import { ContentEntity } from './entity/content.entity';
 
 let dataSource: DataSource;
 export async function getDataSource() {
