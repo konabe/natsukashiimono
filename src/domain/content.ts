@@ -10,7 +10,7 @@ export type ContentParameters = {
 
 export class Content {
   private constructor(
-    readonly id: number,
+    readonly id: number | undefined,
     readonly name: string,
     readonly description: string,
     readonly imageUrl: string,

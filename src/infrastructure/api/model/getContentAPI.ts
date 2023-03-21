@@ -1,44 +1,26 @@
 import { Content } from 'src/domain/content';
 
-export type GetContentResponseParameters = {
-  id: number;
-  name: string;
-  description: string;
-  imageUrl: string;
-  score: number;
-};
-
+// TODO: 配列で格納するようにする contents: Content[]
 export class GetContentResponse {
-  readonly id: number;
-  readonly name: string;
-  readonly description: string;
-  readonly imageUrl: string;
-  readonly score: number;
-
-  constructor({
-    id,
-    name,
-    description,
-    imageUrl,
-    score,
-  }: GetContentResponseParameters) {
-    this.id = id;
-    this.name = name;
-    this.description = description;
-    this.imageUrl = imageUrl;
-    this.score = score;
-  }
+  private constructor(
+    readonly id: number,
+    readonly name: string,
+    readonly description: string,
+    readonly imageUrl: string,
+    readonly score: number,
+  ) {}
 
   static instantiateBy(content: Content): GetContentResponse | undefined {
     if (content.id == null) {
+      // contentがidを持たないのはリクエストのときだけなので。
       return undefined;
     }
-    return new GetContentResponse({
-      id: content.id,
-      name: content.name,
-      description: content.description,
-      imageUrl: content.imageUrl,
-      score: content.calculateScore(),
-    });
+    return new GetContentResponse(
+      content.id,
+      content.name,
+      content.description,
+      content.imageUrl,
+      content.calculateScore(),
+    );
   }
 }
