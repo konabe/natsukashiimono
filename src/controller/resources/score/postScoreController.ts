@@ -1,6 +1,10 @@
 import * as express from 'express';
 import { IScoreRepository } from '../../../domain/repository/scoreRepositoryInterface';
 import { Vote } from '../../../domain/vote';
+import {
+  PostScoreRequest,
+  PostScoreResponse,
+} from '../../../infrastructure/api/model/postScoreAPI';
 
 export type PostScoreControllerDependencies = {
   scoreRepository: IScoreRepository;
@@ -14,17 +18,21 @@ export class PostScoreController {
   }
 
   async invoke(req: express.Request, res: express.Response): Promise<void> {
-    const { contentId, userId } = req.body;
-    if (contentId === undefined || userId === undefined) {
-      res.status(400).json();
+    const request = PostScoreRequest.instantiateBy(req.body);
+    if (request === undefined) {
+      res.status(400).send();
       return;
     }
-    await this.scoreRepository.save(new Vote(contentId, userId));
-    const scoreEntities = await this.scoreRepository.find(contentId);
-    res.status(200).json({
-      contentId,
-      total: scoreEntities.length,
-    });
+    await this.scoreRepository.save(
+      new Vote(request.contentId, request.userId),
+    );
+    const scoreEntities = await this.scoreRepository.find(request.contentId);
+    const response = PostScoreResponse.instantiateBy(scoreEntities);
+    if (response === undefined) {
+      res.status(500).send();
+      return;
+    }
+    res.status(200).json(response);
     return;
   }
 }
