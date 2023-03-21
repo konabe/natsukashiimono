@@ -18,8 +18,9 @@ export class GetContentController {
     res: express.Response<GetContentResponse[]>,
   ): Promise<void> {
     const resultContents = await this.contentRepository.find();
-    const response = resultContents.map((content) =>
-      GetContentResponse.instantiateBy(content),
+    const response = resultContents.map(
+      (content) => GetContentResponse.instantiateBy(content),
+      // TODO: instantiateByがundefinedのときを考慮していない。
     );
     res.status(200).json(response);
     return;

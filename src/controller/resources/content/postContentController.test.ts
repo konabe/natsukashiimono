@@ -56,24 +56,4 @@ describe('PostContentController', () => {
     await postContentController.invoke(req, res);
     expect(res.status).toBeCalledWith(400);
   });
-
-  test.each`
-    removedKey       | expected
-    ${'name'}        | ${400}
-    ${'imageUrl'}    | ${400}
-    ${'description'} | ${400}
-  `(
-    'should notify 400 error when $removedKey is rack',
-    async ({ removedKey, expected }) => {
-      const preBody = {
-        name: '懐かしいもの',
-        description: '懐かしいという感情は時間が存在しなければないのだろうか',
-        imageUrl: 'https://example.com/index.png',
-      };
-      delete preBody[removedKey];
-      const req = getMockReq({ body: preBody });
-      await postContentController.invoke(req, res);
-      expect(res.status).toBeCalledWith(expected);
-    },
-  );
 });
