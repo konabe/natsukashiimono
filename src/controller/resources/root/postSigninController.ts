@@ -1,31 +1,33 @@
 import * as express from 'express';
+import {
+  PostSigninRequest,
+  PostSigninResponse,
+} from '../../../infrastructure/api/model/postSigninAPI';
+import { IUserRepository } from '../../../domain/repository/userRepositoryInterface';
 
-export class StubPostSigninController {
+export type PostSigninControllerDependencies = {
+  userRepository: IUserRepository;
+};
+
+export class PostSigninController {
+  private userRepository: IUserRepository;
+
+  constructor({ userRepository }: PostSigninControllerDependencies) {
+    this.userRepository = userRepository;
+  }
+
   async invoke(req: express.Request, res: express.Response): Promise<void> {
-    const { email, password } = req.body;
-    if (email === undefined || password === undefined) {
+    const request = PostSigninRequest.instantiateBy(req.body);
+    if (request === undefined) {
       res.status(400).send();
       return;
     }
-
-    if (email === 'user1@example.com' && password === 'pass') {
-      res.status(200).json({
-        token: 'ABCDEF1234567890',
-      });
+    const { email, password } = request;
+    const token = this.userRepository.findToken(email, password);
+    if (token === undefined) {
+      res.status(401).send();
       return;
     }
-    if (email === 'user2@example.com' && password === 'pass') {
-      res.status(200).json({
-        token: '1234567890ABCDEF',
-      });
-      return;
-    }
-    if (email === 'admin@example.com' && password === 'pass') {
-      res.status(200).json({
-        token: 'ADMINADMINADMIN',
-      });
-      return;
-    }
-    res.status(401).send();
+    res.status(200).json(PostSigninResponse.instantiateBy(token));
   }
 }

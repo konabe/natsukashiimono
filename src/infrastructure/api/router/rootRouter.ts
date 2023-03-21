@@ -1,6 +1,7 @@
 import * as express from 'express';
-import { StubPostSigninController } from '../../../controller/resources/root/postSigninController';
+import { PostSigninController } from '../../../controller/resources/root/postSigninController';
 import { authUser } from '../../middleware/auth.middleware';
+import { UserRepositoryMock } from '../../database/repository/userRepository.mock';
 
 const router = express.Router();
 
@@ -9,7 +10,8 @@ router.get('/', (_: express.Request, res: express.Response) => {
 });
 
 router.post('/signin', async (req: express.Request, res: express.Response) => {
-  new StubPostSigninController().invoke(req, res);
+  const userRepository = new UserRepositoryMock();
+  new PostSigninController({ userRepository }).invoke(req, res);
 });
 
 router.post(
