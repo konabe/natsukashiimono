@@ -1,5 +1,5 @@
-import { Vote } from '../../../domain/vote';
-import { PostScoreRequest, PostScoreResponse } from './postScoreAPI';
+import { Vote } from '../../../../domain/vote';
+import { PostScoreRequest, PostScoreResponse } from '../score/postScoreAPI';
 
 describe('PostScoreRequest', () => {
   describe('#instantiateBy', () => {

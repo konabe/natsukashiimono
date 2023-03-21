@@ -1,4 +1,4 @@
-import { Vote } from '../../../domain/vote';
+import { Vote } from '../../../../domain/vote';
 
 export class PostScoreRequest {
   private constructor(readonly contentId: number, readonly userId: number) {}

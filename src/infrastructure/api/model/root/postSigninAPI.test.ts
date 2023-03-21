@@ -1,4 +1,4 @@
-import { PostSigninRequest, PostSigninResponse } from './postSigninAPI';
+import { PostSigninRequest, PostSigninResponse } from '../root/postSigninAPI';
 
 describe('PostSigninRequest', () => {
   describe('#instantiateBy', () => {

@@ -2,7 +2,7 @@ import * as express from 'express';
 import {
   PostSigninRequest,
   PostSigninResponse,
-} from '../../../infrastructure/api/model/postSigninAPI';
+} from '../../../infrastructure/api/model/root/postSigninAPI';
 import { IUserRepository } from '../../../domain/repository/userRepositoryInterface';
 
 export type PostSigninControllerDependencies = {

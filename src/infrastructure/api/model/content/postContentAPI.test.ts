@@ -1,4 +1,4 @@
-import { content1, contentNotHaveId } from '../../../../data/content.data';
+import { content1, contentNotHaveId } from '../../../../../data/content.data';
 import { PostContentRequest, PostContentResponse } from './postContentAPI';
 
 const commonImageUrl = 'https://example.com/index.png';

@@ -4,7 +4,7 @@ import { Vote } from '../../../domain/vote';
 import {
   PostScoreRequest,
   PostScoreResponse,
-} from '../../../infrastructure/api/model/postScoreAPI';
+} from '../../../infrastructure/api/model/score/postScoreAPI';
 
 export type PostScoreControllerDependencies = {
   scoreRepository: IScoreRepository;

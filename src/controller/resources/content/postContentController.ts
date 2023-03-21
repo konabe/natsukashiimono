@@ -4,7 +4,7 @@ import { Content } from '../../../domain/content';
 import {
   PostContentRequest,
   PostContentResponse,
-} from '../../../infrastructure/api/model/postContentAPI';
+} from '../../../infrastructure/api/model/content/postContentAPI';
 
 export type PostContentControllerDependencies = {
   contentRepository: IContentRepository;

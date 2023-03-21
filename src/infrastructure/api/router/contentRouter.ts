@@ -1,7 +1,7 @@
 import * as express from 'express';
 import { getDataSource } from '../../database/dataSource';
 import { GetContentController } from '../../../controller/resources/content/getContentController';
-import { GetContentResponse } from '../model/getContentAPI';
+import { GetContentResponse } from '../model/content/getContentAPI';
 import { PostContentController } from '../../../controller/resources/content/postContentController';
 import { ContentRepository } from '../../database/repository/contentRepository';
 

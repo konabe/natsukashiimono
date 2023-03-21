@@ -1,5 +1,5 @@
-import { content1, contentNotHaveId } from '../../../../data/content.data';
-import { GetContentResponse } from './getContentAPI';
+import { content1, contentNotHaveId } from '../../../../../data/content.data';
+import { GetContentResponse } from '../content/getContentAPI';
 
 describe('GetContentResponse', () => {
   describe('#instantiateBy', () => {
