@@ -1,7 +1,7 @@
 import * as express from 'express';
 import { PostSigninController } from '../../../controller/resources/root/postSigninController';
-import { authUser } from '../../middleware/auth.middleware';
 import { UserRepositoryMock } from '../../database/repository/userRepository.mock';
+import { UserAuthorizer } from '../../../controller/middleware/authorizer';
 
 const router = express.Router();
 
@@ -16,7 +16,10 @@ router.post('/signin', async (req: express.Request, res: express.Response) => {
 
 router.post(
   '/signout',
-  authUser,
+  new UserAuthorizer({
+    allowed: [],
+    userRepository: new UserRepositoryMock(),
+  }).authenticateUser,
   async (req: express.Request, res: express.Response) => {
     res.status(200).send();
   },
