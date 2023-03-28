@@ -9,11 +9,11 @@ describe('authUser', () => {
     clearMockRes();
   });
 
-  it('should authorize admin', () => {
+  it('should authorize admin', async () => {
     const req = getMockReq({
       header: jest.fn().mockReturnValue('Bearer ADMINADMINADMIN'),
     });
-    new UserAuthorizer({
+    await new UserAuthorizer({
       allowed: [],
       userRepository: new UserRepositoryMock(),
     }).authenticateUser(req, res, next);
@@ -21,11 +21,11 @@ describe('authUser', () => {
     expect(next).toBeCalledTimes(1);
   });
 
-  it('should authorize user', () => {
+  it('should authorize user', async () => {
     const req = getMockReq({
       header: jest.fn().mockReturnValue('Bearer ABCDEF1234567890'),
     });
-    new UserAuthorizer({
+    await new UserAuthorizer({
       allowed: [],
       userRepository: new UserRepositoryMock(),
     }).authenticateUser(req, res, next);
@@ -33,11 +33,11 @@ describe('authUser', () => {
     expect(next).toBeCalledTimes(1);
   });
 
-  it('should not authorize if value is incorrect', () => {
+  it('should not authorize if value is incorrect', async () => {
     const req = getMockReq({
       header: jest.fn().mockReturnValue(''),
     });
-    new UserAuthorizer({
+    await new UserAuthorizer({
       allowed: [],
       userRepository: new UserRepositoryMock(),
     }).authenticateUser(req, res, next);
@@ -46,9 +46,9 @@ describe('authUser', () => {
     expect(next).toBeCalledTimes(0);
   });
 
-  it('should not authorize if header does not exist', () => {
+  it('should not authorize if header does not exist', async () => {
     const req = getMockReq({});
-    new UserAuthorizer({
+    await new UserAuthorizer({
       allowed: [],
       userRepository: new UserRepositoryMock(),
     }).authenticateUser(req, res, next);
@@ -65,11 +65,11 @@ describe('authAdmin', () => {
     clearMockRes();
   });
 
-  it('should authorize admin', () => {
+  it('should authorize admin', async () => {
     const req = getMockReq({
       header: jest.fn().mockReturnValue('Bearer ADMINADMINADMIN'),
     });
-    new UserAuthorizer({
+    await new UserAuthorizer({
       allowed: [],
       userRepository: new UserRepositoryMock(),
     }).authenticateAdmin(req, res, next);
@@ -77,11 +77,11 @@ describe('authAdmin', () => {
     expect(next).toBeCalledTimes(1);
   });
 
-  it('should NOT authorize user', () => {
+  it('should NOT authorize user', async () => {
     const req = getMockReq({
       header: jest.fn().mockReturnValue('Bearer ABCDEF1234567890'),
     });
-    new UserAuthorizer({
+    await new UserAuthorizer({
       allowed: [],
       userRepository: new UserRepositoryMock(),
     }).authenticateAdmin(req, res, next);
@@ -90,11 +90,11 @@ describe('authAdmin', () => {
     expect(next).toBeCalledTimes(0);
   });
 
-  it('should not authorize if value is incorrect', () => {
+  it('should not authorize if value is incorrect', async () => {
     const req = getMockReq({
       header: jest.fn().mockReturnValue(''),
     });
-    new UserAuthorizer({
+    await new UserAuthorizer({
       allowed: [],
       userRepository: new UserRepositoryMock(),
     }).authenticateAdmin(req, res, next);
@@ -103,9 +103,9 @@ describe('authAdmin', () => {
     expect(next).toBeCalledTimes(0);
   });
 
-  it('should not authorize if header does not exist', () => {
+  it('should not authorize if header does not exist', async () => {
     const req = getMockReq({});
-    new UserAuthorizer({
+    await new UserAuthorizer({
       allowed: [],
       userRepository: new UserRepositoryMock(),
     }).authenticateAdmin(req, res, next);

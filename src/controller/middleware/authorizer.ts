@@ -17,7 +17,7 @@ export class UserAuthorizer {
     this.userRepository = userRepository;
   }
 
-  authenticateUser(
+  async authenticateUser(
     req: express.Request,
     res: express.Response,
     next: express.NextFunction,
@@ -28,18 +28,16 @@ export class UserAuthorizer {
       return;
     }
     const token = authorizationHeaderValue.replace('Bearer ', '');
-    if (token === 'ABCDEF1234567890' || token === '1234567890ABCDEF') {
-      next();
-      return;
-    }
-    if (token === 'ADMINADMINADMIN') {
+    const userEmail = await this.userRepository.findUserByToken(token);
+    const role = await this.userRepository.findRole(userEmail);
+    if (role === 'user' || role === 'admin') {
       next();
       return;
     }
     res.status(403).send();
   }
 
-  authenticateAdmin(
+  async authenticateAdmin(
     req: express.Request,
     res: express.Response,
     next: express.NextFunction,
@@ -50,7 +48,9 @@ export class UserAuthorizer {
       return;
     }
     const token = authorizationHeaderValue.replace('Bearer ', '');
-    if (token === 'ADMINADMINADMIN') {
+    const userEmail = await this.userRepository.findUserByToken(token);
+    const role = await this.userRepository.findRole(userEmail);
+    if (role === 'admin') {
       next();
       return;
     }

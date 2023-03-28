@@ -10,6 +10,8 @@ describe('PostSigninController', () => {
   beforeEach(() => {
     userRepository = {
       findToken: jest.fn().mockReturnValue('token'),
+      findRole: jest.fn(),
+      findUserByToken: jest.fn(),
     };
     postSigninController = new PostSigninController({ userRepository });
     clearMockRes();
@@ -39,6 +41,8 @@ describe('PostSigninController', () => {
   it('should notify 401 error if token is undefined', async () => {
     userRepository = {
       findToken: jest.fn().mockReturnValue(undefined),
+      findRole: jest.fn(),
+      findUserByToken: jest.fn(),
     };
     postSigninController = new PostSigninController({ userRepository });
     const req = getMockReq({

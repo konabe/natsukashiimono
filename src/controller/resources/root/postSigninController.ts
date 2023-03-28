@@ -23,7 +23,7 @@ export class PostSigninController {
       return;
     }
     const { email, password } = request;
-    const token = this.userRepository.findToken(email, password);
+    const token = await this.userRepository.findToken(email, password);
     if (token === undefined) {
       res.status(401).send();
       return;
