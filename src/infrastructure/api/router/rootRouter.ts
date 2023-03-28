@@ -14,12 +14,14 @@ router.post('/signin', async (req: express.Request, res: express.Response) => {
   new PostSigninController({ userRepository }).invoke(req, res);
 });
 
+const authorizer = new UserAuthorizer({
+  allowed: ['user', 'admin'],
+  userRepository: new UserRepositoryMock(),
+});
+
 router.post(
   '/signout',
-  new UserAuthorizer({
-    allowed: [],
-    userRepository: new UserRepositoryMock(),
-  }).authenticateUser,
+  authorizer.authenticate.bind(authorizer),
   async (req: express.Request, res: express.Response) => {
     res.status(200).send();
   },
