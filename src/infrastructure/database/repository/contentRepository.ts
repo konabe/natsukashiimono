@@ -4,11 +4,30 @@ import { IContentRepository } from '../../../domain/repository/contentRepository
 import { ContentEntity } from '../entity/content.entity';
 import { ScoreEntity } from '../entity/score.entity';
 import { Vote } from '../../../domain/vote';
+import { ApprovalStatus } from '../../../domain/approvalStatus';
 
 export class ContentRepository implements IContentRepository {
   constructor(private readonly dataSource: DataSource) {}
 
   async find(): Promise<Content[]> {
+    return await this.findByFilter(() => true);
+  }
+
+  async findInprogress(): Promise<Content[]> {
+    return await this.findByFilter(
+      (c) => c.approvalStatus === ApprovalStatus.INPROGRESS,
+    );
+  }
+
+  async findApproved(): Promise<Content[]> {
+    return await this.findByFilter(
+      (c) => c.approvalStatus === ApprovalStatus.APPROVED,
+    );
+  }
+
+  private async findByFilter(
+    filter: (ContentEntity) => boolean,
+  ): Promise<Content[]> {
     const contentRepository = this.dataSource.getRepository(ContentEntity);
     const scoreRepository = this.dataSource.getRepository(ScoreEntity);
     const scores = await scoreRepository.find();
@@ -16,6 +35,7 @@ export class ContentRepository implements IContentRepository {
     const results = await contentRepository.find();
 
     return results
+      .filter(filter)
       .map((c) => {
         return Content.instantiate({
           id: c.id,

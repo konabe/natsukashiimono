@@ -13,4 +13,7 @@ export class ContentEntity {
 
   @Column('text')
   imageUrl: string;
+
+  @Column('text')
+  approvalStatus: string;
 }
