@@ -1,6 +1,9 @@
 import * as express from 'express';
 import { UserAuthorizer } from '../../../controller/middleware/authorizer';
 import { UserRepositoryMock } from '../../database/repository/userRepository.mock';
+import { getDataSource } from '../../database/dataSource';
+import { ContentRepository } from '../../database/repository/contentRepository';
+import { GetRequestController } from '../../../controller/resources/request/getRequestController';
 
 const router = express.Router();
 const authorizer = new UserAuthorizer({
@@ -11,8 +14,10 @@ const authorizer = new UserAuthorizer({
 router.get(
   '/',
   authorizer.authenticate.bind(authorizer),
-  (_: express.Request, res: express.Response) => {
-    res.status(200).send();
+  async (req: express.Request, res: express.Response) => {
+    const dataSource = await getDataSource();
+    const contentRepository = new ContentRepository(dataSource);
+    new GetRequestController({ contentRepository }).invoke(req, res);
   },
 );
 
