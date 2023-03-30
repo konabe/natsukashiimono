@@ -2,11 +2,49 @@ import { DataSource } from 'typeorm';
 import { ContentRepository } from './contentRepository';
 import { ContentEntity } from '../entity/content.entity';
 import { ScoreEntity } from '../entity/score.entity';
+import { Content } from '../../../domain/content';
 jest.useFakeTimers();
 
 describe('ContentRepository', () => {
   let dataSource: DataSource;
   let contentRepository: ContentRepository;
+  const initialData = [
+    {
+      id: 1,
+      name: '懐かしいもの１',
+      description: '説明１',
+      imageUrl: 'https://example.com/1.png',
+      approvalStatus: 'inprogress',
+    },
+    {
+      id: 2,
+      name: '懐かしいもの２',
+      description: '説明２',
+      imageUrl: 'https://example.com/2.png',
+      approvalStatus: 'inprogress',
+    },
+    {
+      id: 3,
+      name: '懐かしいもの３',
+      description: '説明３',
+      imageUrl: 'https://example.com/3.png',
+      approvalStatus: 'approved',
+    },
+    {
+      id: 4,
+      name: '懐かしいもの４',
+      description: '説明４',
+      imageUrl: 'https://example.com/4.png',
+      approvalStatus: 'declined',
+    },
+    {
+      id: 5,
+      name: '懐かしいもの５',
+      description: '説明５',
+      imageUrl: 'https://example.com/5.png',
+      approvalStatus: 'approved',
+    },
+  ];
 
   describe('#find', () => {
     beforeEach(async () => {
@@ -21,41 +59,12 @@ describe('ContentRepository', () => {
       await dataSource.initialize();
       contentRepository = new ContentRepository(dataSource);
       const repository = dataSource.getRepository(ContentEntity);
-      await repository.save([
-        {
-          id: 1,
-          name: '懐かしいもの１',
-          description: '説明１',
-          imageUrl: 'https://example.com/1.png',
-          approvalStatus: 'inprogress',
-        },
-        {
-          id: 2,
-          name: '懐かしいもの２',
-          description: '説明２',
-          imageUrl: 'https://example.com/2.png',
-          approvalStatus: 'inprogress',
-        },
-        {
-          id: 3,
-          name: '懐かしいもの３',
-          description: '説明３',
-          imageUrl: 'https://example.com/3.png',
-          approvalStatus: 'approved',
-        },
-        {
-          id: 4,
-          name: '懐かしいもの４',
-          description: '説明４',
-          imageUrl: 'https://example.com/4.png',
-          approvalStatus: 'declined',
-        },
-      ]);
+      await repository.save(initialData);
     });
 
     it('should find all records', async () => {
       const contents = await contentRepository.find();
-      expect(contents.length).toBe(4);
+      expect(contents.length).toBe(5);
     });
   });
 
@@ -72,36 +81,7 @@ describe('ContentRepository', () => {
       await dataSource.initialize();
       contentRepository = new ContentRepository(dataSource);
       const repository = dataSource.getRepository(ContentEntity);
-      await repository.save([
-        {
-          id: 1,
-          name: '懐かしいもの１',
-          description: '説明１',
-          imageUrl: 'https://example.com/1.png',
-          approvalStatus: 'inprogress',
-        },
-        {
-          id: 2,
-          name: '懐かしいもの２',
-          description: '説明２',
-          imageUrl: 'https://example.com/2.png',
-          approvalStatus: 'inprogress',
-        },
-        {
-          id: 3,
-          name: '懐かしいもの３',
-          description: '説明３',
-          imageUrl: 'https://example.com/3.png',
-          approvalStatus: 'approved',
-        },
-        {
-          id: 4,
-          name: '懐かしいもの４',
-          description: '説明４',
-          imageUrl: 'https://example.com/4.png',
-          approvalStatus: 'declined',
-        },
-      ]);
+      await repository.save(initialData);
     });
 
     it('should find all records', async () => {
@@ -123,41 +103,64 @@ describe('ContentRepository', () => {
       await dataSource.initialize();
       contentRepository = new ContentRepository(dataSource);
       const repository = dataSource.getRepository(ContentEntity);
-      await repository.save([
-        {
-          id: 1,
-          name: '懐かしいもの１',
-          description: '説明１',
-          imageUrl: 'https://example.com/1.png',
-          approvalStatus: 'inprogress',
-        },
-        {
-          id: 2,
-          name: '懐かしいもの２',
-          description: '説明２',
-          imageUrl: 'https://example.com/2.png',
-          approvalStatus: 'approved',
-        },
-        {
-          id: 3,
-          name: '懐かしいもの３',
-          description: '説明３',
-          imageUrl: 'https://example.com/3.png',
-          approvalStatus: 'approved',
-        },
-        {
-          id: 4,
-          name: '懐かしいもの４',
-          description: '説明４',
-          imageUrl: 'https://example.com/4.png',
-          approvalStatus: 'declined',
-        },
-      ]);
+      await repository.save(initialData);
     });
 
     it('should find all records', async () => {
       const contents = await contentRepository.findApproved();
-      expect(contents.map((e) => e.id)).toEqual([2, 3]);
+      expect(contents.map((e) => e.id)).toEqual([3, 5]);
+    });
+  });
+
+  describe('#findOne', () => {
+    beforeEach(async () => {
+      dataSource = new DataSource({
+        type: 'sqlite',
+        database: ':memory:',
+        dropSchema: false,
+        entities: [ContentEntity, ScoreEntity],
+        synchronize: true,
+        logging: false,
+      });
+      await dataSource.initialize();
+      contentRepository = new ContentRepository(dataSource);
+      const repository = dataSource.getRepository(ContentEntity);
+      await repository.save(initialData);
+    });
+
+    it('should find all records', async () => {
+      const content = await contentRepository.findOne(3);
+      expect(content.id).toBe(3);
+    });
+  });
+
+  describe('#save', () => {
+    beforeEach(async () => {
+      dataSource = new DataSource({
+        type: 'sqlite',
+        database: ':memory:',
+        dropSchema: false,
+        entities: [ContentEntity, ScoreEntity],
+        synchronize: true,
+        logging: false,
+      });
+      await dataSource.initialize();
+      contentRepository = new ContentRepository(dataSource);
+      const repository = dataSource.getRepository(ContentEntity);
+      await repository.save(initialData);
+    });
+
+    it('should find all records', async () => {
+      const id = await contentRepository.save(
+        Content.instantiate({
+          name: '名前',
+          description: '説明です',
+          imageUrl: 'https://example.com/image.png',
+          votes: [],
+        }),
+      );
+      const content = await contentRepository.findOne(id);
+      expect(content.id).toBe(id);
     });
   });
 });

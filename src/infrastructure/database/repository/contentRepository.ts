@@ -60,6 +60,7 @@ export class ContentRepository implements IContentRepository {
     content.name = receivedContent.name;
     content.description = receivedContent.description;
     content.imageUrl = receivedContent.imageUrl;
+    content.approvalStatus = ApprovalStatus.INPROGRESS;
     const savedContent = await contentRepository.save(content);
     return savedContent.id;
   }
