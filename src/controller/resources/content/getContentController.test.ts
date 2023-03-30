@@ -10,7 +10,9 @@ describe('getContentController', () => {
 
   beforeEach(() => {
     contentRepository = {
-      find: jest.fn().mockResolvedValue([content1]),
+      find: jest.fn(),
+      findApproved: jest.fn().mockResolvedValue([content1]),
+      findInprogress: jest.fn(),
       findOne: jest.fn(),
       save: jest.fn(),
     };
@@ -21,6 +23,7 @@ describe('getContentController', () => {
   it('should invoke normally', async () => {
     const req = getMockReq();
     await getContentController.invoke(req, res);
+    expect(contentRepository.findApproved).toBeCalledTimes(1);
     expect(res.status).toBeCalledWith(200);
     expect(res.json).toBeCalledWith([
       {
