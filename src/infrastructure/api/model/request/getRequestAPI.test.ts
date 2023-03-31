@@ -17,5 +17,11 @@ describe('GetRequestResponse', () => {
         ],
       });
     });
+
+    it('should create response if input is empty', () => {
+      expect(new GetRequestResponse([])).toEqual({
+        contents: [],
+      });
+    });
   });
 });

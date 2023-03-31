@@ -25,14 +25,16 @@ describe('getContentController', () => {
     await getContentController.invoke(req, res);
     expect(contentRepository.findApproved).toBeCalledTimes(1);
     expect(res.status).toBeCalledWith(200);
-    expect(res.json).toBeCalledWith([
-      {
-        id: 1,
-        name: '懐かしいもの',
-        description: '懐かしいという感情は時間が存在しなければないのだろうか',
-        imageUrl: 'https://example.com/index.png',
-        score: 2,
-      },
-    ]);
+    expect(res.json).toBeCalledWith({
+      contents: [
+        {
+          id: 1,
+          name: '懐かしいもの',
+          description: '懐かしいという感情は時間が存在しなければないのだろうか',
+          imageUrl: 'https://example.com/index.png',
+          score: 2,
+        },
+      ],
+    });
   });
 });
