@@ -1,0 +1,190 @@
+openapi: 3.0.3
+info:
+  title: Swagger Petstore - OpenAPI 3.0
+  description: |-
+    natsukashiimono(仮)のWEB API仕様書です。
+  version: 0.0.0
+externalDocs:
+  description: Find out more about Swagger
+  url: http://swagger.io
+servers:
+  - url: https://petstore3.swagger.io/api/v3
+tags:
+  - name: user
+    description: アカウント情報
+  - name: content
+    description: 懐かしいコンテンツ
+  - name: request
+    description: コンテンツリクエスト
+  - name: score
+    description: 評価
+paths:
+  /signup:
+    post:
+      tags:
+        - user
+      summary: ユーザーの新規作成を行います。
+      description: ただいま未実装です。AWS Cognitoの調査が終了次第実装開始します。guest
+      operationId: signup
+      responses:
+        '200':
+          description: ユーザーの新規作成成功
+  /signin:
+    post:
+      tags:
+        - user
+      summary: ユーザーの認証を行います。
+      description: 現在は仮想データによるスタブ実装です。user,admin
+      operationId: signin
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  format: email
+                  example: 'user1@example.com'
+                password:
+                  type: string
+                  format: password
+                  example: 'password'
+      responses:
+        '200':
+          description: 認証成功
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  token:
+                    type: string
+                    format: uuid
+        '400':
+          description: パラメータの不足
+        '401':
+          description: 認証失敗
+  /request:
+    get:
+      tags:
+        - request
+      summary: コンテンツリクエストを取得する
+      description: コンテンツの投稿のリクエストの一覧が取得できます。admin
+      operationId: getRequest
+      responses:
+        '200':
+          description: 成功
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  contents:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Content'
+        '403':
+          description: アクセス権限がない
+      security:
+        - tokenAuth: []
+  /content:
+    get:
+      tags:
+        - content
+      summary: コンテンツを取得する
+      description: コンテンツの一覧が取得できます。guest
+      operationId: getContent
+      responses:
+        '200':
+          description: 成功
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  contents:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Content'
+    post:
+      tags:
+        - content
+      summary: コンテンツを投稿する
+      description: コンテンツを投稿できます。guest
+      operationId: postContent
+      requestBody:
+        description: コンテンツの内容
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                description:
+                  type: string
+                imageUrl:
+                  type: string
+      responses:
+        '200':
+          description: 成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Content'
+        '400':
+          description: パラメータ不足
+  /score:
+    post:
+      tags:
+        - score
+      summary: 評価を投稿する
+      description: 評価を投稿できます。user
+      operationId: postScore
+      requestBody:
+        description: 評価するコンテンツ
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                contentId:
+                  type: integer
+      responses:
+        '200':
+          description: 成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Content'
+        '400':
+          description: パラメータ不足
+        '403':
+          description: 権限なし
+
+components:
+  schemas:
+    Content:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+          example: '懐かしいお菓子'
+        description:
+          type: string
+          example: 'もう今は駄菓子屋に売ってないお菓子です。'
+        imageUrl:
+          type: string
+          example: 'https://placehold.jp/150x150.png'
+        score:
+          type: integer
+  securitySchemes:
+    tokenAuth:
+      type: 'apiKey'
+      name: 'Authorization'
+      in: 'header'
