@@ -9,7 +9,7 @@ const router = express.Router();
 
 router.get(
   '/',
-  async (req: express.Request, res: express.Response<GetContentResponse[]>) => {
+  async (req: express.Request, res: express.Response<GetContentResponse>) => {
     const dataSource = await getDataSource();
     const contentRepository = new ContentRepository(dataSource);
     new GetContentController({
