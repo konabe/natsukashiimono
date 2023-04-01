@@ -7,5 +7,8 @@ export interface IContentRepository {
   findInprogress(): Promise<Content[]>;
   findApproved(): Promise<Content[]>;
   save(content: Content): Promise<number>;
-  updateApprovalStatus(id: number, status: ApprovalStatus): Promise<number>;
+  updateApprovalStatus(
+    id: number,
+    status: ApprovalStatus,
+  ): Promise<number | undefined>;
 }

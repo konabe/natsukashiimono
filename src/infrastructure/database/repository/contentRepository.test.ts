@@ -184,17 +184,49 @@ describe('ContentRepository', () => {
     it('should update approval status', async () => {
       const preContents = await contentRepository.findApproved();
       expect(preContents.map((c) => c.id)).toEqual([3, 5]);
-      await contentRepository.updateApprovalStatus(1, ApprovalStatus.APPROVED);
+      const id = await contentRepository.updateApprovalStatus(
+        1,
+        ApprovalStatus.APPROVED,
+      );
+      expect(id).toBe(1);
       const contents = await contentRepository.findApproved();
       expect(contents.map((c) => c.id)).toEqual([1, 3, 5]);
     });
 
-    it('should not update approval status', async () => {
+    it('should update approval status when already approved', async () => {
       const preContents = await contentRepository.findApproved();
       expect(preContents.map((c) => c.id)).toEqual([3, 5]);
-      await contentRepository.updateApprovalStatus(1, ApprovalStatus.APPROVED);
+      const id = await contentRepository.updateApprovalStatus(
+        3,
+        ApprovalStatus.APPROVED,
+      );
+      expect(id).toBe(3);
       const contents = await contentRepository.findApproved();
-      expect(contents.map((c) => c.id)).toEqual([1, 3, 5]);
+      expect(contents.map((c) => c.id)).toEqual([3, 5]);
+    });
+
+    it('should update approval status when already declined', async () => {
+      const preContents = await contentRepository.findApproved();
+      expect(preContents.map((c) => c.id)).toEqual([3, 5]);
+      const id = await contentRepository.updateApprovalStatus(
+        4,
+        ApprovalStatus.APPROVED,
+      );
+      expect(id).toBe(4);
+      const contents = await contentRepository.findApproved();
+      expect(contents.map((c) => c.id)).toEqual([3, 4, 5]);
+    });
+
+    it('should not update if id is not found and return undefined', async () => {
+      const preContents = await contentRepository.findApproved();
+      expect(preContents.map((c) => c.id)).toEqual([3, 5]);
+      const id = await contentRepository.updateApprovalStatus(
+        -1,
+        ApprovalStatus.APPROVED,
+      );
+      expect(id).toBeUndefined();
+      const contents = await contentRepository.findApproved();
+      expect(contents.map((c) => c.id)).toEqual([3, 5]);
     });
   });
 });
