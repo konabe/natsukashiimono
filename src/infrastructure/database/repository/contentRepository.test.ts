@@ -3,6 +3,7 @@ import { ContentRepository } from './contentRepository';
 import { ContentEntity } from '../entity/content.entity';
 import { ScoreEntity } from '../entity/score.entity';
 import { Content } from '../../../domain/content';
+import { ApprovalStatus } from '../../../domain/approvalStatus';
 jest.useFakeTimers();
 
 describe('ContentRepository', () => {
@@ -161,6 +162,39 @@ describe('ContentRepository', () => {
       );
       const content = await contentRepository.findOne(id);
       expect(content.id).toBe(id);
+    });
+  });
+
+  describe('#updateApprovalStatus', () => {
+    beforeEach(async () => {
+      dataSource = new DataSource({
+        type: 'sqlite',
+        database: ':memory:',
+        dropSchema: false,
+        entities: [ContentEntity, ScoreEntity],
+        synchronize: true,
+        logging: false,
+      });
+      await dataSource.initialize();
+      contentRepository = new ContentRepository(dataSource);
+      const repository = dataSource.getRepository(ContentEntity);
+      await repository.save(initialData);
+    });
+
+    it('should update approval status', async () => {
+      const preContents = await contentRepository.findApproved();
+      expect(preContents.map((c) => c.id)).toEqual([3, 5]);
+      await contentRepository.updateApprovalStatus(1, ApprovalStatus.APPROVED);
+      const contents = await contentRepository.findApproved();
+      expect(contents.map((c) => c.id)).toEqual([1, 3, 5]);
+    });
+
+    it('should not update approval status', async () => {
+      const preContents = await contentRepository.findApproved();
+      expect(preContents.map((c) => c.id)).toEqual([3, 5]);
+      await contentRepository.updateApprovalStatus(1, ApprovalStatus.APPROVED);
+      const contents = await contentRepository.findApproved();
+      expect(contents.map((c) => c.id)).toEqual([1, 3, 5]);
     });
   });
 });

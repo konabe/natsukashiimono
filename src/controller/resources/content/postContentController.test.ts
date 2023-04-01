@@ -15,6 +15,7 @@ describe('PostContentController', () => {
       findInprogress: jest.fn(),
       findOne: jest.fn(),
       save: jest.fn().mockResolvedValue(0),
+      updateApprovalStatus: jest.fn(),
     };
     postContentController = new PostContentController({
       contentRepository,
@@ -24,9 +25,7 @@ describe('PostContentController', () => {
 
   it('should invoke normally', async () => {
     contentRepository = {
-      find: jest.fn(),
-      findApproved: jest.fn(),
-      findInprogress: jest.fn(),
+      ...contentRepository,
       findOne: jest.fn().mockResolvedValue(content2),
       save: jest.fn().mockResolvedValue(2),
     };
