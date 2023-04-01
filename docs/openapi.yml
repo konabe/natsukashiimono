@@ -23,7 +23,7 @@ paths:
     post:
       tags:
         - user
-      summary: ユーザーの新規作成を行います。
+      summary: ユーザーの新規作成を行う (未実装)
       description: ただいま未実装です。AWS Cognitoの調査が終了次第実装開始します。guest
       operationId: signup
       responses:
@@ -33,7 +33,7 @@ paths:
     post:
       tags:
         - user
-      summary: ユーザーの認証を行います。
+      summary: ユーザーの認証を行う (スタブ)
       description: 現在は仮想データによるスタブ実装です。user,admin
       operationId: signin
       requestBody:
@@ -65,6 +65,16 @@ paths:
           description: パラメータの不足
         '401':
           description: 認証失敗
+  /sigunout:
+    post:
+      tags:
+        - user
+      summary: ユーザーのログアウトを行う (スタブ)
+      responses:
+        '200':
+          description: ログアウト成功
+        '403':
+          description: 権限なし
   /request:
     get:
       tags:
@@ -84,6 +94,52 @@ paths:
                     type: array
                     items:
                       $ref: '#/components/schemas/Content'
+        '403':
+          description: アクセス権限がない
+      security:
+        - tokenAuth: []
+  /request/approve:
+    post:
+      tags:
+        - request
+      summary: リクエストを承認する
+      description: リクエストを承認することができます。admin
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                contentId:
+                  type: integer
+      responses:
+        '200':
+          description: 承認に成功
+        '404':
+          description: 承認待ちのリクエストが存在しない
+        '403':
+          description: アクセス権限がない
+      security:
+        - tokenAuth: []
+  /request/decline:
+    post:
+      tags:
+        - request
+      summary: リクエストを却下する
+      description: リクエストを却下することができます。admin
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                contentId:
+                  type: integer
+      responses:
+        '200':
+          description: 却下に成功
+        '404':
+          description: 承認待ちのリクエストが存在しない
         '403':
           description: アクセス権限がない
       security:
