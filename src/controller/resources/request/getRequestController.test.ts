@@ -15,6 +15,7 @@ describe('getContentController', () => {
       findInprogress: jest.fn().mockResolvedValue([content1]),
       findOne: jest.fn(),
       save: jest.fn(),
+      updateApprovalStatus: jest.fn(),
     };
     getRequestController = new GetRequestController({ contentRepository });
     clearMockRes();

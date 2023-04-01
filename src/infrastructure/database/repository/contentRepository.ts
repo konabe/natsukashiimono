@@ -64,4 +64,18 @@ export class ContentRepository implements IContentRepository {
     const savedContent = await contentRepository.save(content);
     return savedContent.id;
   }
+
+  async updateApprovalStatus(
+    id: number,
+    status: ApprovalStatus,
+  ): Promise<number | undefined> {
+    const contentRepository = this.dataSource.getRepository(ContentEntity);
+    const content = await contentRepository.findOne({ where: { id } });
+    if (content === null) {
+      return undefined;
+    }
+    content.approvalStatus = status;
+    const updated = await contentRepository.save(content);
+    return updated.id;
+  }
 }

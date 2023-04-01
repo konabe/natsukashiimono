@@ -3,6 +3,7 @@ import { ContentRepository } from './contentRepository';
 import { ContentEntity } from '../entity/content.entity';
 import { ScoreEntity } from '../entity/score.entity';
 import { Content } from '../../../domain/content';
+import { ApprovalStatus } from '../../../domain/approvalStatus';
 jest.useFakeTimers();
 
 describe('ContentRepository', () => {
@@ -161,6 +162,71 @@ describe('ContentRepository', () => {
       );
       const content = await contentRepository.findOne(id);
       expect(content.id).toBe(id);
+    });
+  });
+
+  describe('#updateApprovalStatus', () => {
+    beforeEach(async () => {
+      dataSource = new DataSource({
+        type: 'sqlite',
+        database: ':memory:',
+        dropSchema: false,
+        entities: [ContentEntity, ScoreEntity],
+        synchronize: true,
+        logging: false,
+      });
+      await dataSource.initialize();
+      contentRepository = new ContentRepository(dataSource);
+      const repository = dataSource.getRepository(ContentEntity);
+      await repository.save(initialData);
+    });
+
+    it('should update approval status', async () => {
+      const preContents = await contentRepository.findApproved();
+      expect(preContents.map((c) => c.id)).toEqual([3, 5]);
+      const id = await contentRepository.updateApprovalStatus(
+        1,
+        ApprovalStatus.APPROVED,
+      );
+      expect(id).toBe(1);
+      const contents = await contentRepository.findApproved();
+      expect(contents.map((c) => c.id)).toEqual([1, 3, 5]);
+    });
+
+    it('should update approval status when already approved', async () => {
+      const preContents = await contentRepository.findApproved();
+      expect(preContents.map((c) => c.id)).toEqual([3, 5]);
+      const id = await contentRepository.updateApprovalStatus(
+        3,
+        ApprovalStatus.APPROVED,
+      );
+      expect(id).toBe(3);
+      const contents = await contentRepository.findApproved();
+      expect(contents.map((c) => c.id)).toEqual([3, 5]);
+    });
+
+    it('should update approval status when already declined', async () => {
+      const preContents = await contentRepository.findApproved();
+      expect(preContents.map((c) => c.id)).toEqual([3, 5]);
+      const id = await contentRepository.updateApprovalStatus(
+        4,
+        ApprovalStatus.APPROVED,
+      );
+      expect(id).toBe(4);
+      const contents = await contentRepository.findApproved();
+      expect(contents.map((c) => c.id)).toEqual([3, 4, 5]);
+    });
+
+    it('should not update if id is not found and return undefined', async () => {
+      const preContents = await contentRepository.findApproved();
+      expect(preContents.map((c) => c.id)).toEqual([3, 5]);
+      const id = await contentRepository.updateApprovalStatus(
+        -1,
+        ApprovalStatus.APPROVED,
+      );
+      expect(id).toBeUndefined();
+      const contents = await contentRepository.findApproved();
+      expect(contents.map((c) => c.id)).toEqual([3, 5]);
     });
   });
 });
