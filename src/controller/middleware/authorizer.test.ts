@@ -1,6 +1,6 @@
 import { getMockReq, getMockRes } from '@jest-mock/express';
 import { UserAuthorizer } from './authorizer';
-import { UserRepositoryMock } from '../../infrastructure/database/repository/userRepository.mock';
+import { UserRepositoryMock } from '../../infrastructure/repository/userRepository.mock';
 
 describe('authUser', () => {
   let { res, next, clearMockRes } = getMockRes();

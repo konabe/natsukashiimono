@@ -1,8 +1,8 @@
 import * as express from 'express';
 import { UserAuthorizer } from '../../../controller/middleware/authorizer';
-import { UserRepositoryMock } from '../../database/repository/userRepository.mock';
+import { UserRepositoryMock } from '../../repository/userRepository.mock';
 import { getDataSource } from '../../database/dataSource';
-import { ContentRepository } from '../../database/repository/contentRepository';
+import { ContentRepository } from '../../repository/contentRepository';
 import { GetRequestController } from '../../../controller/resources/request/getRequestController';
 import { PostRequestApprovedController } from '../../../controller/resources/request/postRequestApprovedController';
 import { PostRequestDeclinedController } from '../../../controller/resources/request/postRequestDeclinedController';

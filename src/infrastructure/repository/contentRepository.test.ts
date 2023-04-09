@@ -1,9 +1,9 @@
 import { DataSource } from 'typeorm';
 import { ContentRepository } from './contentRepository';
-import { ContentEntity } from '../entity/content.entity';
-import { ScoreEntity } from '../entity/score.entity';
-import { Content } from '../../../domain/content';
-import { ApprovalStatus } from '../../../domain/approvalStatus';
+import { ContentEntity } from '../database/entity/content.entity';
+import { ScoreEntity } from '../database/entity/score.entity';
+import { Content } from '../../domain/content';
+import { ApprovalStatus } from '../../domain/approvalStatus';
 jest.useFakeTimers();
 
 describe('ContentRepository', () => {
