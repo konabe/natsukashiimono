@@ -5,6 +5,14 @@ export class UserRepositoryMock implements IUserRepository {
     return;
   }
 
+  async verify(email: string, code: string): Promise<boolean> {
+    return true;
+  }
+
+  async resendCode(email: string): Promise<boolean> {
+    return true;
+  }
+
   async findToken(
     email: string,
     password: string,

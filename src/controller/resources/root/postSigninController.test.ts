@@ -10,6 +10,8 @@ describe('PostSigninController', () => {
   beforeEach(() => {
     userRepository = {
       create: jest.fn(),
+      verify: jest.fn(),
+      resendCode: jest.fn(),
       findToken: jest.fn().mockReturnValue('token'),
       findRole: jest.fn(),
       findUserByToken: jest.fn(),
