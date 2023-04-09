@@ -28,8 +28,8 @@ export class UserAuthorizer {
       return;
     }
     const token = authorizationHeaderValue.replace('Bearer ', '');
-    const userEmail = await this.userRepository.findUserByToken(token);
-    const role = await this.userRepository.findRole(userEmail);
+    const userId = await this.userRepository.findUserByToken(token);
+    const role = await this.userRepository.findRole(userId);
     if (this.allowed.includes(role)) {
       next();
       return;

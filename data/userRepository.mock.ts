@@ -1,4 +1,4 @@
-import { IUserRepository } from '../../domain/repository/userRepositoryInterface';
+import { IUserRepository } from '../src/domain/repository/userRepositoryInterface';
 
 export class UserRepositoryMock implements IUserRepository {
   create(email: string): Promise<void> {

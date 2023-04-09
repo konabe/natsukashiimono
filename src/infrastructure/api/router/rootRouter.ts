@@ -3,7 +3,6 @@ import { PostSigninController } from '../../../controller/resources/root/postSig
 import { PostSignupController } from '../../../controller/resources/root/postSignupController';
 import { PostVerifyController } from '../../../controller/resources/root/postVerifyController';
 import { PostResendController } from '../../../controller/resources/root/postResendController';
-import { UserRepositoryMock } from '../../repository/userRepository.mock';
 import { UserAuthorizer } from '../../../controller/middleware/authorizer';
 import { UserRepository } from '../../repository/userRepository';
 
@@ -35,7 +34,7 @@ router.post('/resend', async (req: express.Request, res: express.Response) => {
 
 const authorizer = new UserAuthorizer({
   allowed: ['user', 'admin'],
-  userRepository: new UserRepositoryMock(),
+  userRepository: new UserRepository(),
 });
 
 router.post(
