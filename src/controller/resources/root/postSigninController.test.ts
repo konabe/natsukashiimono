@@ -1,6 +1,7 @@
 import { getMockReq, getMockRes } from '@jest-mock/express';
 import { IUserRepository } from '../../../domain/repository/userRepositoryInterface';
 import { PostSigninController } from './postSigninController';
+import { userRepositoryMock } from '../../../../data/repository.mocks';
 
 describe('PostSigninController', () => {
   let postSigninController: PostSigninController;
@@ -9,12 +10,8 @@ describe('PostSigninController', () => {
 
   beforeEach(() => {
     userRepository = {
-      create: jest.fn(),
-      verify: jest.fn(),
-      resendCode: jest.fn(),
+      ...userRepositoryMock,
       findToken: jest.fn().mockReturnValue('token'),
-      findRole: jest.fn(),
-      findUserByToken: jest.fn(),
     };
     postSigninController = new PostSigninController({ userRepository });
     clearMockRes();
