@@ -5,6 +5,7 @@ import { PostVerifyController } from '../../../controller/resources/root/postVer
 import { PostResendController } from '../../../controller/resources/root/postResendController';
 import { UserAuthorizer } from '../../../controller/middleware/authorizer';
 import { UserRepository } from '../../repository/userRepository';
+import { PostSignoutController } from '../../../controller/resources/root/postSignoutController';
 
 const router = express.Router();
 
@@ -41,7 +42,8 @@ router.post(
   '/signout',
   authorizer.authenticate.bind(authorizer),
   async (req: express.Request, res: express.Response) => {
-    res.status(200).send();
+    const userRepository = new UserRepository();
+    new PostSignoutController({ userRepository }).invoke(req, res);
   },
 );
 

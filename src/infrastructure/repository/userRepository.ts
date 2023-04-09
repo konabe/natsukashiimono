@@ -110,4 +110,18 @@ export class UserRepository implements IUserRepository {
       return undefined;
     }
   }
+
+  async signout(userId: string): Promise<boolean> {
+    try {
+      await cognito
+        .adminUserGlobalSignOut({
+          UserPoolId: AWS_COGNITO_USER_POOL_ID,
+          Username: userId,
+        })
+        .promise();
+      return true;
+    } catch (err) {
+      return false;
+    }
+  }
 }
