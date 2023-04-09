@@ -11,9 +11,9 @@ export class PostSignupRequest {
 }
 
 export class PostSignupResponse {
-  private constructor(readonly token: string) {}
+  private constructor() {}
 
-  static instantiateBy(token: string): PostSignupResponse {
-    return new PostSignupResponse(token);
+  static instantiateBy(): PostSignupResponse {
+    return new PostSignupResponse();
   }
 }

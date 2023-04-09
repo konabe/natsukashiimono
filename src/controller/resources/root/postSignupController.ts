@@ -23,11 +23,7 @@ export class PostSignupController {
       return;
     }
     const { email, password } = request;
-    const token = await this.userRepository.create(email, password);
-    if (token === undefined) {
-      res.status(401).send();
-      return;
-    }
-    res.status(200).json(PostSignupResponse.instantiateBy('dummy token'));
+    await this.userRepository.create(email, password);
+    res.status(200).json(PostSignupResponse.instantiateBy());
   }
 }

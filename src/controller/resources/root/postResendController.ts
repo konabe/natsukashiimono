@@ -1,8 +1,4 @@
 import * as express from 'express';
-import {
-  PostVerifyRequest,
-  PostVerifyResponse,
-} from '../../../infrastructure/api/model/root/postVerifyAPI';
 import { IUserRepository } from '../../../domain/repository/userRepositoryInterface';
 import {
   PostResendRequest,
@@ -27,11 +23,7 @@ export class PostResendController {
       return;
     }
     const { email } = request;
-    const token = await this.userRepository.resendCode(email);
-    if (token === undefined) {
-      res.status(401).send();
-      return;
-    }
-    res.status(200).json(PostResendResponse.instantiateBy());
+    const sent = await this.userRepository.resendCode(email);
+    res.status(200).json(PostResendResponse.instantiateBy(sent));
   }
 }

@@ -11,9 +11,9 @@ export class PostVerifyRequest {
 }
 
 export class PostVerifyResponse {
-  private constructor() {}
+  private constructor(readonly verified: boolean) {}
 
-  static instantiateBy(): PostVerifyResponse {
-    return new PostVerifyResponse();
+  static instantiateBy(verified: boolean): PostVerifyResponse {
+    return new PostVerifyResponse(verified);
   }
 }

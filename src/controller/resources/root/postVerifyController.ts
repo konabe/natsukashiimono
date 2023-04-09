@@ -23,11 +23,7 @@ export class PostVerifyController {
       return;
     }
     const { email, code } = request;
-    const token = await this.userRepository.verify(email, code);
-    if (token === undefined) {
-      res.status(401).send();
-      return;
-    }
-    res.status(200).json(PostVerifyResponse.instantiateBy());
+    const verified = await this.userRepository.verify(email, code);
+    res.status(200).json(PostVerifyResponse.instantiateBy(verified));
   }
 }

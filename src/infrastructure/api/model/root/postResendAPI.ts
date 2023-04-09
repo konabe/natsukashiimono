@@ -2,7 +2,7 @@ export class PostResendRequest {
   private constructor(readonly email: string) {}
 
   static instantiateBy(object: any): PostResendRequest | undefined {
-    const { email, code } = object;
+    const { email } = object;
     if (email === undefined) {
       return undefined;
     }
@@ -11,9 +11,9 @@ export class PostResendRequest {
 }
 
 export class PostResendResponse {
-  private constructor() {}
+  private constructor(readonly sent: boolean) {}
 
-  static instantiateBy(): PostResendResponse {
-    return new PostResendResponse();
+  static instantiateBy(sent: boolean): PostResendResponse {
+    return new PostResendResponse(sent);
   }
 }
