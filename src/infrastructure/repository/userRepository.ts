@@ -1,12 +1,13 @@
 import { IUserRepository } from '../../domain/repository/userRepositoryInterface';
-import { cognito, COGNITO_USER_POOL_ID } from '../aws';
+import { cognito, AWS_COGNITO_APP_CLIENT_ID } from '../aws';
 
 export class UserRepository implements IUserRepository {
-  async create(email: string): Promise<void> {
+  async create(email: string, password: string): Promise<void> {
     const user = await cognito
-      .adminCreateUser({
-        UserPoolId: COGNITO_USER_POOL_ID,
+      .signUp({
+        ClientId: AWS_COGNITO_APP_CLIENT_ID,
         Username: email,
+        Password: password,
       })
       .promise()
       .then((user) => console.log(user))

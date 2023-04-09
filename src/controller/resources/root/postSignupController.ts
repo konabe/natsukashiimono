@@ -22,8 +22,8 @@ export class PostSignupController {
       res.status(400).send();
       return;
     }
-    const { email } = request;
-    const token = await this.userRepository.create(email);
+    const { email, password } = request;
+    const token = await this.userRepository.create(email, password);
     if (token === undefined) {
       res.status(401).send();
       return;
