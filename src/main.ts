@@ -4,6 +4,7 @@ import contentRouter from './infrastructure/api/router/contentRouter';
 import scoreRouter from './infrastructure/api/router/scoreRouter';
 import rootRouter from './infrastructure/api/router/rootRouter';
 import requestRouter from './infrastructure/api/router/requestRouter';
+import { getDataSource } from './infrastructure/database/dataSource';
 
 const app: express.Express = express();
 app.use(cors());
@@ -17,6 +18,17 @@ app.use('/', rootRouter);
 app.use('/content', contentRouter);
 app.use('/score', scoreRouter);
 app.use('/request', requestRouter);
+
+(async () => {
+  try {
+    await getDataSource();
+  } catch {
+    console.log('*---------------------------------*');
+    console.log(' Trial of DB connection is failed. ');
+    console.log(' .env file may cause the error.    ');
+    console.log('*---------------------------------*');
+  }
+})();
 
 const port = 3000;
 app.listen(port, () => console.log(`ok, port = ${port}`));
