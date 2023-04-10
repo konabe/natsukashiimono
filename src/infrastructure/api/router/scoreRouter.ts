@@ -1,7 +1,7 @@
 import * as express from 'express';
 import { getDataSource } from '../../database/dataSource';
 import { PostScoreController } from '../../../controller/resources/score/postScoreController';
-import { ScoreRepository } from '../../database/repository/scoreRepository';
+import { ScoreRepository } from '../../repository/scoreRepository';
 
 const router = express.Router();
 

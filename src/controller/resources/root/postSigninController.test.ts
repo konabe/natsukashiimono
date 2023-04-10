@@ -1,6 +1,7 @@
 import { getMockReq, getMockRes } from '@jest-mock/express';
 import { IUserRepository } from '../../../domain/repository/userRepositoryInterface';
 import { PostSigninController } from './postSigninController';
+import { userRepositoryMock } from '../../../../data/repository.mocks';
 
 describe('PostSigninController', () => {
   let postSigninController: PostSigninController;
@@ -9,9 +10,8 @@ describe('PostSigninController', () => {
 
   beforeEach(() => {
     userRepository = {
+      ...userRepositoryMock,
       findToken: jest.fn().mockReturnValue('token'),
-      findRole: jest.fn(),
-      findUserByToken: jest.fn(),
     };
     postSigninController = new PostSigninController({ userRepository });
     clearMockRes();
@@ -40,9 +40,8 @@ describe('PostSigninController', () => {
 
   it('should notify 401 error if token is undefined', async () => {
     userRepository = {
+      ...userRepository,
       findToken: jest.fn().mockReturnValue(undefined),
-      findRole: jest.fn(),
-      findUserByToken: jest.fn(),
     };
     postSigninController = new PostSigninController({ userRepository });
     const req = getMockReq({

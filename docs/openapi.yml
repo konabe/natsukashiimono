@@ -1,9 +1,9 @@
 openapi: 3.0.3
 info:
-  title: Swagger Petstore - OpenAPI 3.0
+  title: natsukashiimono Web API
   description: |-
     natsukashiimono(仮)のWEB API仕様書です。
-  version: 0.0.0
+  version: 1.1.0
 externalDocs:
   description: Find out more about Swagger
   url: http://swagger.io
@@ -23,18 +23,34 @@ paths:
     post:
       tags:
         - user
-      summary: ユーザーの新規作成を行う (未実装)
-      description: ただいま未実装です。AWS Cognitoの調査が終了次第実装開始します。guest
+      summary: サインアップ
+      description: ユーザーの新規作成を行います。(Amazon Cognito) guest
       operationId: signup
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  format: email
+                  example: 'user1@example.com'
+                password:
+                  type: string
+                  format: password
+                  example: 'password'
       responses:
         '200':
           description: ユーザーの新規作成成功
+        '400':
+          description: パラメータ不足
   /signin:
     post:
       tags:
         - user
-      summary: ユーザーの認証を行う (スタブ)
-      description: 現在は仮想データによるスタブ実装です。user,admin
+      summary: サインイン
+      description: ユーザーのサインインを行い、アクセストークンを取得します。(Amazon Cognito) user,admin
       operationId: signin
       requestBody:
         content:
@@ -65,21 +81,91 @@ paths:
           description: パラメータの不足
         '401':
           description: 認証失敗
-  /sigunout:
+  /signout:
     post:
       tags:
         - user
-      summary: ユーザーのログアウトを行う (スタブ)
+      summary: ログアウト
+      description: ユーザーのサインアウトを行い、アクセストークンを無効にします。全デバイスすべてのアクセストークンが無効になります。(Amazon Cognito) user,admin
       responses:
         '200':
           description: ログアウト成功
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  successed:
+                    type: boolean
+
         '403':
           description: 権限なし
+      security:
+        - tokenAuth: []
+  /verify:
+    post:
+      tags:
+        - user
+      summary: 認証コード送信
+      description: メールアドレスに対して送られる認証コードを送信します。これがないと正式にログインすることはできません。(Amazon Cognito) guest
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  format: email
+                  example: 'user1@example.com'
+                code:
+                  type: string
+                  example: '123456'
+      responses:
+        '200':
+          description: 認証コード送信成功
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  verified:
+                    type: boolean
+        '400':
+          description: パラメータの不足
+  /resend:
+    post:
+      tags:
+        - user
+      summary: 認証コード要求
+      description: メールアドレスに対して認証コードの送信を依頼します。(Amazon Cognito) user,admin
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  format: email
+                  example: 'user1@example.com'
+      responses:
+        '200':
+          description: 認証コード通知成功
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  sent:
+                    type: boolean
+        '400':
+          description: パラメータの不足
   /request:
     get:
       tags:
         - request
-      summary: コンテンツリクエストを取得する
+      summary: コンテンツリクエスト取得
       description: コンテンツの投稿のリクエストの一覧が取得できます。admin
       operationId: getRequest
       responses:
@@ -102,7 +188,7 @@ paths:
     post:
       tags:
         - request
-      summary: リクエストを承認する
+      summary: リクエスト承認
       description: リクエストを承認することができます。admin
       requestBody:
         content:
@@ -125,7 +211,7 @@ paths:
     post:
       tags:
         - request
-      summary: リクエストを却下する
+      summary: リクエスト却下
       description: リクエストを却下することができます。admin
       requestBody:
         content:
@@ -148,7 +234,7 @@ paths:
     get:
       tags:
         - content
-      summary: コンテンツを取得する
+      summary: コンテンツ
       description: コンテンツの一覧が取得できます。guest
       operationId: getContent
       responses:
@@ -166,7 +252,7 @@ paths:
     post:
       tags:
         - content
-      summary: コンテンツを投稿する
+      summary: コンテンツ投稿
       description: コンテンツを投稿できます。guest
       operationId: postContent
       requestBody:
@@ -196,7 +282,7 @@ paths:
     post:
       tags:
         - score
-      summary: 評価を投稿する
+      summary: 評価投稿
       description: 評価を投稿できます。user
       operationId: postScore
       requestBody:

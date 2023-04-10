@@ -1,6 +1,18 @@
-import { IUserRepository } from '../../../domain/repository/userRepositoryInterface';
+import { IUserRepository } from '../src/domain/repository/userRepositoryInterface';
 
-export class UserRepositoryMock implements IUserRepository {
+export class UserRepositoryStaticMock implements IUserRepository {
+  create(email: string): Promise<void> {
+    return;
+  }
+
+  async verify(email: string, code: string): Promise<boolean> {
+    return true;
+  }
+
+  async resendCode(email: string): Promise<boolean> {
+    return true;
+  }
+
   async findToken(
     email: string,
     password: string,
@@ -41,5 +53,9 @@ export class UserRepositoryMock implements IUserRepository {
       return 'admin';
     }
     return undefined;
+  }
+
+  async signout(userId: string): Promise<boolean> {
+    return true;
   }
 }

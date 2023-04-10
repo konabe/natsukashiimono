@@ -1,12 +1,13 @@
 import { getMockReq, getMockRes } from '@jest-mock/express';
 import { UserAuthorizer } from './authorizer';
-import { UserRepositoryMock } from '../../infrastructure/database/repository/userRepository.mock';
+import { UserRepositoryStaticMock } from '../../../data/userRepositoryStatic.mock';
 
 describe('authUser', () => {
-  let { res, next, clearMockRes } = getMockRes();
+  let { res, next, clearMockRes, mockClear } = getMockRes();
 
   beforeEach(() => {
     clearMockRes();
+    res.locals = {};
   });
 
   it('should authorize admin', async () => {
@@ -15,9 +16,11 @@ describe('authUser', () => {
     });
     await new UserAuthorizer({
       allowed: ['user', 'admin'],
-      userRepository: new UserRepositoryMock(),
+      userRepository: new UserRepositoryStaticMock(),
     }).authenticate(req, res, next);
     expect(res.send).toBeCalledTimes(0);
+    expect(res.locals.user.id).toBe('admin@example.com');
+    expect(res.locals.user.role).toBe('admin');
     expect(next).toBeCalledTimes(1);
   });
 
@@ -27,9 +30,11 @@ describe('authUser', () => {
     });
     await new UserAuthorizer({
       allowed: ['user', 'admin'],
-      userRepository: new UserRepositoryMock(),
+      userRepository: new UserRepositoryStaticMock(),
     }).authenticate(req, res, next);
     expect(res.send).toBeCalledTimes(0);
+    expect(res.locals.user.id).toBe('user1@example.com');
+    expect(res.locals.user.role).toBe('user');
     expect(next).toBeCalledTimes(1);
   });
 
@@ -39,9 +44,11 @@ describe('authUser', () => {
     });
     await new UserAuthorizer({
       allowed: ['user', 'admin'],
-      userRepository: new UserRepositoryMock(),
+      userRepository: new UserRepositoryStaticMock(),
     }).authenticate(req, res, next);
     expect(res.send).toBeCalledTimes(1);
+    expect(res.locals.user).toBe(undefined);
+    expect(res.locals.user).toBe(undefined);
     expect(res.status).toBeCalledWith(403);
     expect(next).toBeCalledTimes(0);
   });
@@ -50,9 +57,11 @@ describe('authUser', () => {
     const req = getMockReq({});
     await new UserAuthorizer({
       allowed: ['user', 'admin'],
-      userRepository: new UserRepositoryMock(),
+      userRepository: new UserRepositoryStaticMock(),
     }).authenticate(req, res, next);
     expect(res.send).toBeCalledTimes(1);
+    expect(res.locals.user).toBe(undefined);
+    expect(res.locals.user).toBe(undefined);
     expect(res.status).toBeCalledWith(403);
     expect(next).toBeCalledTimes(0);
   });
@@ -63,6 +72,7 @@ describe('authAdmin', () => {
 
   beforeEach(() => {
     clearMockRes();
+    res.locals = {};
   });
 
   it('should authorize admin', async () => {
@@ -71,9 +81,11 @@ describe('authAdmin', () => {
     });
     await new UserAuthorizer({
       allowed: ['admin'],
-      userRepository: new UserRepositoryMock(),
+      userRepository: new UserRepositoryStaticMock(),
     }).authenticate(req, res, next);
     expect(res.send).toBeCalledTimes(0);
+    expect(res.locals.user.id).toBe('admin@example.com');
+    expect(res.locals.user.role).toBe('admin');
     expect(next).toBeCalledTimes(1);
   });
 
@@ -83,9 +95,11 @@ describe('authAdmin', () => {
     });
     await new UserAuthorizer({
       allowed: ['admin'],
-      userRepository: new UserRepositoryMock(),
+      userRepository: new UserRepositoryStaticMock(),
     }).authenticate(req, res, next);
     expect(res.send).toBeCalledTimes(1);
+    expect(res.locals.user).toBe(undefined);
+    expect(res.locals.user).toBe(undefined);
     expect(res.status).toBeCalledWith(403);
     expect(next).toBeCalledTimes(0);
   });
@@ -96,9 +110,11 @@ describe('authAdmin', () => {
     });
     await new UserAuthorizer({
       allowed: ['admin'],
-      userRepository: new UserRepositoryMock(),
+      userRepository: new UserRepositoryStaticMock(),
     }).authenticate(req, res, next);
     expect(res.send).toBeCalledTimes(1);
+    expect(res.locals.user).toBe(undefined);
+    expect(res.locals.user).toBe(undefined);
     expect(res.status).toBeCalledWith(403);
     expect(next).toBeCalledTimes(0);
   });
@@ -107,9 +123,11 @@ describe('authAdmin', () => {
     const req = getMockReq({});
     await new UserAuthorizer({
       allowed: ['admin'],
-      userRepository: new UserRepositoryMock(),
+      userRepository: new UserRepositoryStaticMock(),
     }).authenticate(req, res, next);
     expect(res.send).toBeCalledTimes(1);
+    expect(res.locals.user).toBe(undefined);
+    expect(res.locals.user).toBe(undefined);
     expect(res.status).toBeCalledWith(403);
     expect(next).toBeCalledTimes(0);
   });
