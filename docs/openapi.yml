@@ -81,7 +81,7 @@ paths:
           description: パラメータの不足
         '401':
           description: 認証失敗
-  /siguout:
+  /signout:
     post:
       tags:
         - user
