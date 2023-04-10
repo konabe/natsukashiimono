@@ -17,11 +17,7 @@ export class PostSignoutController {
   }
 
   async invoke(req: express.Request, res: express.Response): Promise<void> {
-    const request = PostSignoutRequest.instantiateBy(req.body);
-    if (request === undefined) {
-      res.status(400).send();
-      return;
-    }
+    const _ = PostSignoutRequest.instantiateBy(req.body);
     const successed = await this.userRepository.signout(res.locals.user.id);
     res.status(200).json(PostSignoutResponse.instantiateBy(successed));
   }
