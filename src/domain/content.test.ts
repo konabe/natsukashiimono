@@ -57,7 +57,7 @@ describe('Content', () => {
           id: 1,
           name: '太陽の塔',
           description: '大阪万博のモチーフです',
-          votes: [new Vote(1, 1), new Vote(2, 2), new Vote(1, 3)],
+          votes: [new Vote(1, '1'), new Vote(2, '2'), new Vote(1, '3')],
           imageUrl: 'https://example.com/index.png',
         })?.votes.length,
       ).toBe(2);
@@ -69,7 +69,7 @@ describe('Content', () => {
           id: 1,
           name: '太陽の塔',
           description: '大阪万博のモチーフです',
-          votes: [new Vote(1, 1), new Vote(2, 2), new Vote(1, 3)],
+          votes: [new Vote(1, '1'), new Vote(2, '2'), new Vote(1, '3')],
           imageUrl: 'https://example.com/index.png',
         }).calculateScore(),
       ).toBe(2);
@@ -78,7 +78,7 @@ describe('Content', () => {
           id: 1,
           name: '太陽の塔',
           description: '大阪万博のモチーフです',
-          votes: [new Vote(2, 1), new Vote(2, 2), new Vote(2, 3)],
+          votes: [new Vote(2, '1'), new Vote(2, '2'), new Vote(2, '3')],
           imageUrl: 'https://example.com/index.png',
         }).calculateScore(),
       ).toBe(0);
