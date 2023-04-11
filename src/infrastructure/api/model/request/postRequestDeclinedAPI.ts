@@ -1,5 +1,9 @@
-export class PostRequestDeclinedRequest {
-  private constructor(readonly contentId: number) {}
+import { BaseRequest } from '../../../../controller/baseController';
+
+export class PostRequestDeclinedRequest extends BaseRequest {
+  private constructor(readonly contentId: number) {
+    super();
+  }
 
   static instantiateBy(object: any): PostRequestDeclinedRequest | undefined {
     const { contentId } = object;

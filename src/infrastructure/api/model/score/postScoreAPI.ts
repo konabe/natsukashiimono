@@ -1,7 +1,10 @@
+import { BaseRequest } from '../../../../controller/baseController';
 import { Vote } from '../../../../domain/vote';
 
-export class PostScoreRequest {
-  private constructor(readonly contentId: number) {}
+export class PostScoreRequest extends BaseRequest {
+  private constructor(readonly contentId: number) {
+    super();
+  }
 
   static instantiateBy(object: any): PostScoreRequest | undefined {
     const { contentId } = object;

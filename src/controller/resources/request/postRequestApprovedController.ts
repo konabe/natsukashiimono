@@ -11,7 +11,7 @@ export type PostRequestApprovedControllerDependencies = {
   contentRepository: IContentRepository;
 };
 
-export class PostRequestApprovedController extends BaseController {
+export class PostRequestApprovedController extends BaseController<PostRequestApprovedRequest> {
   private readonly contentRepository: IContentRepository;
   constructor({
     contentRepository,
@@ -20,14 +20,16 @@ export class PostRequestApprovedController extends BaseController {
     this.contentRepository = contentRepository;
   }
 
-  async invoke(req: express.Request, res: express.Response): Promise<void> {
-    const request = PostRequestApprovedRequest.instantiateBy(req.body);
-    if (request === undefined) {
-      res.status(400).send();
-      return;
-    }
+  createRequest(req: express.Request): PostRequestApprovedRequest | undefined {
+    return PostRequestApprovedRequest.instantiateBy(req.body);
+  }
+
+  async validated(
+    reqModel: PostRequestApprovedRequest,
+    res: express.Response,
+  ): Promise<void> {
     const id = await this.contentRepository.updateApprovalStatus(
-      request.contentId,
+      reqModel.contentId,
       ApprovalStatus.APPROVED,
     );
     if (id === undefined) {

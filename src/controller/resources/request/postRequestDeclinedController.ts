@@ -11,7 +11,7 @@ export type PostRequestDeclinedControllerDependencies = {
   contentRepository: IContentRepository;
 };
 
-export class PostRequestDeclinedController extends BaseController {
+export class PostRequestDeclinedController extends BaseController<PostRequestDeclinedRequest> {
   private readonly contentRepository: IContentRepository;
   constructor({
     contentRepository,
@@ -20,14 +20,16 @@ export class PostRequestDeclinedController extends BaseController {
     this.contentRepository = contentRepository;
   }
 
-  async invoke(req: express.Request, res: express.Response): Promise<void> {
-    const request = PostRequestDeclinedRequest.instantiateBy(req.body);
-    if (request === undefined) {
-      res.status(400).send();
-      return;
-    }
+  createRequest(req: express.Request): PostRequestDeclinedRequest | undefined {
+    return PostRequestDeclinedRequest.instantiateBy(req.body);
+  }
+
+  async validated(
+    reqModel: PostRequestDeclinedRequest,
+    res: express.Response,
+  ): Promise<void> {
     const id = await this.contentRepository.updateApprovalStatus(
-      request.contentId,
+      reqModel.contentId,
       ApprovalStatus.DECLINED,
     );
     if (id === undefined) {
