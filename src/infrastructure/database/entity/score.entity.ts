@@ -8,6 +8,6 @@ export class ScoreEntity {
   @Column()
   contentId: number;
 
-  @Column()
-  userId: number;
+  @Column({ type: 'varchar', length: 36 })
+  userId: string;
 }

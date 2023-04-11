@@ -1,14 +1,14 @@
 import { Vote } from '../../../../domain/vote';
 
 export class PostScoreRequest {
-  private constructor(readonly contentId: number, readonly userId: number) {}
+  private constructor(readonly contentId: number) {}
 
   static instantiateBy(object: any): PostScoreRequest | undefined {
-    const { contentId, userId } = object;
-    if (contentId === undefined || userId === undefined) {
+    const { contentId } = object;
+    if (contentId === undefined) {
       return undefined;
     }
-    return new PostScoreRequest(contentId, userId);
+    return new PostScoreRequest(contentId);
   }
 }
 

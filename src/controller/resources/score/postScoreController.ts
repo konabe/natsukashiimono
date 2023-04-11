@@ -24,7 +24,7 @@ export class PostScoreController {
       return;
     }
     await this.scoreRepository.save(
-      new Vote(request.contentId, request.userId),
+      new Vote(request.contentId, res.locals.user.id),
     );
     const scoreEntities = await this.scoreRepository.find(request.contentId);
     const response = PostScoreResponse.instantiateBy(scoreEntities);

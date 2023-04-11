@@ -313,6 +313,8 @@ paths:
           description: パラメータ不足
         '403':
           description: 権限なし
+      security:
+        - tokenAuth: []
 
 components:
   schemas:

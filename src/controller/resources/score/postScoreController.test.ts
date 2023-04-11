@@ -19,15 +19,16 @@ describe('PostScoreController', () => {
       scoreRepository,
     });
     clearMockRes();
+    res.locals.user = {};
   });
 
   it('should invoke normally', async () => {
     const req = getMockReq({
       body: {
         contentId: 1,
-        userId: 1,
       },
     });
+    res.locals.user = { id: 1 };
     await postScoreController.invoke(req, res);
     expect(scoreRepository.save).toBeCalledTimes(1);
     expect(scoreRepository.find).toBeCalledTimes(1);
@@ -58,9 +59,9 @@ describe('PostScoreController', () => {
     const req = getMockReq({
       body: {
         contentId: 1,
-        userId: 1,
       },
     });
+    res.locals.user = { id: 1 };
     await postScoreController.invoke(req, res);
     expect(scoreRepository.save).toBeCalledTimes(1);
     expect(scoreRepository.find).toBeCalledTimes(1);
