@@ -23,7 +23,7 @@ export class PostSignupController {
       return;
     }
     const { email, password } = request;
-    await this.userRepository.create(email, password);
-    res.status(200).json(PostSignupResponse.instantiateBy());
+    const successed = await this.userRepository.create(email, password);
+    res.status(200).json(PostSignupResponse.instantiateBy(successed));
   }
 }

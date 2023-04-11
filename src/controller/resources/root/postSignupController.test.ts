@@ -11,6 +11,7 @@ describe('PostSignupController', () => {
   beforeEach(() => {
     userRepository = {
       ...userRepositoryMock,
+      create: jest.fn().mockResolvedValue(true),
     };
     postSignupController = new PostSignupController({ userRepository });
     clearMockRes();
@@ -27,7 +28,7 @@ describe('PostSignupController', () => {
     expect(userRepository.create).toBeCalledTimes(1);
     expect(res.status).toBeCalledWith(200);
     expect(res.json).toBeCalledTimes(1);
-    expect(res.json).toBeCalledWith({});
+    expect(res.json).toBeCalledWith({ successed: true });
   });
 
   it('should notify 400 error if request is undefined', async () => {
