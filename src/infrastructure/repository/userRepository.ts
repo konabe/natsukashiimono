@@ -6,7 +6,7 @@ import {
 } from '../aws';
 
 export class UserRepository implements IUserRepository {
-  async create(email: string, password: string): Promise<void> {
+  async create(email: string, password: string): Promise<boolean> {
     try {
       const createdUser = await cognito
         .signUp({
@@ -22,11 +22,10 @@ export class UserRepository implements IUserRepository {
           Username: createdUser.UserSub,
         })
         .promise();
-      return;
+      return true;
     } catch (err) {
       // TODO: ロールバックの構築でAtomicityを担保
-      console.log(err);
-      return;
+      return false;
     }
   }
 

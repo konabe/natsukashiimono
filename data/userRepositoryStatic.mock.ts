@@ -1,8 +1,8 @@
 import { IUserRepository } from '../src/domain/repository/userRepositoryInterface';
 
 export class UserRepositoryStaticMock implements IUserRepository {
-  create(email: string): Promise<void> {
-    return;
+  async create(email: string): Promise<boolean> {
+    return true;
   }
 
   async verify(email: string, code: string): Promise<boolean> {

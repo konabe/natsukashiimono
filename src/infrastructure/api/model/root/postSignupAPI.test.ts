@@ -21,7 +21,7 @@ describe('PostSignupRequest', () => {
 describe('PostSignupResponse', () => {
   describe('#instantiateBy', () => {
     it('should instantiate correctly', () => {
-      expect(PostSignupResponse.instantiateBy()).toBeDefined();
+      expect(PostSignupResponse.instantiateBy(true)).toBeDefined();
     });
   });
 });

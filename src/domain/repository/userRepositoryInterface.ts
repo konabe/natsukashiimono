@@ -1,5 +1,5 @@
 export interface IUserRepository {
-  create(email: string, password: string): Promise<void>;
+  create(email: string, password: string): Promise<boolean>;
   verify(email: string, code: string): Promise<boolean>;
   resendCode(email: string): Promise<boolean>;
   findToken(email: string, password: string): Promise<string | undefined>;
