@@ -30,7 +30,7 @@ export class UserRepositoryStaticMock implements IUserRepository {
     return undefined;
   }
 
-  async findUserByToken(token: string): Promise<string | undefined> {
+  async findUserIdByToken(token: string): Promise<string | undefined> {
     if (token === 'ABCDEF1234567890') {
       return 'user1@example.com';
     }
@@ -61,6 +61,6 @@ export class UserRepositoryStaticMock implements IUserRepository {
   }
 
   async findUserById(id: string): Promise<User> {
-    return new User('id', []);
+    return User.instantiateBy('id', []);
   }
 }

@@ -83,7 +83,7 @@ export class UserRepository implements IUserRepository {
     }
   }
 
-  async findUserByToken(token: string): Promise<string | undefined> {
+  async findUserIdByToken(token: string): Promise<string | undefined> {
     try {
       const user = await cognito
         .getUser({
