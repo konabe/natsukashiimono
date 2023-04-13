@@ -20,8 +20,8 @@ export class PostRequestDeclinedController extends ControllerAdaptor<PostRequest
     this.contentRepository = contentRepository;
   }
 
-  createRequest(req: express.Request): PostRequestDeclinedRequest | undefined {
-    return PostRequestDeclinedRequest.instantiateBy(req.body);
+  createRequest(req: any): PostRequestDeclinedRequest | undefined {
+    return PostRequestDeclinedRequest.instantiateBy(req);
   }
 
   async validated(

@@ -18,8 +18,8 @@ export class PostSigninController extends ControllerAdaptor<PostSigninRequest> {
     this.userRepository = userRepository;
   }
 
-  createRequest(req: express.Request): PostSigninRequest | undefined {
-    return PostSigninRequest.instantiateBy(req.body);
+  createRequest(req: any): PostSigninRequest | undefined {
+    return PostSigninRequest.instantiateBy(req);
   }
 
   async validated(

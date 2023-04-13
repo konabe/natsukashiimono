@@ -19,8 +19,8 @@ export class PostScoreController extends ControllerAdaptor<PostScoreRequest> {
     this.scoreRepository = scoreRepository;
   }
 
-  createRequest(req: express.Request): PostScoreRequest | undefined {
-    return PostScoreRequest.instantiateBy(req.body);
+  createRequest(req: any): PostScoreRequest | undefined {
+    return PostScoreRequest.instantiateBy(req);
   }
 
   async validated(

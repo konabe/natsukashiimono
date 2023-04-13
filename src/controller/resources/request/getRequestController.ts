@@ -18,7 +18,7 @@ export class GetRequestController extends ControllerAdaptor<GetRequestRequest> {
     this.contentRepository = contentRepository;
   }
 
-  createRequest(req: express.Request) {
+  createRequest(_: any) {
     return new GetRequestRequest();
   }
 

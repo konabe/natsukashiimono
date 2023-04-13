@@ -18,8 +18,8 @@ export class PostSignoutController extends ControllerAdaptor<PostSignoutRequest>
     this.userRepository = userRepository;
   }
 
-  createRequest(req: express.Request): PostSignoutRequest | undefined {
-    return PostSignoutRequest.instantiateBy(req.body);
+  createRequest(req: any): PostSignoutRequest | undefined {
+    return PostSignoutRequest.instantiateBy(req);
   }
 
   async validated(

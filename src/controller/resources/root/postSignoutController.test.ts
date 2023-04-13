@@ -18,7 +18,9 @@ describe('PostSignoutController', () => {
   });
 
   it('should invoke normally', async () => {
-    const req = getMockReq({});
+    const req = getMockReq({
+      method: 'POST',
+    });
     res.locals.user = {
       id: 'userId',
       role: 'userRole',

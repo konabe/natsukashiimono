@@ -19,6 +19,7 @@ describe('PostResendController', () => {
 
   it('should invoke normally', async () => {
     const req = getMockReq({
+      method: 'POST',
       body: {
         email: 'user1@example.com',
       },
@@ -33,7 +34,9 @@ describe('PostResendController', () => {
   });
 
   it('should notify 400 error if request is undefined', async () => {
-    const req = getMockReq({});
+    const req = getMockReq({
+      method: 'POST',
+    });
     await postResendController.invoke(req, res);
     expect(userRepository.findToken).toBeCalledTimes(0);
     expect(res.status).toBeCalledTimes(1);

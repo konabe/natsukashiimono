@@ -18,8 +18,8 @@ export class PostVerifyController extends ControllerAdaptor<PostVerifyRequest> {
     this.userRepository = userRepository;
   }
 
-  createRequest(req: express.Request): PostVerifyRequest | undefined {
-    return PostVerifyRequest.instantiateBy(req.body);
+  createRequest(req: any): PostVerifyRequest | undefined {
+    return PostVerifyRequest.instantiateBy(req);
   }
 
   async validated(

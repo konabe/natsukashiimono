@@ -20,8 +20,8 @@ export class PostRequestApprovedController extends ControllerAdaptor<PostRequest
     this.contentRepository = contentRepository;
   }
 
-  createRequest(req: express.Request): PostRequestApprovedRequest | undefined {
-    return PostRequestApprovedRequest.instantiateBy(req.body);
+  createRequest(req: any): PostRequestApprovedRequest | undefined {
+    return PostRequestApprovedRequest.instantiateBy(req);
   }
 
   async validated(

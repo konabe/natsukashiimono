@@ -19,6 +19,7 @@ describe('PostSigninController', () => {
 
   it('should invoke normally', async () => {
     const req = getMockReq({
+      method: 'POST',
       body: {
         email: 'user1@example.com',
         password: 'password',
@@ -31,7 +32,9 @@ describe('PostSigninController', () => {
   });
 
   it('should notify 400 error if request is undefined', async () => {
-    const req = getMockReq({});
+    const req = getMockReq({
+      method: 'POST',
+    });
     await postSigninController.invoke(req, res);
     expect(userRepository.findToken).toBeCalledTimes(0);
     expect(res.status).toBeCalledWith(400);
@@ -45,6 +48,7 @@ describe('PostSigninController', () => {
     };
     postSigninController = new PostSigninController({ userRepository });
     const req = getMockReq({
+      method: 'POST',
       body: {
         email: 'user1@example.com',
         password: 'password',

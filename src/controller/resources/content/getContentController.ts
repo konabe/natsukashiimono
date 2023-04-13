@@ -18,7 +18,7 @@ export class GetContentController extends ControllerAdaptor<GetContentRequest> {
     this.contentRepository = contentRepository;
   }
 
-  createRequest(_: express.Request): GetContentRequest {
+  createRequest(_: any): GetContentRequest {
     return new GetContentRequest();
   }
 

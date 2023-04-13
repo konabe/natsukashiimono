@@ -24,6 +24,7 @@ describe('PostScoreController', () => {
 
   it('should invoke normally', async () => {
     const req = getMockReq({
+      method: 'POST',
       body: {
         contentId: 1,
       },
@@ -40,7 +41,9 @@ describe('PostScoreController', () => {
   });
 
   it('should notify 400 error when body is undefined', async () => {
-    const req = getMockReq();
+    const req = getMockReq({
+      method: 'POST',
+    });
     await postScoreController.invoke(req, res);
     expect(scoreRepository.save).toBeCalledTimes(0);
     expect(scoreRepository.find).toBeCalledTimes(0);
@@ -57,6 +60,7 @@ describe('PostScoreController', () => {
       scoreRepository,
     });
     const req = getMockReq({
+      method: 'POST',
       body: {
         contentId: 1,
       },

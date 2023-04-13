@@ -22,7 +22,9 @@ describe('getContentController', () => {
   });
 
   it('should invoke normally', async () => {
-    const req = getMockReq();
+    const req = getMockReq({
+      method: 'GET',
+    });
     await getRequestController.invoke(req, res);
     expect(contentRepository.findInprogress).toBeCalledTimes(1);
     expect(res.status).toBeCalledWith(200);

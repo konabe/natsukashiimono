@@ -19,8 +19,8 @@ export class PostContentController extends ControllerAdaptor<PostContentRequest>
     this.contentRepository = contentRepository;
   }
 
-  createRequest(req: express.Request): PostContentRequest | undefined {
-    return PostContentRequest.instantiateBy(req.body);
+  createRequest(req: any): PostContentRequest | undefined {
+    return PostContentRequest.instantiateBy(req);
   }
 
   async validated(

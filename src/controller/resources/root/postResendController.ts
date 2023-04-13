@@ -18,8 +18,8 @@ export class PostResendController extends ControllerAdaptor<PostResendRequest> {
     this.userRepository = userRepository;
   }
 
-  createRequest(req: express.Request): PostResendRequest | undefined {
-    return PostResendRequest.instantiateBy(req.body);
+  createRequest(req: any): PostResendRequest | undefined {
+    return PostResendRequest.instantiateBy(req);
   }
 
   async validated(
