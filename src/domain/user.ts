@@ -9,4 +9,8 @@ export class User {
       roles.sort((a, b) => a.precedence - b.precedence),
     );
   }
+
+  getRepresentativeRoleName(): string {
+    return this.roles[0].name;
+  }
 }

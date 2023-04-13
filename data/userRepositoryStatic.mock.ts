@@ -1,4 +1,5 @@
 import { IUserRepository } from '../src/domain/repository/userRepositoryInterface';
+import { Role } from '../src/domain/role';
 import { User } from '../src/domain/user';
 
 export class UserRepositoryStaticMock implements IUserRepository {
@@ -43,24 +44,22 @@ export class UserRepositoryStaticMock implements IUserRepository {
     return undefined;
   }
 
-  async findRole(email: string): Promise<string | undefined> {
-    if (email === 'user1@example.com') {
-      return 'user';
-    }
-    if (email === 'user2@example.com') {
-      return 'user';
-    }
-    if (email === 'admin@example.com') {
-      return 'admin';
-    }
-    return undefined;
-  }
-
   async signout(userId: string): Promise<boolean> {
     return true;
   }
 
   async findUserById(id: string): Promise<User> {
-    return User.instantiateBy('id', []);
+    if (id === 'user1@example.com') {
+      return User.instantiateBy('id', [new Role('user', 100)]);
+    }
+    if (id === 'user2@example.com') {
+      return User.instantiateBy('id', [new Role('user', 100)]);
+    }
+    if (id === 'admin@example.com') {
+      return User.instantiateBy('id', [
+        new Role('user', 100),
+        new Role('admin', 10),
+      ]);
+    }
   }
 }

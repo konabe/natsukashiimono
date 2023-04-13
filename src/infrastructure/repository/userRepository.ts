@@ -120,24 +120,6 @@ export class UserRepository implements IUserRepository {
     }
   }
 
-  async findRole(email: string): Promise<string | undefined> {
-    try {
-      const group = await cognito
-        .adminListGroupsForUser({
-          UserPoolId: AWS_COGNITO_USER_POOL_ID,
-          Username: email,
-          Limit: this.USER_GROUP_LIST_MAX,
-        })
-        .promise();
-      // 権限の強さ順にソートする
-      const groups = group.Groups.sort((a, b) => a.Precedence - b.Precedence);
-      const strengestGroup = groups[0]?.GroupName;
-      return strengestGroup;
-    } catch (err) {
-      return undefined;
-    }
-  }
-
   async signout(userId: string): Promise<boolean> {
     try {
       await cognito

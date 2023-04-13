@@ -29,7 +29,12 @@ export class UserAuthorizer {
     }
     const token = authorizationHeaderValue.replace('Bearer ', '');
     const userId = await this.userRepository.findUserIdByToken(token);
-    const role = await this.userRepository.findRole(userId);
+    const user = await this.userRepository.findUserById(userId);
+    if (user === undefined) {
+      res.status(403).send();
+      return;
+    }
+    const role = user.getRepresentativeRoleName();
     if (this.allowed.includes(role)) {
       //TODO: localsを解釈するモデルオブジェクトを作成する
       res.locals.user = { id: userId, role };
