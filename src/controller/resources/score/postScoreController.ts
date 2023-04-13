@@ -5,7 +5,7 @@ import {
   PostScoreRequest,
   PostScoreResponse,
 } from '../../../infrastructure/api/model/score/postScoreAPI';
-import { ControllerAdaptor } from '../../controllerAdaptor';
+import { ControllerAdaptor, ValidatedOptions } from '../../controllerAdaptor';
 
 export type PostScoreControllerDependencies = {
   scoreRepository: IScoreRepository;
@@ -26,9 +26,10 @@ export class PostScoreController extends ControllerAdaptor<PostScoreRequest> {
   async validated(
     reqModel: PostScoreRequest,
     res: express.Response,
+    options: ValidatedOptions,
   ): Promise<void> {
     await this.scoreRepository.save(
-      new Vote(reqModel.contentId, res.locals.user.id),
+      new Vote(reqModel.contentId, options.authorizedUser.id),
     );
     const scoreEntities = await this.scoreRepository.find(reqModel.contentId);
     const response = PostScoreResponse.instantiateBy(scoreEntities);

@@ -2,6 +2,11 @@ import * as express from 'express';
 
 import { IUserRepository } from '../../domain/repository/userRepositoryInterface';
 
+export type AuthorizedUser = {
+  id: string;
+  role: string;
+};
+
 export type UserAuthorizerDependencies = {
   // TODO: それ用のドメインモデルを作成する
   allowed: string[];
@@ -28,11 +33,19 @@ export class UserAuthorizer {
       return;
     }
     const token = authorizationHeaderValue.replace('Bearer ', '');
-    const userId = await this.userRepository.findUserByToken(token);
-    const role = await this.userRepository.findRole(userId);
+    const userId = await this.userRepository.findUserIdByToken(token);
+    const user = await this.userRepository.findUserById(userId);
+    if (user === undefined) {
+      res.status(403).send();
+      return;
+    }
+    const role = user.getRepresentativeRoleName();
+    const authorizedUser: AuthorizedUser = {
+      id: userId,
+      role,
+    };
     if (this.allowed.includes(role)) {
-      //TODO: localsを解釈するモデルオブジェクトを作成する
-      res.locals.user = { id: userId, role };
+      res.locals.user = authorizedUser;
       next();
       return;
     }

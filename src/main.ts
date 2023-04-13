@@ -4,6 +4,7 @@ import contentRouter from './infrastructure/api/router/contentRouter';
 import scoreRouter from './infrastructure/api/router/scoreRouter';
 import rootRouter from './infrastructure/api/router/rootRouter';
 import requestRouter from './infrastructure/api/router/requestRouter';
+import userRouter from './infrastructure/api/router/userRouter';
 import { getDataSource } from './infrastructure/database/dataSource';
 
 const app: express.Express = express();
@@ -18,6 +19,7 @@ app.use('/', rootRouter);
 app.use('/content', contentRouter);
 app.use('/score', scoreRouter);
 app.use('/request', requestRouter);
+app.use('/user', userRouter);
 
 (async () => {
   try {
