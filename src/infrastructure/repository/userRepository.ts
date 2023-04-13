@@ -1,4 +1,5 @@
 import { IUserRepository } from '../../domain/repository/userRepositoryInterface';
+import { Role } from '../../domain/role';
 import { User } from '../../domain/user';
 import {
   cognito,
@@ -110,11 +111,10 @@ export class UserRepository implements IUserRepository {
           Limit: this.USER_GROUP_LIST_MAX,
         })
         .promise();
-      // 権限の強さ順にソートする
-      const groups = group.Groups.sort(
-        (a, b) => a.Precedence - b.Precedence,
-      ).map((g) => g.GroupName);
-      return new User(user.Username, groups);
+      const groups = group.Groups.map(
+        (g) => new Role(g.GroupName, g.Precedence),
+      );
+      return User.instantiateBy(user.Username, groups);
     } catch (err) {
       return undefined;
     }

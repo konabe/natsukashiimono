@@ -3,6 +3,7 @@ import { IUserRepository } from '../../../domain/repository/userRepositoryInterf
 import { GetUserController } from './getUserController';
 import { userRepositoryMock } from '../../../../data/repository.mocks';
 import { User } from '../../../domain/user';
+import { Role } from '../../../domain/role';
 
 describe('GetUserController', () => {
   let getUserController: GetUserController;
@@ -14,7 +15,12 @@ describe('GetUserController', () => {
       ...userRepositoryMock,
       findUserById: jest
         .fn()
-        .mockResolvedValue(new User('user-id-1', ['admin', 'user'])),
+        .mockResolvedValue(
+          User.instantiateBy('user-id-1', [
+            new Role('admin', 50),
+            new Role('user', 100),
+          ]),
+        ),
     };
     getUserController = new GetUserController({ userRepository });
     clearMockRes();

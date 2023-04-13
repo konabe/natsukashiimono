@@ -8,6 +8,6 @@ export class GetUserResponse {
   readonly roles: string[];
   constructor(user: User) {
     this.id = user.id;
-    this.roles = [...user.roles];
+    this.roles = user.roles.map((r) => r.name);
   }
 }
