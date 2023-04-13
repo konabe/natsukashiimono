@@ -2,6 +2,11 @@ import * as express from 'express';
 
 import { IUserRepository } from '../../domain/repository/userRepositoryInterface';
 
+export type AuthorizedUser = {
+  id: string;
+  role: string;
+};
+
 export type UserAuthorizerDependencies = {
   // TODO: それ用のドメインモデルを作成する
   allowed: string[];
@@ -35,9 +40,12 @@ export class UserAuthorizer {
       return;
     }
     const role = user.getRepresentativeRoleName();
+    const authorizedUser: AuthorizedUser = {
+      id: userId,
+      role,
+    };
     if (this.allowed.includes(role)) {
-      //TODO: localsを解釈するモデルオブジェクトを作成する
-      res.locals.user = { id: userId, role };
+      res.locals.user = authorizedUser;
       next();
       return;
     }
