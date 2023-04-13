@@ -13,4 +13,8 @@ export class User {
   getRepresentativeRoleName(): string {
     return this.roles[0].name;
   }
+
+  getRoleNames(): string[] {
+    return this.roles.map((r) => r.name);
+  }
 }
