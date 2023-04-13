@@ -1,4 +1,5 @@
 import { IUserRepository } from '../src/domain/repository/userRepositoryInterface';
+import { User } from '../src/domain/user';
 
 export class UserRepositoryStaticMock implements IUserRepository {
   async create(email: string): Promise<boolean> {
@@ -57,5 +58,9 @@ export class UserRepositoryStaticMock implements IUserRepository {
 
   async signout(userId: string): Promise<boolean> {
     return true;
+  }
+
+  async findUserById(id: string): Promise<User> {
+    return new User('id', []);
   }
 }

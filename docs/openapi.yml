@@ -45,6 +45,8 @@ paths:
                         - 'role'
         '403':
           description: アクセス権限がない
+        '404':
+          description: ユーザーが見つからない
       security:
         - tokenAuth: []
   /signup:

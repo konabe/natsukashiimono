@@ -1,4 +1,5 @@
 import { IUserRepository } from '../../domain/repository/userRepositoryInterface';
+import { User } from '../../domain/user';
 import {
   cognito,
   AWS_COGNITO_APP_CLIENT_ID,
@@ -6,6 +7,8 @@ import {
 } from '../aws';
 
 export class UserRepository implements IUserRepository {
+  private USER_GROUP_LIST_MAX = 10;
+
   async create(email: string, password: string): Promise<boolean> {
     try {
       const createdUser = await cognito
@@ -92,13 +95,38 @@ export class UserRepository implements IUserRepository {
     }
   }
 
+  async findUserById(id: string): Promise<User | undefined> {
+    try {
+      const user = await cognito
+        .adminGetUser({
+          UserPoolId: AWS_COGNITO_USER_POOL_ID,
+          Username: id,
+        })
+        .promise();
+      const group = await cognito
+        .adminListGroupsForUser({
+          UserPoolId: AWS_COGNITO_USER_POOL_ID,
+          Username: user.Username,
+          Limit: this.USER_GROUP_LIST_MAX,
+        })
+        .promise();
+      // 権限の強さ順にソートする
+      const groups = group.Groups.sort(
+        (a, b) => a.Precedence - b.Precedence,
+      ).map((g) => g.GroupName);
+      return new User(user.Username, groups);
+    } catch (err) {
+      return undefined;
+    }
+  }
+
   async findRole(email: string): Promise<string | undefined> {
     try {
       const group = await cognito
         .adminListGroupsForUser({
           UserPoolId: AWS_COGNITO_USER_POOL_ID,
           Username: email,
-          Limit: 10,
+          Limit: this.USER_GROUP_LIST_MAX,
         })
         .promise();
       // 権限の強さ順にソートする
