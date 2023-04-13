@@ -4,13 +4,13 @@ import {
   GetContentResponse,
 } from '../../../infrastructure/api/model/content/getContentAPI';
 import { IContentRepository } from '../../../domain/repository/contentRepositoryInterface';
-import { BaseController } from '../../baseController';
+import { ControllerAdaptor } from '../../controllerAdaptor';
 
 export type GetContentControllerDependencies = {
   contentRepository: IContentRepository;
 };
 
-export class GetContentController extends BaseController<GetContentRequest> {
+export class GetContentController extends ControllerAdaptor<GetContentRequest> {
   private readonly contentRepository: IContentRepository;
 
   constructor({ contentRepository }: GetContentControllerDependencies) {

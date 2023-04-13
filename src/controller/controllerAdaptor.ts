@@ -2,7 +2,7 @@ import * as express from 'express';
 
 export abstract class BaseRequest {}
 
-export abstract class BaseController<TReq extends BaseRequest> {
+export abstract class ControllerAdaptor<TReq extends BaseRequest> {
   abstract createRequest(req: express.Request): TReq | undefined;
   abstract validated(reqModel: TReq, res: express.Response): Promise<void>;
 

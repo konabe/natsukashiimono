@@ -1,4 +1,4 @@
-import { BaseRequest } from '../../../../controller/baseController';
+import { BaseRequest } from '../../../../controller/controllerAdaptor';
 import { Content } from '../../../../domain/content';
 import { ContentResponseModel } from '../models';
 

@@ -1,5 +1,5 @@
 import * as express from 'express';
-import { BaseController } from '../../baseController';
+import { ControllerAdaptor } from '../../controllerAdaptor';
 import {
   PostRequestApprovalResponse,
   PostRequestApprovedRequest,
@@ -11,7 +11,7 @@ export type PostRequestApprovedControllerDependencies = {
   contentRepository: IContentRepository;
 };
 
-export class PostRequestApprovedController extends BaseController<PostRequestApprovedRequest> {
+export class PostRequestApprovedController extends ControllerAdaptor<PostRequestApprovedRequest> {
   private readonly contentRepository: IContentRepository;
   constructor({
     contentRepository,

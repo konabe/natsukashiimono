@@ -4,13 +4,13 @@ import {
   PostSigninResponse,
 } from '../../../infrastructure/api/model/root/postSigninAPI';
 import { IUserRepository } from '../../../domain/repository/userRepositoryInterface';
-import { BaseController } from '../../baseController';
+import { ControllerAdaptor } from '../../controllerAdaptor';
 
 export type PostSigninControllerDependencies = {
   userRepository: IUserRepository;
 };
 
-export class PostSigninController extends BaseController<PostSigninRequest> {
+export class PostSigninController extends ControllerAdaptor<PostSigninRequest> {
   private userRepository: IUserRepository;
 
   constructor({ userRepository }: PostSigninControllerDependencies) {

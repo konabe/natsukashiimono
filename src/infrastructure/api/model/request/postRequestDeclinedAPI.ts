@@ -1,4 +1,4 @@
-import { BaseRequest } from '../../../../controller/baseController';
+import { BaseRequest } from '../../../../controller/controllerAdaptor';
 
 export class PostRequestDeclinedRequest extends BaseRequest {
   private constructor(readonly contentId: number) {

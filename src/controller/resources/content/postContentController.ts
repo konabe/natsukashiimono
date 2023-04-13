@@ -5,13 +5,13 @@ import {
   PostContentRequest,
   PostContentResponse,
 } from '../../../infrastructure/api/model/content/postContentAPI';
-import { BaseController } from '../../baseController';
+import { ControllerAdaptor } from '../../controllerAdaptor';
 
 export type PostContentControllerDependencies = {
   contentRepository: IContentRepository;
 };
 
-export class PostContentController extends BaseController<PostContentRequest> {
+export class PostContentController extends ControllerAdaptor<PostContentRequest> {
   private readonly contentRepository: IContentRepository;
 
   constructor({ contentRepository }: PostContentControllerDependencies) {

@@ -4,13 +4,13 @@ import {
   PostSignoutResponse,
 } from '../../../infrastructure/api/model/root/postSignoutAPI';
 import { IUserRepository } from '../../../domain/repository/userRepositoryInterface';
-import { BaseController } from '../../baseController';
+import { ControllerAdaptor } from '../../controllerAdaptor';
 
 export type PostSignoutControllerDependencies = {
   userRepository: IUserRepository;
 };
 
-export class PostSignoutController extends BaseController<PostSignoutRequest> {
+export class PostSignoutController extends ControllerAdaptor<PostSignoutRequest> {
   private userRepository: IUserRepository;
 
   constructor({ userRepository }: PostSignoutControllerDependencies) {

@@ -4,13 +4,13 @@ import {
   PostSignupResponse,
 } from '../../../infrastructure/api/model/root/postSignupAPI';
 import { IUserRepository } from '../../../domain/repository/userRepositoryInterface';
-import { BaseController } from '../../baseController';
+import { ControllerAdaptor } from '../../controllerAdaptor';
 
 export type PostSignupControllerDependencies = {
   userRepository: IUserRepository;
 };
 
-export class PostSignupController extends BaseController<PostSignupRequest> {
+export class PostSignupController extends ControllerAdaptor<PostSignupRequest> {
   private userRepository: IUserRepository;
 
   constructor({ userRepository }: PostSignupControllerDependencies) {

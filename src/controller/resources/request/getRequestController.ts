@@ -4,13 +4,13 @@ import {
   GetRequestRequest,
   GetRequestResponse,
 } from '../../../infrastructure/api/model/request/getRequestAPI';
-import { BaseController } from '../../baseController';
+import { ControllerAdaptor } from '../../controllerAdaptor';
 
 export type GetRequestControllerDependencies = {
   contentRepository: IContentRepository;
 };
 
-export class GetRequestController extends BaseController<GetRequestRequest> {
+export class GetRequestController extends ControllerAdaptor<GetRequestRequest> {
   private readonly contentRepository: IContentRepository;
 
   constructor({ contentRepository }: GetRequestControllerDependencies) {

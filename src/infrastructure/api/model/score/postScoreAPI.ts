@@ -1,4 +1,4 @@
-import { BaseRequest } from '../../../../controller/baseController';
+import { BaseRequest } from '../../../../controller/controllerAdaptor';
 import { Vote } from '../../../../domain/vote';
 
 export class PostScoreRequest extends BaseRequest {

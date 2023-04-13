@@ -1,4 +1,4 @@
-import { BaseRequest } from '../../../../controller/baseController';
+import { BaseRequest } from '../../../../controller/controllerAdaptor';
 
 export class PostSigninRequest extends BaseRequest {
   private constructor(readonly email: string, readonly password: string) {

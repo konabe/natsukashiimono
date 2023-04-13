@@ -5,13 +5,13 @@ import {
   PostScoreRequest,
   PostScoreResponse,
 } from '../../../infrastructure/api/model/score/postScoreAPI';
-import { BaseController } from '../../baseController';
+import { ControllerAdaptor } from '../../controllerAdaptor';
 
 export type PostScoreControllerDependencies = {
   scoreRepository: IScoreRepository;
 };
 
-export class PostScoreController extends BaseController<PostScoreRequest> {
+export class PostScoreController extends ControllerAdaptor<PostScoreRequest> {
   private readonly scoreRepository: IScoreRepository;
 
   constructor({ scoreRepository }: PostScoreControllerDependencies) {

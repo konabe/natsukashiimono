@@ -1,6 +1,6 @@
 import { Content } from 'src/domain/content';
 import { ContentResponseModel } from '../models';
-import { BaseRequest } from '../../../../controller/baseController';
+import { BaseRequest } from '../../../../controller/controllerAdaptor';
 
 export class GetContentRequest extends BaseRequest {}
 

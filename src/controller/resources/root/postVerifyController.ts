@@ -4,13 +4,13 @@ import {
   PostVerifyResponse,
 } from '../../../infrastructure/api/model/root/postVerifyAPI';
 import { IUserRepository } from '../../../domain/repository/userRepositoryInterface';
-import { BaseController } from '../../baseController';
+import { ControllerAdaptor } from '../../controllerAdaptor';
 
 export type PostVerifyControllerDependencies = {
   userRepository: IUserRepository;
 };
 
-export class PostVerifyController extends BaseController<PostVerifyRequest> {
+export class PostVerifyController extends ControllerAdaptor<PostVerifyRequest> {
   private userRepository: IUserRepository;
 
   constructor({ userRepository }: PostVerifyControllerDependencies) {

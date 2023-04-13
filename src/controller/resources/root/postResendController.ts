@@ -4,13 +4,13 @@ import {
   PostResendRequest,
   PostResendResponse,
 } from '../../../infrastructure/api/model/root/postResendAPI';
-import { BaseController } from '../../baseController';
+import { ControllerAdaptor } from '../../controllerAdaptor';
 
 export type PostResendControllerDependencies = {
   userRepository: IUserRepository;
 };
 
-export class PostResendController extends BaseController<PostResendRequest> {
+export class PostResendController extends ControllerAdaptor<PostResendRequest> {
   private userRepository: IUserRepository;
 
   constructor({ userRepository }: PostResendControllerDependencies) {
