@@ -31,6 +31,7 @@ describe('PostContentController', () => {
     };
     postContentController = new PostContentController({ contentRepository });
     const req = getMockReq({
+      method: 'POST',
       body: {
         name: '名前です',
         description: '説明です',
@@ -55,7 +56,9 @@ describe('PostContentController', () => {
   });
 
   it('should notify 400 error when body is undefined', async () => {
-    const req = getMockReq();
+    const req = getMockReq({
+      method: 'POST',
+    });
     await postContentController.invoke(req, res);
     expect(res.status).toBeCalledWith(400);
   });

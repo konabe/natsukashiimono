@@ -1,5 +1,9 @@
-export class PostRequestApprovedRequest {
-  private constructor(readonly contentId: number) {}
+import { BaseRequest } from '../../../../controller/controllerAdaptor';
+
+export class PostRequestApprovedRequest extends BaseRequest {
+  private constructor(readonly contentId: number) {
+    super();
+  }
 
   static instantiateBy(object: any): PostRequestApprovedRequest | undefined {
     const { contentId } = object;

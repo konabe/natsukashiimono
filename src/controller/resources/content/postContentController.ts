@@ -5,29 +5,32 @@ import {
   PostContentRequest,
   PostContentResponse,
 } from '../../../infrastructure/api/model/content/postContentAPI';
+import { ControllerAdaptor } from '../../controllerAdaptor';
 
 export type PostContentControllerDependencies = {
   contentRepository: IContentRepository;
 };
 
-export class PostContentController {
+export class PostContentController extends ControllerAdaptor<PostContentRequest> {
   private readonly contentRepository: IContentRepository;
 
   constructor({ contentRepository }: PostContentControllerDependencies) {
+    super();
     this.contentRepository = contentRepository;
   }
 
-  async invoke(req: express.Request, res: express.Response): Promise<void> {
-    const request = PostContentRequest.instantiateBy(req.body);
-    if (request === undefined) {
-      res.status(400).send();
-      return;
-    }
+  createRequest(req: any): PostContentRequest | undefined {
+    return PostContentRequest.instantiateBy(req);
+  }
 
+  async validated(
+    reqModel: PostContentRequest,
+    res: express.Response,
+  ): Promise<void> {
     const content = Content.instantiate({
-      name: request.name,
-      description: request.description,
-      imageUrl: request.imageUrl,
+      name: reqModel.name,
+      description: reqModel.description,
+      imageUrl: reqModel.imageUrl,
       votes: [],
     });
     const savedContentId = await this.contentRepository.save(content);

@@ -1,5 +1,5 @@
 import * as express from 'express';
-import { BaseController } from '../../baseController';
+import { ControllerAdaptor } from '../../controllerAdaptor';
 import { IContentRepository } from '../../../domain/repository/contentRepositoryInterface';
 import { ApprovalStatus } from '../../../domain/approvalStatus';
 import {
@@ -11,7 +11,7 @@ export type PostRequestDeclinedControllerDependencies = {
   contentRepository: IContentRepository;
 };
 
-export class PostRequestDeclinedController extends BaseController {
+export class PostRequestDeclinedController extends ControllerAdaptor<PostRequestDeclinedRequest> {
   private readonly contentRepository: IContentRepository;
   constructor({
     contentRepository,
@@ -20,14 +20,16 @@ export class PostRequestDeclinedController extends BaseController {
     this.contentRepository = contentRepository;
   }
 
-  async invoke(req: express.Request, res: express.Response): Promise<void> {
-    const request = PostRequestDeclinedRequest.instantiateBy(req.body);
-    if (request === undefined) {
-      res.status(400).send();
-      return;
-    }
+  createRequest(req: any): PostRequestDeclinedRequest | undefined {
+    return PostRequestDeclinedRequest.instantiateBy(req);
+  }
+
+  async validated(
+    reqModel: PostRequestDeclinedRequest,
+    res: express.Response,
+  ): Promise<void> {
     const id = await this.contentRepository.updateApprovalStatus(
-      request.contentId,
+      reqModel.contentId,
       ApprovalStatus.DECLINED,
     );
     if (id === undefined) {

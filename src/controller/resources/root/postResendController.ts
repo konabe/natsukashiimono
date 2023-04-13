@@ -4,25 +4,29 @@ import {
   PostResendRequest,
   PostResendResponse,
 } from '../../../infrastructure/api/model/root/postResendAPI';
+import { ControllerAdaptor } from '../../controllerAdaptor';
 
 export type PostResendControllerDependencies = {
   userRepository: IUserRepository;
 };
 
-export class PostResendController {
+export class PostResendController extends ControllerAdaptor<PostResendRequest> {
   private userRepository: IUserRepository;
 
   constructor({ userRepository }: PostResendControllerDependencies) {
+    super();
     this.userRepository = userRepository;
   }
 
-  async invoke(req: express.Request, res: express.Response): Promise<void> {
-    const request = PostResendRequest.instantiateBy(req.body);
-    if (request === undefined) {
-      res.status(400).send();
-      return;
-    }
-    const { email } = request;
+  createRequest(req: any): PostResendRequest | undefined {
+    return PostResendRequest.instantiateBy(req);
+  }
+
+  async validated(
+    reqModel: PostResendRequest,
+    res: express.Response,
+  ): Promise<void> {
+    const { email } = reqModel;
     const sent = await this.userRepository.resendCode(email);
     res.status(200).json(PostResendResponse.instantiateBy(sent));
   }

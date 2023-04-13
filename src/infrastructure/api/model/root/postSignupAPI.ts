@@ -1,5 +1,9 @@
-export class PostSignupRequest {
-  private constructor(readonly email: string, readonly password: string) {}
+import { BaseRequest } from '../../../../controller/controllerAdaptor';
+
+export class PostSignupRequest extends BaseRequest {
+  private constructor(readonly email: string, readonly password: string) {
+    super();
+  }
 
   static instantiateBy(object: any): PostSignupRequest | undefined {
     const { email, password } = object;

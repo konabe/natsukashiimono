@@ -5,28 +5,32 @@ import {
   PostScoreRequest,
   PostScoreResponse,
 } from '../../../infrastructure/api/model/score/postScoreAPI';
+import { ControllerAdaptor } from '../../controllerAdaptor';
 
 export type PostScoreControllerDependencies = {
   scoreRepository: IScoreRepository;
 };
 
-export class PostScoreController {
+export class PostScoreController extends ControllerAdaptor<PostScoreRequest> {
   private readonly scoreRepository: IScoreRepository;
 
   constructor({ scoreRepository }: PostScoreControllerDependencies) {
+    super();
     this.scoreRepository = scoreRepository;
   }
 
-  async invoke(req: express.Request, res: express.Response): Promise<void> {
-    const request = PostScoreRequest.instantiateBy(req.body);
-    if (request === undefined) {
-      res.status(400).send();
-      return;
-    }
+  createRequest(req: any): PostScoreRequest | undefined {
+    return PostScoreRequest.instantiateBy(req);
+  }
+
+  async validated(
+    reqModel: PostScoreRequest,
+    res: express.Response,
+  ): Promise<void> {
     await this.scoreRepository.save(
-      new Vote(request.contentId, res.locals.user.id),
+      new Vote(reqModel.contentId, res.locals.user.id),
     );
-    const scoreEntities = await this.scoreRepository.find(request.contentId);
+    const scoreEntities = await this.scoreRepository.find(reqModel.contentId);
     const response = PostScoreResponse.instantiateBy(scoreEntities);
     if (response === undefined) {
       res.status(500).send();

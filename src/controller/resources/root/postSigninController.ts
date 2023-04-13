@@ -4,25 +4,29 @@ import {
   PostSigninResponse,
 } from '../../../infrastructure/api/model/root/postSigninAPI';
 import { IUserRepository } from '../../../domain/repository/userRepositoryInterface';
+import { ControllerAdaptor } from '../../controllerAdaptor';
 
 export type PostSigninControllerDependencies = {
   userRepository: IUserRepository;
 };
 
-export class PostSigninController {
+export class PostSigninController extends ControllerAdaptor<PostSigninRequest> {
   private userRepository: IUserRepository;
 
   constructor({ userRepository }: PostSigninControllerDependencies) {
+    super();
     this.userRepository = userRepository;
   }
 
-  async invoke(req: express.Request, res: express.Response): Promise<void> {
-    const request = PostSigninRequest.instantiateBy(req.body);
-    if (request === undefined) {
-      res.status(400).send();
-      return;
-    }
-    const { email, password } = request;
+  createRequest(req: any): PostSigninRequest | undefined {
+    return PostSigninRequest.instantiateBy(req);
+  }
+
+  async validated(
+    reqModel: PostSigninRequest,
+    res: express.Response<any, Record<string, any>>,
+  ): Promise<void> {
+    const { email, password } = reqModel;
     const token = await this.userRepository.findToken(email, password);
     if (token === undefined) {
       res.status(401).send();

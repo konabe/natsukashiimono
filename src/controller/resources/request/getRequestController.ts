@@ -1,21 +1,30 @@
 import * as express from 'express';
 import { IContentRepository } from '../../../domain/repository/contentRepositoryInterface';
-import { GetRequestResponse } from '../../../infrastructure/api/model/request/getRequestAPI';
+import {
+  GetRequestRequest,
+  GetRequestResponse,
+} from '../../../infrastructure/api/model/request/getRequestAPI';
+import { ControllerAdaptor } from '../../controllerAdaptor';
 
 export type GetRequestControllerDependencies = {
   contentRepository: IContentRepository;
 };
 
-export class GetRequestController {
+export class GetRequestController extends ControllerAdaptor<GetRequestRequest> {
   private readonly contentRepository: IContentRepository;
 
   constructor({ contentRepository }: GetRequestControllerDependencies) {
+    super();
     this.contentRepository = contentRepository;
   }
 
-  async invoke(
-    _: express.Request,
-    res: express.Response<GetRequestResponse>,
+  createRequest(_: any) {
+    return new GetRequestRequest();
+  }
+
+  async validated(
+    reqModel: GetRequestRequest,
+    res: express.Response,
   ): Promise<void> {
     const resultContents = await this.contentRepository.findInprogress();
     res.status(200).json(new GetRequestResponse(resultContents));

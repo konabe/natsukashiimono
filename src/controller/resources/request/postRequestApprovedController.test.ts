@@ -32,6 +32,7 @@ describe('postRequestApprovedController', () => {
       contentRepository,
     });
     const req = getMockReq({
+      method: 'POST',
       body: {
         contentId: 1,
       },
@@ -54,7 +55,9 @@ describe('postRequestApprovedController', () => {
     postRequestApprovedController = new PostRequestApprovedController({
       contentRepository,
     });
-    const req = getMockReq();
+    const req = getMockReq({
+      method: 'POST',
+    });
     await postRequestApprovedController.invoke(req, res);
     expect(contentRepository.updateApprovalStatus).toBeCalledTimes(0);
     expect(res.status).toBeCalledWith(400);
@@ -70,6 +73,7 @@ describe('postRequestApprovedController', () => {
       contentRepository,
     });
     const req = getMockReq({
+      method: 'POST',
       body: {
         contentId: 1,
       },

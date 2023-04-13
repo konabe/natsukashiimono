@@ -1,11 +1,14 @@
 import { Content } from 'src/domain/content';
+import { BaseRequest } from '../../../../controller/controllerAdaptor';
 
-export class PostContentRequest {
+export class PostContentRequest extends BaseRequest {
   private constructor(
     readonly name: string,
     readonly description: string,
     readonly imageUrl: string,
-  ) {}
+  ) {
+    super();
+  }
 
   static instantiateBy(object: any): PostContentRequest | undefined {
     const { name, description, imageUrl } = object;
