@@ -1,5 +1,9 @@
-export class PostVerifyRequest {
-  private constructor(readonly email: string, readonly code: string) {}
+import { BaseRequest } from '../../../../controller/baseController';
+
+export class PostVerifyRequest extends BaseRequest {
+  private constructor(readonly email: string, readonly code: string) {
+    super();
+  }
 
   static instantiateBy(object: any): PostVerifyRequest | undefined {
     const { email, code } = object;

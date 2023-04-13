@@ -1,5 +1,9 @@
-export class PostResendRequest {
-  private constructor(readonly email: string) {}
+import { BaseRequest } from '../../../../controller/baseController';
+
+export class PostResendRequest extends BaseRequest {
+  private constructor(readonly email: string) {
+    super();
+  }
 
   static instantiateBy(object: any): PostResendRequest | undefined {
     const { email } = object;

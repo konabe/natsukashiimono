@@ -1,5 +1,9 @@
-export class PostSignoutRequest {
-  private constructor() {}
+import { BaseRequest } from '../../../../controller/baseController';
+
+export class PostSignoutRequest extends BaseRequest {
+  private constructor() {
+    super();
+  }
 
   static instantiateBy(_: any): PostSignoutRequest | undefined {
     return new PostSignoutRequest();

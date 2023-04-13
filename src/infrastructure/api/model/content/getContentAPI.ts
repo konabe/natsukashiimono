@@ -1,5 +1,8 @@
 import { Content } from 'src/domain/content';
 import { ContentResponseModel } from '../models';
+import { BaseRequest } from '../../../../controller/baseController';
+
+export class GetContentRequest extends BaseRequest {}
 
 export class GetContentResponse {
   readonly contents: ContentResponseModel[];
