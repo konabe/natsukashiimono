@@ -109,7 +109,10 @@ export class UserRepository implements IUserRepository {
     age: number,
   ): Promise<User | undefined> {
     const userRepository = this.dataSource.getRepository(UserEntity);
-    await userRepository.update({ id }, { age });
+    const userEntity = new UserEntity();
+    userEntity.id = id;
+    userEntity.age = age;
+    await userRepository.save(userEntity);
     return await this.getIntegratedUser(id);
   }
 
