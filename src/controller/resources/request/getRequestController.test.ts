@@ -1,10 +1,15 @@
 import { content1 } from '../../../../data/content.data';
+import { userRepositoryMock } from '../../../../data/repository.mocks';
 import { IContentRepository } from '../../../domain/repository/contentRepositoryInterface';
+import { IUserRepository } from '../../../domain/repository/userRepositoryInterface';
+import { Role } from '../../../domain/role';
+import { User } from '../../../domain/user';
 import { GetRequestController } from '../request/getRequestController';
 import { getMockReq, getMockRes } from '@jest-mock/express';
 
 describe('getContentController', () => {
   let getRequestController: GetRequestController;
+  let userRepository: IUserRepository;
   let contentRepository: IContentRepository;
   let { res, clearMockRes } = getMockRes();
 
@@ -17,13 +22,29 @@ describe('getContentController', () => {
       save: jest.fn(),
       updateApprovalStatus: jest.fn(),
     };
-    getRequestController = new GetRequestController({ contentRepository });
+    userRepository = {
+      ...userRepositoryMock,
+      findUserIdByToken: jest.fn().mockResolvedValue('id001'),
+      findUserById: jest
+        .fn()
+        .mockResolvedValue(
+          User.instantiateBy('id001', [new Role('admin', 100)]),
+        ),
+    };
+
+    getRequestController = new GetRequestController({
+      userRepository,
+      contentRepository,
+    });
     clearMockRes();
   });
 
   it('should invoke normally', async () => {
     const req = getMockReq({
       method: 'GET',
+      header: jest.fn().mockImplementation((name: string) => {
+        if (name === 'Authorization') return 'hoge';
+      }),
     });
     await getRequestController.invoke(req, res);
     expect(contentRepository.findInprogress).toBeCalledTimes(1);

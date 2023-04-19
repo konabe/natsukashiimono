@@ -11,11 +11,10 @@ export type PostSignupControllerDependencies = {
 };
 
 export class PostSignupController extends ControllerAdaptor<PostSignupRequest> {
-  private userRepository: IUserRepository;
+  allowed = [];
 
   constructor({ userRepository }: PostSignupControllerDependencies) {
-    super();
-    this.userRepository = userRepository;
+    super(userRepository);
   }
 
   createRequest(req: any): PostSignupRequest | undefined {

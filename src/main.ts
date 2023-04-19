@@ -24,11 +24,12 @@ app.use('/user', userRouter);
 (async () => {
   try {
     await getDataSource();
-  } catch {
+  } catch (err) {
     console.log('*---------------------------------*');
     console.log(' Trial of DB connection is failed. ');
     console.log(' .env file may cause the error.    ');
     console.log('*---------------------------------*');
+    console.error(err);
   }
 })();
 

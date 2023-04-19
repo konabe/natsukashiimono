@@ -6,16 +6,22 @@ import {
   PostScoreResponse,
 } from '../../../infrastructure/api/model/score/postScoreAPI';
 import { ControllerAdaptor, ValidatedOptions } from '../../controllerAdaptor';
+import { IUserRepository } from '../../../domain/repository/userRepositoryInterface';
 
 export type PostScoreControllerDependencies = {
+  userRepository: IUserRepository;
   scoreRepository: IScoreRepository;
 };
 
 export class PostScoreController extends ControllerAdaptor<PostScoreRequest> {
+  allowed = ['user', 'admin'];
   private readonly scoreRepository: IScoreRepository;
 
-  constructor({ scoreRepository }: PostScoreControllerDependencies) {
-    super();
+  constructor({
+    userRepository,
+    scoreRepository,
+  }: PostScoreControllerDependencies) {
+    super(userRepository);
     this.scoreRepository = scoreRepository;
   }
 

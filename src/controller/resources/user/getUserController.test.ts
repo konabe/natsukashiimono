@@ -21,6 +21,7 @@ describe('GetUserController', () => {
             new Role('user', 100),
           ]),
         ),
+      findUserIdByToken: jest.fn().mockResolvedValue('id001'),
     };
     getUserController = new GetUserController({ userRepository });
     clearMockRes();
@@ -31,11 +32,14 @@ describe('GetUserController', () => {
     getUserController = new GetUserController({ userRepository });
     const req = getMockReq({
       method: 'GET',
+      header: jest.fn().mockImplementation((name: string) => {
+        if (name === 'Authorization') return 'hoge';
+      }),
     });
     res.locals.user.id = 'user-id-1';
     await getUserController.invoke(req, res);
-    expect(userRepository.findUserById).toBeCalledTimes(1);
-    expect(userRepository.findUserById).toBeCalledWith('user-id-1');
+    expect(userRepository.findUserById).toBeCalledTimes(2);
+    expect(userRepository.findUserById).toBeCalledWith('id001');
     expect(res.status).toBeCalledWith(200);
     expect(res.json).toBeCalledTimes(1);
     expect(res.json).toBeCalledWith({
@@ -44,7 +48,7 @@ describe('GetUserController', () => {
     });
   });
 
-  it('should return 404 if user is not found', async () => {
+  it('should return 403 if user is not found', async () => {
     userRepository = {
       ...userRepository,
       findUserById: jest.fn().mockResolvedValue(undefined),
@@ -55,9 +59,8 @@ describe('GetUserController', () => {
     });
     res.locals.user.id = 'user-id-1';
     await getUserController.invoke(req, res);
-    expect(userRepository.findUserById).toBeCalledTimes(1);
-    expect(userRepository.findUserById).toBeCalledWith('user-id-1');
-    expect(res.status).toBeCalledWith(404);
+    expect(userRepository.findUserById).toBeCalledTimes(0);
+    expect(res.status).toBeCalledWith(403);
     expect(res.send).toBeCalledTimes(1);
   });
 });

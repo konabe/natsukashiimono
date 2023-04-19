@@ -1,12 +1,25 @@
 import { Role } from './role';
 
-export class User {
-  private constructor(readonly id: string, readonly roles: Role[]) {}
+export type UserOptionalAttributes = {
+  age?: number;
+};
 
-  static instantiateBy(id: string, roles: Role[]): User {
+export class User {
+  private constructor(
+    readonly id: string,
+    readonly roles: Role[],
+    readonly age: number | undefined,
+  ) {}
+
+  static instantiateBy(
+    id: string,
+    roles: Role[],
+    options?: UserOptionalAttributes,
+  ): User {
     return new User(
       id,
       roles.sort((a, b) => a.precedence - b.precedence),
+      options?.age,
     );
   }
 

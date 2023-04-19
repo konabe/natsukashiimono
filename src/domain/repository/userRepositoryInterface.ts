@@ -7,5 +7,6 @@ export interface IUserRepository {
   findToken(email: string, password: string): Promise<string | undefined>;
   findUserIdByToken(token: string): Promise<string | undefined>;
   findUserById(id: string): Promise<User | undefined>;
+  updateAge(id: string, age: number): Promise<User | undefined>;
   signout(userId: string): Promise<boolean>;
 }

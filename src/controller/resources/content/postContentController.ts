@@ -12,6 +12,7 @@ export type PostContentControllerDependencies = {
 };
 
 export class PostContentController extends ControllerAdaptor<PostContentRequest> {
+  readonly allowed = [];
   private readonly contentRepository: IContentRepository;
 
   constructor({ contentRepository }: PostContentControllerDependencies) {

@@ -5,16 +5,22 @@ import {
   GetRequestResponse,
 } from '../../../infrastructure/api/model/request/getRequestAPI';
 import { ControllerAdaptor } from '../../controllerAdaptor';
+import { IUserRepository } from '../../../domain/repository/userRepositoryInterface';
 
 export type GetRequestControllerDependencies = {
+  userRepository: IUserRepository;
   contentRepository: IContentRepository;
 };
 
 export class GetRequestController extends ControllerAdaptor<GetRequestRequest> {
+  allowed = ['admin'];
   private readonly contentRepository: IContentRepository;
 
-  constructor({ contentRepository }: GetRequestControllerDependencies) {
-    super();
+  constructor({
+    userRepository,
+    contentRepository,
+  }: GetRequestControllerDependencies) {
+    super(userRepository);
     this.contentRepository = contentRepository;
   }
 

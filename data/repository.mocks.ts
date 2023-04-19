@@ -7,5 +7,6 @@ export const userRepositoryMock: IUserRepository = {
   findToken: jest.fn(),
   findUserIdByToken: jest.fn(),
   findUserById: jest.fn(),
+  updateAge: jest.fn(),
   signout: jest.fn(),
 };

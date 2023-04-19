@@ -11,6 +11,7 @@ export type GetContentControllerDependencies = {
 };
 
 export class GetContentController extends ControllerAdaptor<GetContentRequest> {
+  readonly allowed = [];
   private readonly contentRepository: IContentRepository;
 
   constructor({ contentRepository }: GetContentControllerDependencies) {

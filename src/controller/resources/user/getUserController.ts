@@ -4,18 +4,16 @@ import {
   GetUserRequest,
   GetUserResponse,
 } from '../../../infrastructure/api/model/user/getUserAPI';
-import { ControllerAdaptor } from '../../controllerAdaptor';
+import { ControllerAdaptor, ValidatedOptions } from '../../controllerAdaptor';
 
 export type GetUserControllerDependencies = {
   userRepository: IUserRepository;
 };
 
 export class GetUserController extends ControllerAdaptor<GetUserRequest> {
-  private readonly userRepository: IUserRepository;
-
+  allowed = ['user', 'admin'];
   constructor({ userRepository }: GetUserControllerDependencies) {
-    super();
-    this.userRepository = userRepository;
+    super(userRepository);
   }
 
   createRequest(_: any): GetUserRequest {
@@ -25,9 +23,11 @@ export class GetUserController extends ControllerAdaptor<GetUserRequest> {
   async validated(
     _: GetUserRequest,
     res: Response<any, Record<string, any>>,
+    options: ValidatedOptions,
   ): Promise<void> {
-    const id = res.locals.user.id;
-    const user = await this.userRepository.findUserById(id);
+    const user = await this.userRepository.findUserById(
+      options.authorizedUser?.id,
+    );
     if (user === undefined) {
       res.status(404).send();
       return;
