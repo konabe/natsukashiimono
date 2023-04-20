@@ -3,7 +3,7 @@ info:
   title: natsukashiimono Web API
   description: |-
     natsukashiimono(仮)のWEB API仕様書です。
-  version: 1.3.0
+  version: 1.4.0
 externalDocs:
   description: Find out more about Swagger
   url: http://swagger.io
@@ -43,6 +43,48 @@ paths:
                       example:
                         - 'admin'
                         - 'role'
+        '403':
+          description: アクセス権限がない
+        '404':
+          description: ユーザーが見つからない
+      security:
+        - tokenAuth: []
+    patch:
+      tags:
+        - user
+      summary: 自分のユーザー情報を更新
+      description: 自分のユーザー情報を更新します。user,admin
+      operationId: patchUser
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                age:
+                  type: integer
+                  example: 20
+      responses:
+        '200':
+          description: ユーザーの情報の更新成功
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  userId:
+                    type: string
+                    example: '4b84c852-6627-4e90-88af-5475e0245870'
+                  roles:
+                    type: array
+                    items:
+                      type: string
+                      example:
+                        - 'admin'
+                        - 'role'
+                  age:
+                    type: integer
+                    example: 20
         '403':
           description: アクセス権限がない
         '404':
