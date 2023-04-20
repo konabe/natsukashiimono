@@ -11,11 +11,10 @@ export type PostSignoutControllerDependencies = {
 };
 
 export class PostSignoutController extends ControllerAdaptor<PostSignoutRequest> {
-  private userRepository: IUserRepository;
+  allowed = ['admin', 'user'];
 
   constructor({ userRepository }: PostSignoutControllerDependencies) {
-    super();
-    this.userRepository = userRepository;
+    super(userRepository);
   }
 
   createRequest(req: any): PostSignoutRequest | undefined {

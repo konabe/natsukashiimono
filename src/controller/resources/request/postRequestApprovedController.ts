@@ -6,17 +6,21 @@ import {
 } from '../../../infrastructure/api/model/request/postRequestApprovedAPI';
 import { IContentRepository } from '../../../domain/repository/contentRepositoryInterface';
 import { ApprovalStatus } from '../../../domain/approvalStatus';
+import { IUserRepository } from '../../../domain/repository/userRepositoryInterface';
 
 export type PostRequestApprovedControllerDependencies = {
+  userRepository: IUserRepository;
   contentRepository: IContentRepository;
 };
 
 export class PostRequestApprovedController extends ControllerAdaptor<PostRequestApprovedRequest> {
+  allowed = ['admin'];
   private readonly contentRepository: IContentRepository;
   constructor({
+    userRepository,
     contentRepository,
   }: PostRequestApprovedControllerDependencies) {
-    super();
+    super(userRepository);
     this.contentRepository = contentRepository;
   }
 

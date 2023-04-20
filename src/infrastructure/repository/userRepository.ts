@@ -1,3 +1,4 @@
+import { DataSource } from 'typeorm';
 import { IUserRepository } from '../../domain/repository/userRepositoryInterface';
 import { Role } from '../../domain/role';
 import { User } from '../../domain/user';
@@ -6,9 +7,12 @@ import {
   AWS_COGNITO_APP_CLIENT_ID,
   AWS_COGNITO_USER_POOL_ID,
 } from '../aws';
+import { UserEntity } from '../database/entity/user.entity';
 
 export class UserRepository implements IUserRepository {
   private USER_GROUP_LIST_MAX = 10;
+
+  constructor(private readonly dataSource: DataSource) {}
 
   async create(email: string, password: string): Promise<boolean> {
     try {
@@ -97,6 +101,37 @@ export class UserRepository implements IUserRepository {
   }
 
   async findUserById(id: string): Promise<User | undefined> {
+    return await this.getIntegratedUser(id);
+  }
+
+  async updateAge(
+    id: string | undefined,
+    age: number,
+  ): Promise<User | undefined> {
+    const userRepository = this.dataSource.getRepository(UserEntity);
+    const userEntity = new UserEntity();
+    userEntity.id = id;
+    userEntity.age = age;
+    await userRepository.save(userEntity);
+    return await this.getIntegratedUser(id);
+  }
+
+  async signout(userId: string): Promise<boolean> {
+    try {
+      await cognito
+        .adminUserGlobalSignOut({
+          UserPoolId: AWS_COGNITO_USER_POOL_ID,
+          Username: userId,
+        })
+        .promise();
+      return true;
+    } catch (err) {
+      return false;
+    }
+  }
+
+  private async getIntegratedUser(id: string): Promise<User | undefined> {
+    const userRepository = this.dataSource.getRepository(UserEntity);
     try {
       const user = await cognito
         .adminGetUser({
@@ -114,23 +149,12 @@ export class UserRepository implements IUserRepository {
       const groups = group.Groups.map(
         (g) => new Role(g.GroupName, g.Precedence),
       );
-      return User.instantiateBy(user.Username, groups);
+      const userEntity = await userRepository.findOne({ where: { id } });
+      return User.instantiateBy(user.Username, groups, {
+        age: userEntity?.age,
+      });
     } catch (err) {
       return undefined;
-    }
-  }
-
-  async signout(userId: string): Promise<boolean> {
-    try {
-      await cognito
-        .adminUserGlobalSignOut({
-          UserPoolId: AWS_COGNITO_USER_POOL_ID,
-          Username: userId,
-        })
-        .promise();
-      return true;
-    } catch (err) {
-      return false;
     }
   }
 }

@@ -1,22 +1,21 @@
 import * as express from 'express';
-import { UserAuthorizer } from '../../../controller/middleware/authorizer';
 import { UserRepository } from '../../repository/userRepository';
 import { GetUserController } from '../../../controller/resources/user/getUserController';
+import { getDataSource } from '../../database/dataSource';
+import { PatchUserController } from '../../../controller/resources/user/patchUserController';
 
 const router = express.Router();
 
-const authorizer = new UserAuthorizer({
-  allowed: ['user', 'admin'],
-  userRepository: new UserRepository(),
+router.get('/', async (req: express.Request, res: express.Response) => {
+  const dataSource = await getDataSource();
+  const userRepository = new UserRepository(dataSource);
+  new GetUserController({ userRepository }).invoke(req, res);
 });
 
-router.get(
-  '/',
-  authorizer.authenticate.bind(authorizer),
-  async (req: express.Request, res: express.Response) => {
-    const userRepository = new UserRepository();
-    new GetUserController({ userRepository }).invoke(req, res);
-  },
-);
+router.patch('/', async (req: express.Request, res: express.Response) => {
+  const dataSource = await getDataSource();
+  const userRepository = new UserRepository(dataSource);
+  new PatchUserController({ userRepository }).invoke(req, res);
+});
 
 export default router;

@@ -11,11 +11,9 @@ export type PostVerifyControllerDependencies = {
 };
 
 export class PostVerifyController extends ControllerAdaptor<PostVerifyRequest> {
-  private userRepository: IUserRepository;
-
+  allowed = [];
   constructor({ userRepository }: PostVerifyControllerDependencies) {
-    super();
-    this.userRepository = userRepository;
+    super(userRepository);
   }
 
   createRequest(req: any): PostVerifyRequest | undefined {

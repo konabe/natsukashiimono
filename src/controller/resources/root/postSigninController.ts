@@ -11,11 +11,9 @@ export type PostSigninControllerDependencies = {
 };
 
 export class PostSigninController extends ControllerAdaptor<PostSigninRequest> {
-  private userRepository: IUserRepository;
-
+  allowed = [];
   constructor({ userRepository }: PostSigninControllerDependencies) {
-    super();
-    this.userRepository = userRepository;
+    super(userRepository);
   }
 
   createRequest(req: any): PostSigninRequest | undefined {

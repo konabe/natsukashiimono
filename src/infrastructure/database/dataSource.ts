@@ -3,10 +3,11 @@ dotenv.config();
 import { DataSource } from 'typeorm';
 import { ScoreEntity } from './entity/score.entity';
 import { ContentEntity } from './entity/content.entity';
+import { UserEntity } from './entity/user.entity';
 
 let dataSource: DataSource;
 export async function getDataSource() {
-  if (dataSource == null) {
+  if (dataSource === undefined) {
     const _dataSource = new DataSource({
       type: 'mysql',
       host: process.env.MYSQL_HOST,
@@ -16,7 +17,7 @@ export async function getDataSource() {
       database: 'natsukashiimono',
       // FIXME: Windows10だとパスで指定する方法が通らないというバグがある。型の列挙で暫定対応
       // entities: [__dirname + '/../**/*.entity{.ts,.js}'],
-      entities: [ContentEntity, ScoreEntity],
+      entities: [ContentEntity, ScoreEntity, UserEntity],
       synchronize: true, // 本番ではfalseにするべき
     });
     dataSource = await _dataSource.initialize();

@@ -1,50 +1,62 @@
 import { getMockReq, getMockRes } from '@jest-mock/express';
 import { IUserRepository } from '../../../domain/repository/userRepositoryInterface';
-import { GetUserController } from './getUserController';
+import { PatchUserController } from './patchUserController';
 import { userRepositoryMock } from '../../../../data/repository.mocks';
 import { User } from '../../../domain/user';
 import { Role } from '../../../domain/role';
 
-describe('GetUserController', () => {
-  let getUserController: GetUserController;
+describe('PatchUserController', () => {
+  let patchUserController: PatchUserController;
   let userRepository: IUserRepository;
   let { res, clearMockRes } = getMockRes();
 
   beforeEach(() => {
     userRepository = {
       ...userRepositoryMock,
+      findUserIdByToken: jest.fn().mockResolvedValue('id001'),
       findUserById: jest
         .fn()
         .mockResolvedValue(
-          User.instantiateBy('user-id-1', [
-            new Role('admin', 50),
-            new Role('user', 100),
-          ]),
+          User.instantiateBy(
+            'id001',
+            [new Role('admin', 50), new Role('user', 100)],
+            { age: 20 },
+          ),
         ),
-      findUserIdByToken: jest.fn().mockResolvedValue('id001'),
+      updateAge: jest
+        .fn()
+        .mockResolvedValue(
+          User.instantiateBy(
+            'id001',
+            [new Role('admin', 50), new Role('user', 100)],
+            { age: 20 },
+          ),
+        ),
     };
-    getUserController = new GetUserController({ userRepository });
+    patchUserController = new PatchUserController({ userRepository });
     clearMockRes();
-    res.locals.user = {};
   });
 
   it('should return user', async () => {
-    getUserController = new GetUserController({ userRepository });
     const req = getMockReq({
-      method: 'GET',
+      method: 'PATCH',
+      body: {
+        age: 20,
+      },
       header: jest.fn().mockImplementation((name: string) => {
         if (name === 'Authorization') return 'hoge';
       }),
     });
-    res.locals.user.id = 'user-id-1';
-    await getUserController.invoke(req, res);
-    expect(userRepository.findUserById).toBeCalledTimes(2);
+    await patchUserController.invoke(req, res);
+    expect(userRepository.findUserById).toBeCalledTimes(1);
     expect(userRepository.findUserById).toBeCalledWith('id001');
+    expect(userRepository.updateAge).toBeCalledTimes(1);
     expect(res.status).toBeCalledWith(200);
     expect(res.json).toBeCalledTimes(1);
     expect(res.json).toBeCalledWith({
-      id: 'user-id-1',
+      id: 'id001',
       roles: ['admin', 'user'],
+      age: 20,
     });
   });
 
@@ -53,13 +65,18 @@ describe('GetUserController', () => {
       ...userRepository,
       findUserById: jest.fn().mockResolvedValue(undefined),
     };
-    getUserController = new GetUserController({ userRepository });
+    patchUserController = new PatchUserController({ userRepository });
     const req = getMockReq({
-      method: 'GET',
+      method: 'PATCH',
+      body: {
+        age: 20,
+      },
+      header: jest.fn().mockImplementation((name: string) => {
+        if (name === 'Authorization') return 'hoge';
+      }),
     });
-    res.locals.user.id = 'user-id-1';
-    await getUserController.invoke(req, res);
-    expect(userRepository.findUserById).toBeCalledTimes(0);
+    await patchUserController.invoke(req, res);
+    expect(userRepository.updateAge).toBeCalledTimes(0);
     expect(res.status).toBeCalledWith(403);
     expect(res.send).toBeCalledTimes(1);
   });
@@ -69,24 +86,26 @@ describe('GetUserController', () => {
       ...userRepository,
       findUserById: jest
         .fn()
-        .mockResolvedValueOnce(
+        .mockResolvedValue(
           User.instantiateBy('user-id-1', [
             new Role('admin', 50),
             new Role('user', 100),
           ]),
-        )
-        .mockResolvedValue(undefined),
+        ),
+      updateAge: jest.fn().mockResolvedValue(undefined),
     };
-    getUserController = new GetUserController({ userRepository });
+    patchUserController = new PatchUserController({ userRepository });
     const req = getMockReq({
-      method: 'GET',
+      method: 'PATCH',
+      body: {
+        age: 20,
+      },
       header: jest.fn().mockImplementation((name: string) => {
         if (name === 'Authorization') return 'hoge';
       }),
     });
-    res.locals.user.id = 'user-id-1';
-    await getUserController.invoke(req, res);
-    expect(userRepository.findUserById).toBeCalledTimes(2);
+    await patchUserController.invoke(req, res);
+    expect(userRepository.updateAge).toBeCalledTimes(1);
     expect(res.status).toBeCalledWith(404);
     expect(res.send).toBeCalledTimes(1);
   });

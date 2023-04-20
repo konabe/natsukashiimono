@@ -11,11 +11,9 @@ export type PostResendControllerDependencies = {
 };
 
 export class PostResendController extends ControllerAdaptor<PostResendRequest> {
-  private userRepository: IUserRepository;
-
+  allowed = [];
   constructor({ userRepository }: PostResendControllerDependencies) {
-    super();
-    this.userRepository = userRepository;
+    super(userRepository);
   }
 
   createRequest(req: any): PostResendRequest | undefined {

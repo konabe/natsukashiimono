@@ -6,17 +6,21 @@ import {
   PostRequestDeclinedRequest,
   PostRequestDeclinedResponse,
 } from '../../../infrastructure/api/model/request/postRequestDeclinedAPI';
+import { IUserRepository } from '../../../domain/repository/userRepositoryInterface';
 
 export type PostRequestDeclinedControllerDependencies = {
+  userRepository: IUserRepository;
   contentRepository: IContentRepository;
 };
 
 export class PostRequestDeclinedController extends ControllerAdaptor<PostRequestDeclinedRequest> {
+  allowed = ['admin'];
   private readonly contentRepository: IContentRepository;
   constructor({
+    userRepository,
     contentRepository,
   }: PostRequestDeclinedControllerDependencies) {
-    super();
+    super(userRepository);
     this.contentRepository = contentRepository;
   }
 

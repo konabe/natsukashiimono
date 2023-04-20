@@ -48,6 +48,10 @@ export class UserRepositoryStaticMock implements IUserRepository {
     return true;
   }
 
+  updateAge(id: string, age: number): Promise<User> {
+    return;
+  }
+
   async findUserById(id: string): Promise<User> {
     if (id === 'user1@example.com') {
       return User.instantiateBy('id', [new Role('user', 100)]);
