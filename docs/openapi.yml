@@ -3,7 +3,7 @@ info:
   title: natsukashiimono Web API
   description: |-
     natsukashiimono(仮)のWEB API仕様書です。
-  version: 1.4.0
+  version: 1.4.1
 externalDocs:
   description: Find out more about Swagger
   url: http://swagger.io
@@ -217,7 +217,7 @@ paths:
       tags:
         - user
       summary: 認証コード要求
-      description: メールアドレスに対して認証コードの送信を依頼します。(Amazon Cognito) user,admin
+      description: メールアドレスに対して認証コードの送信を依頼します。(Amazon Cognito)
       requestBody:
         content:
           application/json:
