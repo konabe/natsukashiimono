@@ -68,6 +68,9 @@ describe('PatchUserController', () => {
     patchUserController = new PatchUserController({ userRepository });
     const req = getMockReq({
       method: 'PATCH',
+      body: {
+        age: 20,
+      },
       header: jest.fn().mockImplementation((name: string) => {
         if (name === 'Authorization') return 'hoge';
       }),
@@ -75,6 +78,35 @@ describe('PatchUserController', () => {
     await patchUserController.invoke(req, res);
     expect(userRepository.updateAge).toBeCalledTimes(0);
     expect(res.status).toBeCalledWith(403);
+    expect(res.send).toBeCalledTimes(1);
+  });
+
+  it('should return 404 if user is not found', async () => {
+    userRepository = {
+      ...userRepository,
+      findUserById: jest
+        .fn()
+        .mockResolvedValue(
+          User.instantiateBy('user-id-1', [
+            new Role('admin', 50),
+            new Role('user', 100),
+          ]),
+        ),
+      updateAge: jest.fn().mockResolvedValue(undefined),
+    };
+    patchUserController = new PatchUserController({ userRepository });
+    const req = getMockReq({
+      method: 'PATCH',
+      body: {
+        age: 20,
+      },
+      header: jest.fn().mockImplementation((name: string) => {
+        if (name === 'Authorization') return 'hoge';
+      }),
+    });
+    await patchUserController.invoke(req, res);
+    expect(userRepository.updateAge).toBeCalledTimes(1);
+    expect(res.status).toBeCalledWith(404);
     expect(res.send).toBeCalledTimes(1);
   });
 });

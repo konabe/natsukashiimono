@@ -63,4 +63,31 @@ describe('GetUserController', () => {
     expect(res.status).toBeCalledWith(403);
     expect(res.send).toBeCalledTimes(1);
   });
+
+  it('should return 404 if user is not found', async () => {
+    userRepository = {
+      ...userRepository,
+      findUserById: jest
+        .fn()
+        .mockResolvedValueOnce(
+          User.instantiateBy('user-id-1', [
+            new Role('admin', 50),
+            new Role('user', 100),
+          ]),
+        )
+        .mockResolvedValue(undefined),
+    };
+    getUserController = new GetUserController({ userRepository });
+    const req = getMockReq({
+      method: 'GET',
+      header: jest.fn().mockImplementation((name: string) => {
+        if (name === 'Authorization') return 'hoge';
+      }),
+    });
+    res.locals.user.id = 'user-id-1';
+    await getUserController.invoke(req, res);
+    expect(userRepository.findUserById).toBeCalledTimes(2);
+    expect(res.status).toBeCalledWith(404);
+    expect(res.send).toBeCalledTimes(1);
+  });
 });
