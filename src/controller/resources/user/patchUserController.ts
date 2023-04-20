@@ -11,7 +11,7 @@ export type PatchUserControllerDependencies = {
 };
 
 export class PatchUserController extends ControllerAdaptor<PatchUserRequest> {
-  allowed = ['user'];
+  allowed = ['user', 'admin'];
   constructor({ userRepository }: PatchUserControllerDependencies) {
     super(userRepository);
   }
