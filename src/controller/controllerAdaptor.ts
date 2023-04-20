@@ -25,9 +25,6 @@ export abstract class ControllerAdaptor<TReq extends BaseRequest> {
   ): Promise<void>;
 
   async authorize(req: express.Request): Promise<AuthorizedUser | undefined> {
-    if (this.allowed.length === 0) {
-      return undefined;
-    }
     const authorizationHeaderValue = req.header('Authorization');
     if (authorizationHeaderValue === undefined) {
       return;
@@ -50,10 +47,13 @@ export abstract class ControllerAdaptor<TReq extends BaseRequest> {
   }
 
   async invoke(req: express.Request, res: express.Response): Promise<void> {
-    const authorizedUser = await this.authorize(req);
-    if (authorizedUser === undefined && this.allowed.length !== 0) {
-      res.status(403).send();
-      return;
+    let authorizedUser: AuthorizedUser;
+    if (this.allowed.length !== 0) {
+      authorizedUser = await this.authorize(req);
+      if (authorizedUser === undefined) {
+        res.status(403).send();
+        return;
+      }
     }
     let reqModel: TReq;
     if (['GET', 'DELETE'].includes(req.method)) {
