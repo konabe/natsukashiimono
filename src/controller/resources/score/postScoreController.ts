@@ -36,7 +36,8 @@ export class PostScoreController extends ControllerAdaptor<PostScoreRequest> {
   ): Promise<void> {
     const userId = options.authorizedUser?.id;
     if (userId === undefined) {
-      return undefined;
+      res.status(404).send();
+      return;
     }
     await this.scoreRepository.save(new Vote(reqModel.contentId, userId));
     const scoreEntities = await this.scoreRepository.find(reqModel.contentId);

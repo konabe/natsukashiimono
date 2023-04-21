@@ -29,7 +29,8 @@ export class PatchUserController extends ControllerAdaptor<PatchUserRequest> {
   ): Promise<void> {
     const userId = options.authorizedUser?.id;
     if (userId === undefined) {
-      return undefined;
+      res.status(404).send();
+      return;
     }
     const user = await this.userRepository.updateAge(userId, req.age);
     if (user === undefined) {

@@ -6,6 +6,7 @@ import { User } from '../../../domain/user';
 import { Role } from '../../../domain/role';
 import { getPATCHMockReqWithToken } from '../../../../data/mockReq';
 import { adminUser, user20Years } from '../../../../data/user.data';
+import { PatchUserRequest } from '../../../infrastructure/api/model/user/patchUserAPI';
 
 describe('PatchUserController', () => {
   let patchUserController: PatchUserController;
@@ -67,6 +68,25 @@ describe('PatchUserController', () => {
     });
     await patchUserController.invoke(req, res);
     expect(userRepository.updateAge).toBeCalledTimes(1);
+    expect(res.status).toBeCalledWith(404);
+    expect(res.send).toBeCalledTimes(1);
+  });
+
+  it('should return 404 if passed userId is undefined', async () => {
+    userRepository = {
+      ...userRepository,
+    };
+    patchUserController = new PatchUserController({
+      userRepository,
+    });
+    await patchUserController.validated(
+      PatchUserRequest.instantiateBy({ age: 20 })!,
+      res,
+      {
+        authorizedUser: undefined,
+      },
+    );
+    expect(userRepository.findUserById).toBeCalledTimes(0);
     expect(res.status).toBeCalledWith(404);
     expect(res.send).toBeCalledTimes(1);
   });

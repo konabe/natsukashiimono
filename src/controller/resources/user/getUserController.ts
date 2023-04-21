@@ -29,7 +29,8 @@ export class GetUserController extends ControllerAdaptor<GetUserRequest> {
   ): Promise<void> {
     const userId = options.authorizedUser?.id;
     if (userId === undefined) {
-      return undefined;
+      res.status(404).send();
+      return;
     }
     const user = await this.userRepository.findUserById(userId);
     if (user === undefined) {

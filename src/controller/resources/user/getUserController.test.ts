@@ -4,6 +4,7 @@ import { GetUserController } from './getUserController';
 import { userRepositoryMock } from '../../../../data/repository.mocks';
 import { adminUser } from '../../../../data/user.data';
 import { getGETMockReqWithToken } from '../../../../data/mockReq';
+import { GetUserRequest } from '../../../infrastructure/api/model/user/getUserAPI';
 
 describe('GetUserController', () => {
   let getUserController: GetUserController;
@@ -61,6 +62,19 @@ describe('GetUserController', () => {
     const req = getGETMockReqWithToken();
     await getUserController.invoke(req, res);
     expect(userRepository.findUserById).toBeCalledTimes(2);
+    expect(res.status).toBeCalledWith(404);
+    expect(res.send).toBeCalledTimes(1);
+  });
+
+  it('should return 404 if passed userId is undefined', async () => {
+    userRepository = {
+      ...userRepository,
+    };
+    getUserController = new GetUserController({ userRepository });
+    await getUserController.validated(new GetUserRequest(), res, {
+      authorizedUser: undefined,
+    });
+    expect(userRepository.findUserById).toBeCalledTimes(0);
     expect(res.status).toBeCalledWith(404);
     expect(res.send).toBeCalledTimes(1);
   });

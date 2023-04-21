@@ -59,4 +59,17 @@ describe('PostContentController', () => {
     await postContentController.invoke(req, res);
     expect(res.status).toBeCalledWith(400);
   });
+
+  it('should notify 400 error when body is not valid', async () => {
+    const req = getMockReq({
+      method: 'POST',
+      body: {
+        name: '',
+        description: '',
+        imageUrl: '',
+      },
+    });
+    await postContentController.invoke(req, res);
+    expect(res.status).toBeCalledWith(400);
+  });
 });
