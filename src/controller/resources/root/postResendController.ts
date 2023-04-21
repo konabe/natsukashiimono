@@ -12,6 +12,8 @@ export type PostResendControllerDependencies = {
 
 export class PostResendController extends ControllerAdaptor<PostResendRequest> {
   allowed = [];
+  protected readonly userRepository: IUserRepository;
+
   constructor({ userRepository }: PostResendControllerDependencies) {
     super(userRepository);
   }

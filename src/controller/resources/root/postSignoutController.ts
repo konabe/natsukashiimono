@@ -12,6 +12,7 @@ export type PostSignoutControllerDependencies = {
 
 export class PostSignoutController extends ControllerAdaptor<PostSignoutRequest> {
   allowed = ['admin', 'user'];
+  protected readonly userRepository: IUserRepository;
 
   constructor({ userRepository }: PostSignoutControllerDependencies) {
     super(userRepository);
@@ -26,9 +27,11 @@ export class PostSignoutController extends ControllerAdaptor<PostSignoutRequest>
     res: express.Response,
     options: ValidatedOptions,
   ): Promise<void> {
-    const successed = await this.userRepository.signout(
-      options.authorizedUser.id,
-    );
+    const userId = options.authorizedUser?.id;
+    if (userId === undefined) {
+      return;
+    }
+    const successed = await this.userRepository.signout(userId);
     res.status(200).json(PostSignoutResponse.instantiateBy(successed));
   }
 }

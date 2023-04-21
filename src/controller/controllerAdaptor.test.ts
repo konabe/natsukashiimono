@@ -43,6 +43,7 @@ describe('ControllerAdaptorStub', () => {
   it('should return undefined if req has no Authorization header', async () => {
     userRepository = {
       ...userRepositoryMock,
+      findUserIdByToken: jest.fn().mockResolvedValue('user-id-1'),
       findUserById: jest
         .fn()
         .mockResolvedValue(

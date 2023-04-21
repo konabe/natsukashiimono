@@ -71,7 +71,7 @@ describe('Content', () => {
           description: '大阪万博のモチーフです',
           votes: [new Vote(1, '1'), new Vote(2, '2'), new Vote(1, '3')],
           imageUrl: 'https://example.com/index.png',
-        }).calculateScore(),
+        })?.calculateScore(),
       ).toBe(2);
       expect(
         Content.instantiate({
@@ -80,7 +80,7 @@ describe('Content', () => {
           description: '大阪万博のモチーフです',
           votes: [new Vote(2, '1'), new Vote(2, '2'), new Vote(2, '3')],
           imageUrl: 'https://example.com/index.png',
-        }).calculateScore(),
+        })?.calculateScore(),
       ).toBe(0);
     });
   });

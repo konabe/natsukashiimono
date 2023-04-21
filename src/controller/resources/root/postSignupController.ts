@@ -12,6 +12,7 @@ export type PostSignupControllerDependencies = {
 
 export class PostSignupController extends ControllerAdaptor<PostSignupRequest> {
   allowed = [];
+  protected readonly userRepository: IUserRepository;
 
   constructor({ userRepository }: PostSignupControllerDependencies) {
     super(userRepository);

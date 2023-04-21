@@ -34,9 +34,11 @@ export class PostScoreController extends ControllerAdaptor<PostScoreRequest> {
     res: express.Response,
     options: ValidatedOptions,
   ): Promise<void> {
-    await this.scoreRepository.save(
-      new Vote(reqModel.contentId, options.authorizedUser.id),
-    );
+    const userId = options.authorizedUser?.id;
+    if (userId === undefined) {
+      return undefined;
+    }
+    await this.scoreRepository.save(new Vote(reqModel.contentId, userId));
     const scoreEntities = await this.scoreRepository.find(reqModel.contentId);
     const response = PostScoreResponse.instantiateBy(scoreEntities);
     if (response === undefined) {

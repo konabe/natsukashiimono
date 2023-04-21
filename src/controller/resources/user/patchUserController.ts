@@ -12,11 +12,13 @@ export type PatchUserControllerDependencies = {
 
 export class PatchUserController extends ControllerAdaptor<PatchUserRequest> {
   allowed = ['user', 'admin'];
+  protected readonly userRepository: IUserRepository;
+
   constructor({ userRepository }: PatchUserControllerDependencies) {
     super(userRepository);
   }
 
-  createRequest(obj: any): PatchUserRequest {
+  createRequest(obj: any): PatchUserRequest | undefined {
     return PatchUserRequest.instantiateBy(obj);
   }
 
@@ -25,10 +27,11 @@ export class PatchUserController extends ControllerAdaptor<PatchUserRequest> {
     res: Response,
     options: ValidatedOptions,
   ): Promise<void> {
-    const user = await this.userRepository.updateAge(
-      options.authorizedUser?.id,
-      req.age,
-    );
+    const userId = options.authorizedUser?.id;
+    if (userId === undefined) {
+      return undefined;
+    }
+    const user = await this.userRepository.updateAge(userId, req.age);
     if (user === undefined) {
       res.status(404).send();
       return;

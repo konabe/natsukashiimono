@@ -34,6 +34,10 @@ export class PostContentController extends ControllerAdaptor<PostContentRequest>
       imageUrl: reqModel.imageUrl,
       votes: [],
     });
+    if (content === undefined) {
+      res.status(400);
+      return;
+    }
     const savedContentId = await this.contentRepository.save(content);
     const savedContent = await this.contentRepository.findOne(savedContentId);
     res.status(200).json(PostContentResponse.instantiateBy(savedContent));

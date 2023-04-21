@@ -32,7 +32,12 @@ export class PostContentResponse {
     readonly score: number,
   ) {}
 
-  static instantiateBy(content: Content): PostContentResponse | undefined {
+  static instantiateBy(
+    content: Content | undefined,
+  ): PostContentResponse | undefined {
+    if (content === undefined) {
+      return undefined;
+    }
     if (content.id == null) {
       // contentがidを持たないのはリクエストのときだけなので。
       return undefined;

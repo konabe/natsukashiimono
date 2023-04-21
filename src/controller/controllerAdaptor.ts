@@ -31,6 +31,9 @@ export abstract class ControllerAdaptor<TReq extends BaseRequest> {
     }
     const token = authorizationHeaderValue.replace('Bearer ', '');
     const userId = await this.userRepository?.findUserIdByToken(token);
+    if (userId === undefined) {
+      return undefined;
+    }
     const user = await this.userRepository?.findUserById(userId);
     if (user === undefined) {
       return;
@@ -47,7 +50,7 @@ export abstract class ControllerAdaptor<TReq extends BaseRequest> {
   }
 
   async invoke(req: express.Request, res: express.Response): Promise<void> {
-    let authorizedUser: AuthorizedUser;
+    let authorizedUser: AuthorizedUser | undefined;
     if (this.allowed.length !== 0) {
       authorizedUser = await this.authorize(req);
       if (authorizedUser === undefined) {
@@ -55,7 +58,7 @@ export abstract class ControllerAdaptor<TReq extends BaseRequest> {
         return;
       }
     }
-    let reqModel: TReq;
+    let reqModel: TReq | undefined;
     if (['GET', 'DELETE'].includes(req.method)) {
       reqModel = this.createRequest(req.params);
     } else {
