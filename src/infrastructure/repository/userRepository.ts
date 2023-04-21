@@ -81,7 +81,7 @@ export class UserRepository implements IUserRepository {
           },
         })
         .promise();
-      return user.AuthenticationResult.AccessToken;
+      return user.AuthenticationResult?.AccessToken;
     } catch (err) {
       return undefined;
     }
@@ -104,10 +104,7 @@ export class UserRepository implements IUserRepository {
     return await this.getIntegratedUser(id);
   }
 
-  async updateAge(
-    id: string | undefined,
-    age: number,
-  ): Promise<User | undefined> {
+  async updateAge(id: string, age: number): Promise<User | undefined> {
     const userRepository = this.dataSource.getRepository(UserEntity);
     const userEntity = new UserEntity();
     userEntity.id = id;
@@ -146,9 +143,10 @@ export class UserRepository implements IUserRepository {
           Limit: this.USER_GROUP_LIST_MAX,
         })
         .promise();
-      const groups = group.Groups.map(
-        (g) => new Role(g.GroupName, g.Precedence),
-      );
+      const groups =
+        group.Groups?.map((g) => {
+          return new Role(g.GroupName ?? 'guest', g?.Precedence ?? 1000);
+        }) ?? [];
       const userEntity = await userRepository.findOne({ where: { id } });
       return User.instantiateBy(user.Username, groups, {
         age: userEntity?.age,
