@@ -16,20 +16,16 @@ export class UserRepository implements IUserRepository {
 
   async create(email: string, password: string): Promise<boolean> {
     try {
-      const createdUser = await cognito
-        .signUp({
-          ClientId: AWS_COGNITO_APP_CLIENT_ID,
-          Username: email,
-          Password: password,
-        })
-        .promise();
-      await cognito
-        .adminAddUserToGroup({
-          GroupName: 'user',
-          UserPoolId: AWS_COGNITO_USER_POOL_ID,
-          Username: createdUser.UserSub,
-        })
-        .promise();
+      const createdUser = await cognito.signUp({
+        ClientId: AWS_COGNITO_APP_CLIENT_ID,
+        Username: email,
+        Password: password,
+      });
+      await cognito.adminAddUserToGroup({
+        GroupName: 'user',
+        UserPoolId: AWS_COGNITO_USER_POOL_ID,
+        Username: createdUser.UserSub,
+      });
       return true;
     } catch (err) {
       // TODO: ロールバックの構築でAtomicityを担保
@@ -39,13 +35,11 @@ export class UserRepository implements IUserRepository {
 
   async verify(email: string, code: string): Promise<boolean> {
     try {
-      await cognito
-        .confirmSignUp({
-          ClientId: AWS_COGNITO_APP_CLIENT_ID,
-          Username: email,
-          ConfirmationCode: code,
-        })
-        .promise();
+      await cognito.confirmSignUp({
+        ClientId: AWS_COGNITO_APP_CLIENT_ID,
+        Username: email,
+        ConfirmationCode: code,
+      });
       return true;
     } catch (err) {
       return false;
@@ -54,12 +48,10 @@ export class UserRepository implements IUserRepository {
 
   async resendCode(email: string): Promise<boolean> {
     try {
-      await cognito
-        .resendConfirmationCode({
-          ClientId: AWS_COGNITO_APP_CLIENT_ID,
-          Username: email,
-        })
-        .promise();
+      await cognito.resendConfirmationCode({
+        ClientId: AWS_COGNITO_APP_CLIENT_ID,
+        Username: email,
+      });
       return true;
     } catch (err) {
       return false;
@@ -71,16 +63,14 @@ export class UserRepository implements IUserRepository {
     password: string,
   ): Promise<string | undefined> {
     try {
-      const user = await cognito
-        .initiateAuth({
-          ClientId: AWS_COGNITO_APP_CLIENT_ID,
-          AuthFlow: 'USER_PASSWORD_AUTH',
-          AuthParameters: {
-            USERNAME: email,
-            PASSWORD: password,
-          },
-        })
-        .promise();
+      const user = await cognito.initiateAuth({
+        ClientId: AWS_COGNITO_APP_CLIENT_ID,
+        AuthFlow: 'USER_PASSWORD_AUTH',
+        AuthParameters: {
+          USERNAME: email,
+          PASSWORD: password,
+        },
+      });
       return user.AuthenticationResult?.AccessToken;
     } catch (err) {
       return undefined;
@@ -89,11 +79,9 @@ export class UserRepository implements IUserRepository {
 
   async findUserIdByToken(token: string): Promise<string | undefined> {
     try {
-      const user = await cognito
-        .getUser({
-          AccessToken: token,
-        })
-        .promise();
+      const user = await cognito.getUser({
+        AccessToken: token,
+      });
       return user.Username;
     } catch (err) {
       return undefined;
@@ -115,12 +103,10 @@ export class UserRepository implements IUserRepository {
 
   async signout(userId: string): Promise<boolean> {
     try {
-      await cognito
-        .adminUserGlobalSignOut({
-          UserPoolId: AWS_COGNITO_USER_POOL_ID,
-          Username: userId,
-        })
-        .promise();
+      await cognito.adminUserGlobalSignOut({
+        UserPoolId: AWS_COGNITO_USER_POOL_ID,
+        Username: userId,
+      });
       return true;
     } catch (err) {
       return false;
@@ -130,25 +116,25 @@ export class UserRepository implements IUserRepository {
   private async getIntegratedUser(id: string): Promise<User | undefined> {
     const userRepository = this.dataSource.getRepository(UserEntity);
     try {
-      const user = await cognito
-        .adminGetUser({
-          UserPoolId: AWS_COGNITO_USER_POOL_ID,
-          Username: id,
-        })
-        .promise();
-      const group = await cognito
-        .adminListGroupsForUser({
-          UserPoolId: AWS_COGNITO_USER_POOL_ID,
-          Username: user.Username,
-          Limit: this.USER_GROUP_LIST_MAX,
-        })
-        .promise();
+      const user = await cognito.adminGetUser({
+        UserPoolId: AWS_COGNITO_USER_POOL_ID,
+        Username: id,
+      });
+      const group = await cognito.adminListGroupsForUser({
+        UserPoolId: AWS_COGNITO_USER_POOL_ID,
+        Username: user.Username,
+        Limit: this.USER_GROUP_LIST_MAX,
+      });
       const groups =
         group.Groups?.map((g) => {
           return new Role(g.GroupName ?? 'guest', g?.Precedence ?? 1000);
         }) ?? [];
       const userEntity = await userRepository.findOne({ where: { id } });
-      return User.instantiateBy(user.Username, groups, {
+      const userId = user.Username;
+      if (userId === undefined) {
+        return undefined;
+      }
+      return User.instantiateBy(userId, groups, {
         age: userEntity?.age,
       });
     } catch (err) {
