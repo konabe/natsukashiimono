@@ -2,6 +2,7 @@ import { getMockReq, getMockRes } from '@jest-mock/express';
 import { IUserRepository } from '../../../domain/repository/userRepositoryInterface';
 import { PostResendController } from './postResendController';
 import { userRepositoryMock } from '../../../../data/repository.mocks';
+import { getPOSTMockReqWithToken } from '../../../../data/mockReq';
 
 describe('PostResendController', () => {
   let postResendController: PostResendController;
@@ -18,11 +19,8 @@ describe('PostResendController', () => {
   });
 
   it('should invoke normally', async () => {
-    const req = getMockReq({
-      method: 'POST',
-      body: {
-        email: 'user1@example.com',
-      },
+    const req = getPOSTMockReqWithToken({
+      email: 'user1@example.com',
     });
     await postResendController.invoke(req, res);
     expect(userRepository.resendCode).toBeCalledTimes(1);
@@ -34,9 +32,7 @@ describe('PostResendController', () => {
   });
 
   it('should notify 400 error if request is undefined', async () => {
-    const req = getMockReq({
-      method: 'POST',
-    });
+    const req = getPOSTMockReqWithToken({});
     await postResendController.invoke(req, res);
     expect(userRepository.findToken).toBeCalledTimes(0);
     expect(res.status).toBeCalledTimes(1);

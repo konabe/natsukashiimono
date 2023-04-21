@@ -1,4 +1,5 @@
 import { content1 } from '../../../../data/content.data';
+import { contentRepositoryMock } from '../../../../data/repository.mocks';
 import { IContentRepository } from '../../../domain/repository/contentRepositoryInterface';
 import { GetContentController } from './getContentController';
 import { getMockReq, getMockRes } from '@jest-mock/express';
@@ -10,12 +11,8 @@ describe('getContentController', () => {
 
   beforeEach(() => {
     contentRepository = {
-      find: jest.fn(),
+      ...contentRepositoryMock,
       findApproved: jest.fn().mockResolvedValue([content1]),
-      findInprogress: jest.fn(),
-      findOne: jest.fn(),
-      save: jest.fn(),
-      updateApprovalStatus: jest.fn(),
     };
     getContentController = new GetContentController({ contentRepository });
     clearMockRes();

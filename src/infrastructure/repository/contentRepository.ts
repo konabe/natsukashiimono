@@ -34,21 +34,20 @@ export class ContentRepository implements IContentRepository {
     const resultScores = scores.map((s) => new Vote(s.contentId, s.userId));
     const results = await contentRepository.find();
 
-    return results
-      .filter(filter)
-      .map((c) => {
-        return Content.instantiate({
+    return results.filter(filter).flatMap((c) => {
+      return (
+        Content.instantiate({
           id: c.id,
           name: c.name,
           description: c.description,
           imageUrl: c.imageUrl,
           votes: resultScores,
-        });
-      })
-      .filter((e) => e != null);
+        }) ?? []
+      );
+    });
   }
 
-  async findOne(id: number): Promise<Content> {
+  async findOne(id: number): Promise<Content | undefined> {
     const contents = await this.find();
     const content = contents.find((c) => c.id === id);
     return content;

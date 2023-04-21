@@ -2,6 +2,7 @@ import { getMockReq, getMockRes } from '@jest-mock/express';
 import { IUserRepository } from '../../../domain/repository/userRepositoryInterface';
 import { PostSigninController } from './postSigninController';
 import { userRepositoryMock } from '../../../../data/repository.mocks';
+import { getPOSTMockReqWithToken } from '../../../../data/mockReq';
 
 describe('PostSigninController', () => {
   let postSigninController: PostSigninController;
@@ -18,12 +19,9 @@ describe('PostSigninController', () => {
   });
 
   it('should invoke normally', async () => {
-    const req = getMockReq({
-      method: 'POST',
-      body: {
-        email: 'user1@example.com',
-        password: 'password',
-      },
+    const req = getPOSTMockReqWithToken({
+      email: 'user1@example.com',
+      password: 'password',
     });
     await postSigninController.invoke(req, res);
     expect(userRepository.findToken).toBeCalledTimes(1);
@@ -32,8 +30,8 @@ describe('PostSigninController', () => {
   });
 
   it('should notify 400 error if request is undefined', async () => {
-    const req = getMockReq({
-      method: 'POST',
+    const req = getPOSTMockReqWithToken({
+      email: 'user1@example.com',
     });
     await postSigninController.invoke(req, res);
     expect(userRepository.findToken).toBeCalledTimes(0);
@@ -47,12 +45,9 @@ describe('PostSigninController', () => {
       findToken: jest.fn().mockReturnValue(undefined),
     };
     postSigninController = new PostSigninController({ userRepository });
-    const req = getMockReq({
-      method: 'POST',
-      body: {
-        email: 'user1@example.com',
-        password: 'password',
-      },
+    const req = getPOSTMockReqWithToken({
+      email: 'user1@example.com',
+      password: 'password',
     });
     await postSigninController.invoke(req, res);
     expect(userRepository.findToken).toBeCalledTimes(1);

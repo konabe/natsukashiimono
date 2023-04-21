@@ -40,5 +40,9 @@ describe('PostContentResponse', () => {
         PostContentResponse.instantiateBy(contentNotHaveId),
       ).toBeUndefined();
     });
+
+    it('should return undefined if argument undefined', () => {
+      expect(PostContentResponse.instantiateBy(undefined)).toBeUndefined();
+    });
   });
 });

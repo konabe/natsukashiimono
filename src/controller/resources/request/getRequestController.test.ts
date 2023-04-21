@@ -1,11 +1,14 @@
 import { content1 } from '../../../../data/content.data';
-import { userRepositoryMock } from '../../../../data/repository.mocks';
+import { getGETMockReqWithToken } from '../../../../data/mockReq';
+import {
+  contentRepositoryMock,
+  userRepositoryMock,
+} from '../../../../data/repository.mocks';
+import { adminUser } from '../../../../data/user.data';
 import { IContentRepository } from '../../../domain/repository/contentRepositoryInterface';
 import { IUserRepository } from '../../../domain/repository/userRepositoryInterface';
-import { Role } from '../../../domain/role';
-import { User } from '../../../domain/user';
 import { GetRequestController } from '../request/getRequestController';
-import { getMockReq, getMockRes } from '@jest-mock/express';
+import { getMockRes } from '@jest-mock/express';
 
 describe('getContentController', () => {
   let getRequestController: GetRequestController;
@@ -15,23 +18,14 @@ describe('getContentController', () => {
 
   beforeEach(() => {
     contentRepository = {
-      find: jest.fn(),
-      findApproved: jest.fn(),
+      ...contentRepositoryMock,
       findInprogress: jest.fn().mockResolvedValue([content1]),
-      findOne: jest.fn(),
-      save: jest.fn(),
-      updateApprovalStatus: jest.fn(),
     };
     userRepository = {
       ...userRepositoryMock,
-      findUserIdByToken: jest.fn().mockResolvedValue('id001'),
-      findUserById: jest
-        .fn()
-        .mockResolvedValue(
-          User.instantiateBy('id001', [new Role('admin', 100)]),
-        ),
+      findUserIdByToken: jest.fn().mockResolvedValue(adminUser.id),
+      findUserById: jest.fn().mockResolvedValue(adminUser),
     };
-
     getRequestController = new GetRequestController({
       userRepository,
       contentRepository,
@@ -40,12 +34,7 @@ describe('getContentController', () => {
   });
 
   it('should invoke normally', async () => {
-    const req = getMockReq({
-      method: 'GET',
-      header: jest.fn().mockImplementation((name: string) => {
-        if (name === 'Authorization') return 'hoge';
-      }),
-    });
+    const req = getGETMockReqWithToken();
     await getRequestController.invoke(req, res);
     expect(contentRepository.findInprogress).toBeCalledTimes(1);
     expect(res.status).toBeCalledWith(200);

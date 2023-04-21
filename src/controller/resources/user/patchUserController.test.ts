@@ -4,6 +4,9 @@ import { PatchUserController } from './patchUserController';
 import { userRepositoryMock } from '../../../../data/repository.mocks';
 import { User } from '../../../domain/user';
 import { Role } from '../../../domain/role';
+import { getPATCHMockReqWithToken } from '../../../../data/mockReq';
+import { adminUser, user20Years } from '../../../../data/user.data';
+import { PatchUserRequest } from '../../../infrastructure/api/model/user/patchUserAPI';
 
 describe('PatchUserController', () => {
   let patchUserController: PatchUserController;
@@ -14,38 +17,16 @@ describe('PatchUserController', () => {
     userRepository = {
       ...userRepositoryMock,
       findUserIdByToken: jest.fn().mockResolvedValue('id001'),
-      findUserById: jest
-        .fn()
-        .mockResolvedValue(
-          User.instantiateBy(
-            'id001',
-            [new Role('admin', 50), new Role('user', 100)],
-            { age: 20 },
-          ),
-        ),
-      updateAge: jest
-        .fn()
-        .mockResolvedValue(
-          User.instantiateBy(
-            'id001',
-            [new Role('admin', 50), new Role('user', 100)],
-            { age: 20 },
-          ),
-        ),
+      findUserById: jest.fn().mockResolvedValue(user20Years),
+      updateAge: jest.fn().mockResolvedValue(user20Years),
     };
     patchUserController = new PatchUserController({ userRepository });
     clearMockRes();
   });
 
   it('should return user', async () => {
-    const req = getMockReq({
-      method: 'PATCH',
-      body: {
-        age: 20,
-      },
-      header: jest.fn().mockImplementation((name: string) => {
-        if (name === 'Authorization') return 'hoge';
-      }),
+    const req = getPATCHMockReqWithToken({
+      age: 20,
     });
     await patchUserController.invoke(req, res);
     expect(userRepository.findUserById).toBeCalledTimes(1);
@@ -66,14 +47,8 @@ describe('PatchUserController', () => {
       findUserById: jest.fn().mockResolvedValue(undefined),
     };
     patchUserController = new PatchUserController({ userRepository });
-    const req = getMockReq({
-      method: 'PATCH',
-      body: {
-        age: 20,
-      },
-      header: jest.fn().mockImplementation((name: string) => {
-        if (name === 'Authorization') return 'hoge';
-      }),
+    const req = getPATCHMockReqWithToken({
+      age: 20,
     });
     await patchUserController.invoke(req, res);
     expect(userRepository.updateAge).toBeCalledTimes(0);
@@ -84,28 +59,34 @@ describe('PatchUserController', () => {
   it('should return 404 if user is not found', async () => {
     userRepository = {
       ...userRepository,
-      findUserById: jest
-        .fn()
-        .mockResolvedValue(
-          User.instantiateBy('user-id-1', [
-            new Role('admin', 50),
-            new Role('user', 100),
-          ]),
-        ),
+      findUserById: jest.fn().mockResolvedValue(adminUser),
       updateAge: jest.fn().mockResolvedValue(undefined),
     };
     patchUserController = new PatchUserController({ userRepository });
-    const req = getMockReq({
-      method: 'PATCH',
-      body: {
-        age: 20,
-      },
-      header: jest.fn().mockImplementation((name: string) => {
-        if (name === 'Authorization') return 'hoge';
-      }),
+    const req = getPATCHMockReqWithToken({
+      age: 20,
     });
     await patchUserController.invoke(req, res);
     expect(userRepository.updateAge).toBeCalledTimes(1);
+    expect(res.status).toBeCalledWith(404);
+    expect(res.send).toBeCalledTimes(1);
+  });
+
+  it('should return 404 if passed userId is undefined', async () => {
+    userRepository = {
+      ...userRepository,
+    };
+    patchUserController = new PatchUserController({
+      userRepository,
+    });
+    await patchUserController.validated(
+      PatchUserRequest.instantiateBy({ age: 20 })!,
+      res,
+      {
+        authorizedUser: undefined,
+      },
+    );
+    expect(userRepository.findUserById).toBeCalledTimes(0);
     expect(res.status).toBeCalledWith(404);
     expect(res.send).toBeCalledTimes(1);
   });

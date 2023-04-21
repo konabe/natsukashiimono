@@ -12,6 +12,8 @@ export type PostVerifyControllerDependencies = {
 
 export class PostVerifyController extends ControllerAdaptor<PostVerifyRequest> {
   allowed = [];
+  protected readonly userRepository: IUserRepository;
+
   constructor({ userRepository }: PostVerifyControllerDependencies) {
     super(userRepository);
   }

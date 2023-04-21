@@ -131,7 +131,7 @@ describe('ContentRepository', () => {
 
     it('should find all records', async () => {
       const content = await contentRepository.findOne(3);
-      expect(content.id).toBe(3);
+      expect(content?.id).toBe(3);
     });
   });
 
@@ -158,10 +158,10 @@ describe('ContentRepository', () => {
           description: '説明です',
           imageUrl: 'https://example.com/image.png',
           votes: [],
-        }),
+        })!,
       );
       const content = await contentRepository.findOne(id);
-      expect(content.id).toBe(id);
+      expect(content?.id).toBe(id);
     });
   });
 

@@ -12,12 +12,13 @@ export class ControllerAdaptorStub extends ControllerAdaptor<RequestForStub> {
   createRequest(_: any): RequestForStub {
     return new RequestForStub();
   }
-  validated(
+  async validated(
     _: RequestForStub,
     res: Response<any, Record<string, any>>,
     __: ValidatedOptions,
   ): Promise<void> {
     res.status(200).json();
+    await new Promise((resolve) => setTimeout(resolve, 0));
     return;
   }
 }

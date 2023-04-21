@@ -12,6 +12,8 @@ export type GetUserControllerDependencies = {
 
 export class GetUserController extends ControllerAdaptor<GetUserRequest> {
   allowed = ['user', 'admin'];
+  protected readonly userRepository: IUserRepository;
+
   constructor({ userRepository }: GetUserControllerDependencies) {
     super(userRepository);
   }
@@ -25,9 +27,12 @@ export class GetUserController extends ControllerAdaptor<GetUserRequest> {
     res: Response<any, Record<string, any>>,
     options: ValidatedOptions,
   ): Promise<void> {
-    const user = await this.userRepository.findUserById(
-      options.authorizedUser?.id,
-    );
+    const userId = options.authorizedUser?.id;
+    if (userId === undefined) {
+      res.status(404).send();
+      return;
+    }
+    const user = await this.userRepository.findUserById(userId);
     if (user === undefined) {
       res.status(404).send();
       return;
