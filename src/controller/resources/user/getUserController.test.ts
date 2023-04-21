@@ -2,8 +2,8 @@ import { getMockReq, getMockRes } from '@jest-mock/express';
 import { IUserRepository } from '../../../domain/repository/userRepositoryInterface';
 import { GetUserController } from './getUserController';
 import { userRepositoryMock } from '../../../../data/repository.mocks';
-import { User } from '../../../domain/user';
-import { Role } from '../../../domain/role';
+import { adminUser } from '../../../../data/user.data';
+import { getGETMockReqWithToken } from '../../../../data/mockReq';
 
 describe('GetUserController', () => {
   let getUserController: GetUserController;
@@ -13,38 +13,24 @@ describe('GetUserController', () => {
   beforeEach(() => {
     userRepository = {
       ...userRepositoryMock,
-      findUserById: jest
-        .fn()
-        .mockResolvedValue(
-          User.instantiateBy('user-id-1', [
-            new Role('admin', 50),
-            new Role('user', 100),
-          ]),
-        ),
-      findUserIdByToken: jest.fn().mockResolvedValue('id001'),
+      findUserById: jest.fn().mockResolvedValue(adminUser),
+      findUserIdByToken: jest.fn().mockResolvedValue(adminUser.id),
     };
     getUserController = new GetUserController({ userRepository });
     clearMockRes();
-    res.locals.user = {};
   });
 
   it('should return user', async () => {
     getUserController = new GetUserController({ userRepository });
-    const req = getMockReq({
-      method: 'GET',
-      header: jest.fn().mockImplementation((name: string) => {
-        if (name === 'Authorization') return 'hoge';
-      }),
-    });
-    res.locals.user.id = 'user-id-1';
+    const req = getGETMockReqWithToken();
     await getUserController.invoke(req, res);
     expect(userRepository.findUserById).toBeCalledTimes(2);
-    expect(userRepository.findUserById).toBeCalledWith('id001');
+    expect(userRepository.findUserById).toBeCalledWith(adminUser.id);
     expect(res.status).toBeCalledWith(200);
     expect(res.json).toBeCalledTimes(1);
     expect(res.json).toBeCalledWith({
-      id: 'user-id-1',
-      roles: ['admin', 'user'],
+      id: adminUser.id,
+      roles: adminUser.getRoleNames(),
     });
   });
 
@@ -57,7 +43,6 @@ describe('GetUserController', () => {
     const req = getMockReq({
       method: 'GET',
     });
-    res.locals.user.id = 'user-id-1';
     await getUserController.invoke(req, res);
     expect(userRepository.findUserById).toBeCalledTimes(0);
     expect(res.status).toBeCalledWith(403);
@@ -69,22 +54,11 @@ describe('GetUserController', () => {
       ...userRepository,
       findUserById: jest
         .fn()
-        .mockResolvedValueOnce(
-          User.instantiateBy('user-id-1', [
-            new Role('admin', 50),
-            new Role('user', 100),
-          ]),
-        )
+        .mockResolvedValueOnce(adminUser)
         .mockResolvedValue(undefined),
     };
     getUserController = new GetUserController({ userRepository });
-    const req = getMockReq({
-      method: 'GET',
-      header: jest.fn().mockImplementation((name: string) => {
-        if (name === 'Authorization') return 'hoge';
-      }),
-    });
-    res.locals.user.id = 'user-id-1';
+    const req = getGETMockReqWithToken();
     await getUserController.invoke(req, res);
     expect(userRepository.findUserById).toBeCalledTimes(2);
     expect(res.status).toBeCalledWith(404);

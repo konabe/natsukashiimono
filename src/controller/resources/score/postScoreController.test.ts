@@ -1,10 +1,10 @@
-import { getMockReq, getMockRes } from '@jest-mock/express';
+import { getMockRes } from '@jest-mock/express';
 import { IScoreRepository } from '../../../domain/repository/scoreRepositoryInterface';
 import { PostScoreController } from './postScoreController';
 import { IUserRepository } from '../../../domain/repository/userRepositoryInterface';
 import { userRepositoryMock } from '../../../../data/repository.mocks';
-import { User } from '../../../domain/user';
-import { Role } from '../../../domain/role';
+import { adminUser } from '../../../../data/user.data';
+import { getPOSTMockReqWithToken } from '../../../../data/mockReq';
 
 describe('PostScoreController', () => {
   let postScoreController: PostScoreController;
@@ -22,32 +22,20 @@ describe('PostScoreController', () => {
     };
     userRepository = {
       ...userRepositoryMock,
-      findUserIdByToken: jest.fn().mockResolvedValue('id001'),
-      findUserById: jest
-        .fn()
-        .mockResolvedValue(
-          User.instantiateBy('id001', [new Role('admin', 100)]),
-        ),
+      findUserIdByToken: jest.fn().mockResolvedValue(adminUser.id),
+      findUserById: jest.fn().mockResolvedValue(adminUser),
     };
     postScoreController = new PostScoreController({
       userRepository,
       scoreRepository,
     });
     clearMockRes();
-    res.locals.user = {};
   });
 
   it('should invoke normally', async () => {
-    const req = getMockReq({
-      method: 'POST',
-      body: {
-        contentId: 1,
-      },
-      header: jest.fn().mockImplementation((name: string) => {
-        if (name === 'Authorization') return 'hoge';
-      }),
+    const req = getPOSTMockReqWithToken({
+      contentId: 1,
     });
-    res.locals.user = { id: 1 };
     await postScoreController.invoke(req, res);
     expect(scoreRepository.save).toBeCalledTimes(1);
     expect(scoreRepository.find).toBeCalledTimes(1);
@@ -59,12 +47,7 @@ describe('PostScoreController', () => {
   });
 
   it('should notify 400 error when body is undefined', async () => {
-    const req = getMockReq({
-      method: 'POST',
-      header: jest.fn().mockImplementation((name: string) => {
-        if (name === 'Authorization') return 'hoge';
-      }),
-    });
+    const req = getPOSTMockReqWithToken({});
     await postScoreController.invoke(req, res);
     expect(scoreRepository.save).toBeCalledTimes(0);
     expect(scoreRepository.find).toBeCalledTimes(0);
@@ -81,16 +64,9 @@ describe('PostScoreController', () => {
       userRepository,
       scoreRepository,
     });
-    const req = getMockReq({
-      method: 'POST',
-      body: {
-        contentId: 1,
-      },
-      header: jest.fn().mockImplementation((name: string) => {
-        if (name === 'Authorization') return 'hoge';
-      }),
+    const req = getPOSTMockReqWithToken({
+      contentId: 1,
     });
-    res.locals.user = { id: 1 };
     await postScoreController.invoke(req, res);
     expect(scoreRepository.save).toBeCalledTimes(1);
     expect(scoreRepository.find).toBeCalledTimes(1);

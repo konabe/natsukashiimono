@@ -1,11 +1,14 @@
-import { getMockReq, getMockRes } from '@jest-mock/express';
+import { getMockRes } from '@jest-mock/express';
 import { IContentRepository } from '../../../domain/repository/contentRepositoryInterface';
 import { PostRequestApprovedController } from './postRequestApprovedController';
 import { ApprovalStatus } from '../../../domain/approvalStatus';
 import { IUserRepository } from '../../../domain/repository/userRepositoryInterface';
-import { User } from '../../../domain/user';
-import { Role } from '../../../domain/role';
-import { userRepositoryMock } from '../../../../data/repository.mocks';
+import {
+  contentRepositoryMock,
+  userRepositoryMock,
+} from '../../../../data/repository.mocks';
+import { adminUser } from '../../../../data/user.data';
+import { getPOSTMockReqWithToken } from '../../../../data/mockReq';
 
 describe('postRequestApprovedController', () => {
   let postRequestApprovedController: PostRequestApprovedController;
@@ -15,21 +18,12 @@ describe('postRequestApprovedController', () => {
 
   beforeEach(() => {
     contentRepository = {
-      find: jest.fn(),
-      findApproved: jest.fn(),
-      findInprogress: jest.fn(),
-      findOne: jest.fn(),
-      save: jest.fn(),
-      updateApprovalStatus: jest.fn(),
+      ...contentRepositoryMock,
     };
     userRepository = {
       ...userRepositoryMock,
-      findUserIdByToken: jest.fn().mockResolvedValue('id001'),
-      findUserById: jest
-        .fn()
-        .mockResolvedValue(
-          User.instantiateBy('id001', [new Role('admin', 100)]),
-        ),
+      findUserIdByToken: jest.fn().mockResolvedValue(adminUser.id),
+      findUserById: jest.fn().mockResolvedValue(adminUser),
     };
     postRequestApprovedController = new PostRequestApprovedController({
       userRepository,
@@ -47,14 +41,8 @@ describe('postRequestApprovedController', () => {
       userRepository,
       contentRepository,
     });
-    const req = getMockReq({
-      method: 'POST',
-      body: {
-        contentId: 1,
-      },
-      header: jest.fn().mockImplementation((name: string) => {
-        if (name === 'Authorization') return 'hoge';
-      }),
+    const req = getPOSTMockReqWithToken({
+      contentId: 1,
     });
     await postRequestApprovedController.invoke(req, res);
     expect(contentRepository.updateApprovalStatus).toBeCalledTimes(1);
@@ -75,12 +63,7 @@ describe('postRequestApprovedController', () => {
       userRepository,
       contentRepository,
     });
-    const req = getMockReq({
-      method: 'POST',
-      header: jest.fn().mockImplementation((name: string) => {
-        if (name === 'Authorization') return 'hoge';
-      }),
-    });
+    const req = getPOSTMockReqWithToken({});
     await postRequestApprovedController.invoke(req, res);
     expect(contentRepository.updateApprovalStatus).toBeCalledTimes(0);
     expect(res.status).toBeCalledWith(400);
@@ -96,14 +79,8 @@ describe('postRequestApprovedController', () => {
       userRepository,
       contentRepository,
     });
-    const req = getMockReq({
-      method: 'POST',
-      body: {
-        contentId: 1,
-      },
-      header: jest.fn().mockImplementation((name: string) => {
-        if (name === 'Authorization') return 'hoge';
-      }),
+    const req = getPOSTMockReqWithToken({
+      contentId: 1,
     });
     await postRequestApprovedController.invoke(req, res);
     expect(contentRepository.updateApprovalStatus).toBeCalledTimes(1);

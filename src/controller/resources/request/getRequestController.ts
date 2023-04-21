@@ -28,10 +28,7 @@ export class GetRequestController extends ControllerAdaptor<GetRequestRequest> {
     return new GetRequestRequest();
   }
 
-  async validated(
-    reqModel: GetRequestRequest,
-    res: express.Response,
-  ): Promise<void> {
+  async validated(_: GetRequestRequest, res: express.Response): Promise<void> {
     const resultContents = await this.contentRepository.findInprogress();
     res.status(200).json(new GetRequestResponse(resultContents));
     return;

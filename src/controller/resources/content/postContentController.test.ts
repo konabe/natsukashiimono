@@ -2,6 +2,7 @@ import { content2 } from '../../../../data/content.data';
 import { IContentRepository } from '../../../domain/repository/contentRepositoryInterface';
 import { getMockReq, getMockRes } from '@jest-mock/express';
 import { PostContentController } from './postContentController';
+import { contentRepositoryMock } from '../../../../data/repository.mocks';
 
 describe('PostContentController', () => {
   let postContentController: PostContentController;
@@ -10,12 +11,8 @@ describe('PostContentController', () => {
 
   beforeEach(() => {
     contentRepository = {
-      find: jest.fn(),
-      findApproved: jest.fn(),
-      findInprogress: jest.fn(),
-      findOne: jest.fn(),
+      ...contentRepositoryMock,
       save: jest.fn().mockResolvedValue(0),
-      updateApprovalStatus: jest.fn(),
     };
     postContentController = new PostContentController({
       contentRepository,

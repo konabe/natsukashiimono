@@ -16,7 +16,6 @@ describe('ControllerAdaptorStub', () => {
     };
     controller = new ControllerAdaptorStub(userRepository);
     clearMockRes();
-    res.locals.user = {};
   });
 
   it('should return undefined if req has no Authorization header', async () => {
