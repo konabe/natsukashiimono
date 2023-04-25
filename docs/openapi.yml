@@ -8,7 +8,7 @@ externalDocs:
   description: Find out more about Swagger
   url: http://swagger.io
 servers:
-  - url: https://petstore3.swagger.io/api/v3
+  - url: http://localhost:3000/
 tags:
   - name: user
     description: アカウント情報
@@ -357,6 +357,46 @@ paths:
                 $ref: '#/components/schemas/Content'
         '400':
           description: パラメータ不足
+  /content/{id}:
+    put:
+      tags:
+        - content
+      summary: コンテンツ編集
+      description: コンテンツを編集できます。admin
+      operationId: putContent
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+          required: true
+      requestBody:
+        description: コンテンツの内容
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                description:
+                  type: string
+                imageUrl:
+                  type: string
+      responses:
+        '200':
+          description: 成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Content'
+        '400':
+          description: パラメータ不足
+        '403':
+          description: 権限なし
+      security:
+        - tokenAuth: []
   /score:
     post:
       tags:
