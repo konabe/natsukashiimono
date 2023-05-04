@@ -9,7 +9,8 @@ export type AuthorizedUser = {
 };
 
 export type ValidatedOptions = {
-  authorizedUser: AuthorizedUser | undefined;
+  authorizedUser?: AuthorizedUser;
+  pathId?: string;
 };
 
 export abstract class ControllerAdaptor<TReq extends BaseRequest> {
@@ -68,8 +69,10 @@ export abstract class ControllerAdaptor<TReq extends BaseRequest> {
       res.status(400).send();
       return;
     }
+    let pathId = req.params.id;
     return await this.validated(reqModel, res, {
       authorizedUser,
+      pathId,
     });
   }
 }

@@ -34,4 +34,4 @@ app.use('/user', userRouter);
 })();
 
 const port = 3000;
-app.listen(port, () => console.log(`ok, port = ${port}`));
+app.listen(port, () => console.log(`ok, port = ${port} ${new Date()}`));

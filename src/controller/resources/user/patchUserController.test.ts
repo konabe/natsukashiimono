@@ -1,9 +1,7 @@
-import { getMockReq, getMockRes } from '@jest-mock/express';
+import { getMockRes } from '@jest-mock/express';
 import { IUserRepository } from '../../../domain/repository/userRepositoryInterface';
 import { PatchUserController } from './patchUserController';
 import { userRepositoryMock } from '../../../../data/repository.mocks';
-import { User } from '../../../domain/user';
-import { Role } from '../../../domain/role';
 import { getPATCHMockReqWithToken } from '../../../../data/mockReq';
 import { adminUser, user20Years } from '../../../../data/user.data';
 import { PatchUserRequest } from '../../../infrastructure/api/model/user/patchUserAPI';
