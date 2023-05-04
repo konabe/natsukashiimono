@@ -11,9 +11,9 @@
     "start": "npx nodemon src/main.ts",
     "start:prod": "npx tsc && pm2 start dist/src/main.js --name natsukashiimono",
     "stop:prod": "pm2 delete natsukashiimono",
-    "test": "jest --maxWorkers=4",
-    "test:watch": "jest --watch --maxWorkers=4",
-    "test:cov": "jest --coverage --maxWorkers=4"
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:cov": "jest --coverage"
   },
   "dependencies": {
     "@aws-sdk/client-cognito-identity-provider": "^3.316.0",
