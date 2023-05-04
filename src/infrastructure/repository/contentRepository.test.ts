@@ -46,18 +46,22 @@ describe('ContentRepository', () => {
       approvalStatus: 'approved',
     },
   ];
+  const createDataSource = async () => {
+    const localDataSource = new DataSource({
+      type: 'sqlite',
+      database: ':memory:',
+      dropSchema: false,
+      entities: [ContentEntity, ScoreEntity],
+      synchronize: true,
+      logging: false,
+    });
+    await localDataSource.initialize();
+    return localDataSource;
+  };
 
   describe('#find', () => {
     beforeEach(async () => {
-      dataSource = new DataSource({
-        type: 'sqlite',
-        database: ':memory:',
-        dropSchema: false,
-        entities: [ContentEntity, ScoreEntity],
-        synchronize: true,
-        logging: false,
-      });
-      await dataSource.initialize();
+      dataSource = await createDataSource();
       contentRepository = new ContentRepository(dataSource);
       const repository = dataSource.getRepository(ContentEntity);
       await repository.save(initialData);
@@ -71,21 +75,13 @@ describe('ContentRepository', () => {
 
   describe('#findInprogress', () => {
     beforeEach(async () => {
-      dataSource = new DataSource({
-        type: 'sqlite',
-        database: ':memory:',
-        dropSchema: false,
-        entities: [ContentEntity, ScoreEntity],
-        synchronize: true,
-        logging: false,
-      });
-      await dataSource.initialize();
+      dataSource = await createDataSource();
       contentRepository = new ContentRepository(dataSource);
       const repository = dataSource.getRepository(ContentEntity);
       await repository.save(initialData);
     });
 
-    it('should find all records', async () => {
+    it('should find all inprogress records', async () => {
       const contents = await contentRepository.findInprogress();
       expect(contents.map((e) => e.id)).toEqual([1, 2]);
     });
@@ -93,15 +89,7 @@ describe('ContentRepository', () => {
 
   describe('#findApproved', () => {
     beforeEach(async () => {
-      dataSource = new DataSource({
-        type: 'sqlite',
-        database: ':memory:',
-        dropSchema: false,
-        entities: [ContentEntity, ScoreEntity],
-        synchronize: true,
-        logging: false,
-      });
-      await dataSource.initialize();
+      dataSource = await createDataSource();
       contentRepository = new ContentRepository(dataSource);
       const repository = dataSource.getRepository(ContentEntity);
       await repository.save(initialData);
@@ -115,21 +103,13 @@ describe('ContentRepository', () => {
 
   describe('#findOne', () => {
     beforeEach(async () => {
-      dataSource = new DataSource({
-        type: 'sqlite',
-        database: ':memory:',
-        dropSchema: false,
-        entities: [ContentEntity, ScoreEntity],
-        synchronize: true,
-        logging: false,
-      });
-      await dataSource.initialize();
+      dataSource = await createDataSource();
       contentRepository = new ContentRepository(dataSource);
       const repository = dataSource.getRepository(ContentEntity);
       await repository.save(initialData);
     });
 
-    it('should find all records', async () => {
+    it('should find content where id is 3', async () => {
       const content = await contentRepository.findOne(3);
       expect(content?.id).toBe(3);
     });
@@ -137,21 +117,13 @@ describe('ContentRepository', () => {
 
   describe('#save', () => {
     beforeEach(async () => {
-      dataSource = new DataSource({
-        type: 'sqlite',
-        database: ':memory:',
-        dropSchema: false,
-        entities: [ContentEntity, ScoreEntity],
-        synchronize: true,
-        logging: false,
-      });
-      await dataSource.initialize();
+      dataSource = await createDataSource();
       contentRepository = new ContentRepository(dataSource);
       const repository = dataSource.getRepository(ContentEntity);
       await repository.save(initialData);
     });
 
-    it('should find all records', async () => {
+    it('should save with new id', async () => {
       const id = await contentRepository.save(
         Content.instantiate({
           name: '名前',
@@ -161,21 +133,32 @@ describe('ContentRepository', () => {
         })!,
       );
       const content = await contentRepository.findOne(id);
-      expect(content?.id).toBe(id);
+      // すでにid=5まで入っているので、6が入っていることを確認する
+      expect(content?.id).toBe(6);
+    });
+
+    it('should update exist record', async () => {
+      const id = await contentRepository.save(
+        Content.instantiate({
+          id: 1,
+          name: '懐かしかったもの１',
+          description: '説明を変えます',
+          imageUrl: 'https://example.com/image-new.png',
+          votes: [],
+        })!,
+      );
+      const content = await contentRepository.findOne(id);
+      expect(content?.id).toBe(1);
+      expect(content?.name).toBe('懐かしかったもの１');
+      expect(content?.description).toBe('説明を変えます');
+      expect(content?.imageUrl).toBe('https://example.com/image-new.png');
+      expect(content?.votes).toEqual([]);
     });
   });
 
   describe('#updateApprovalStatus', () => {
     beforeEach(async () => {
-      dataSource = new DataSource({
-        type: 'sqlite',
-        database: ':memory:',
-        dropSchema: false,
-        entities: [ContentEntity, ScoreEntity],
-        synchronize: true,
-        logging: false,
-      });
-      await dataSource.initialize();
+      dataSource = await createDataSource();
       contentRepository = new ContentRepository(dataSource);
       const repository = dataSource.getRepository(ContentEntity);
       await repository.save(initialData);

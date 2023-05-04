@@ -56,6 +56,9 @@ export class ContentRepository implements IContentRepository {
   async save(receivedContent: Content): Promise<number> {
     const contentRepository = this.dataSource.getRepository(ContentEntity);
     const content = new ContentEntity();
+    if (receivedContent.id !== undefined) {
+      content.id = receivedContent.id;
+    }
     content.name = receivedContent.name;
     content.description = receivedContent.description;
     content.imageUrl = receivedContent.imageUrl;
