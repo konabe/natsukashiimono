@@ -17,7 +17,7 @@ export class PostSignupRequest extends BaseRequest {
 export class PostSignupResponse {
   private constructor(readonly successed: boolean) {}
 
-  static instantiateBy(successed): PostSignupResponse {
+  static instantiateBy(successed: boolean): PostSignupResponse {
     return new PostSignupResponse(successed);
   }
 }
