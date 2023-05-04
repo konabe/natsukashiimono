@@ -26,7 +26,7 @@ export class ContentRepository implements IContentRepository {
   }
 
   private async findByFilter(
-    filter: (ContentEntity) => boolean,
+    filter: (ContentEntity: ContentEntity) => boolean,
   ): Promise<Content[]> {
     const contentRepository = this.dataSource.getRepository(ContentEntity);
     const scoreRepository = this.dataSource.getRepository(ScoreEntity);

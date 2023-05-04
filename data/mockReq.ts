@@ -13,7 +13,7 @@ export const getGETMockReqWithToken = () => {
   });
 };
 
-export const getPOSTMockReqWithToken = (obj) => {
+export const getPOSTMockReqWithToken = (obj: any) => {
   return getMockReq({
     method: 'POST',
     body: obj,
@@ -21,7 +21,7 @@ export const getPOSTMockReqWithToken = (obj) => {
   });
 };
 
-export const getPATCHMockReqWithToken = (obj) => {
+export const getPATCHMockReqWithToken = (obj: any) => {
   return getMockReq({
     method: 'PATCH',
     body: obj,
