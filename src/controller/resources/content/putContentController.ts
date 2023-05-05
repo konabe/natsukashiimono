@@ -44,7 +44,6 @@ export class PutContentController extends ControllerAdaptor<PutContentRequest> {
       res.status(400);
       return;
     }
-    console.log(pathId);
     const content = Content.instantiate({
       id: pathId,
       name: reqModel.name,

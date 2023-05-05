@@ -1,5 +1,6 @@
 import { IContentRepository } from '../src/domain/repository/contentRepositoryInterface';
 import { IUserRepository } from '../src/domain/repository/userRepositoryInterface';
+import { adminUser } from './user.data';
 
 export const userRepositoryMock: IUserRepository = {
   create: jest.fn(),
@@ -10,6 +11,12 @@ export const userRepositoryMock: IUserRepository = {
   findUserById: jest.fn(),
   updateAge: jest.fn(),
   signout: jest.fn(),
+};
+
+export const userRepositoryAdminMock: IUserRepository = {
+  ...userRepositoryMock,
+  findUserIdByToken: jest.fn().mockResolvedValue(adminUser.id),
+  findUserById: jest.fn().mockResolvedValue(adminUser),
 };
 
 export const contentRepositoryMock: IContentRepository = {
