@@ -124,7 +124,7 @@ describe('ContentRepository', () => {
     });
 
     it('should save with new id', async () => {
-      const id = await contentRepository.save(
+      const id = await contentRepository.create(
         Content.instantiate({
           name: '名前',
           description: '説明です',
@@ -138,7 +138,7 @@ describe('ContentRepository', () => {
     });
 
     it('should update exist record', async () => {
-      const id = await contentRepository.save(
+      const id = await contentRepository.create(
         Content.instantiate({
           id: 1,
           name: '懐かしかったもの１',
