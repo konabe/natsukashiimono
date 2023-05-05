@@ -18,5 +18,6 @@ export const contentRepositoryMock: IContentRepository = {
   findInprogress: jest.fn(),
   findOne: jest.fn(),
   create: jest.fn(),
+  update: jest.fn(),
   updateApprovalStatus: jest.fn(),
 };

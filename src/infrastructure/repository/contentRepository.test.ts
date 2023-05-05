@@ -115,7 +115,7 @@ describe('ContentRepository', () => {
     });
   });
 
-  describe('#save', () => {
+  describe('#create', () => {
     beforeEach(async () => {
       dataSource = await createDataSource();
       contentRepository = new ContentRepository(dataSource);
@@ -136,23 +136,38 @@ describe('ContentRepository', () => {
       // すでにid=5まで入っているので、6が入っていることを確認する
       expect(content?.id).toBe(6);
     });
+  });
+
+  describe('#update', () => {
+    beforeEach(async () => {
+      dataSource = await createDataSource();
+      contentRepository = new ContentRepository(dataSource);
+      const repository = dataSource.getRepository(ContentEntity);
+      await repository.save(initialData);
+    });
 
     it('should update exist record', async () => {
-      const id = await contentRepository.create(
-        Content.instantiate({
-          id: 1,
-          name: '懐かしかったもの１',
-          description: '説明を変えます',
-          imageUrl: 'https://example.com/image-new.png',
-          votes: [],
-        })!,
-      );
-      const content = await contentRepository.findOne(id);
+      const updatedContent = await contentRepository.update(1, {
+        name: '懐かしかったもの１',
+        description: '説明を変えます',
+        imageUrl: 'https://example.com/image-new.png',
+      });
+      const content = await contentRepository.findOne(updatedContent?.id!);
       expect(content?.id).toBe(1);
       expect(content?.name).toBe('懐かしかったもの１');
       expect(content?.description).toBe('説明を変えます');
       expect(content?.imageUrl).toBe('https://example.com/image-new.png');
       expect(content?.votes).toEqual([]);
+    });
+
+    it('should update exist record but keep other properties', async () => {
+      await contentRepository.update(3, {
+        name: '懐かしかったもの３',
+        description: '説明を変えます。apporovedのままで。',
+        imageUrl: 'https://example.com/image-new.png',
+      });
+      const content = await contentRepository.findApproved();
+      expect(content.filter((c) => c.id === 3).length).toBe(1);
     });
   });
 

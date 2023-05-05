@@ -56,8 +56,11 @@ export class PutContentController extends ControllerAdaptor<PutContentRequest> {
       res.status(400);
       return;
     }
-    const savedContentId = await this.contentRepository.create(content);
-    const savedContent = await this.contentRepository.findOne(savedContentId);
+    const savedContent = await this.contentRepository.update(pathId, {
+      name: content.name,
+      description: content.description,
+      imageUrl: content.imageUrl,
+    });
     res.status(200).json(PutContentResponse.instantiateBy(savedContent));
   }
 }
