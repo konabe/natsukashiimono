@@ -1,6 +1,9 @@
 import { DataSource } from 'typeorm';
 import { Content } from '../../domain/content';
-import { IContentRepository } from '../../domain/repository/contentRepositoryInterface';
+import {
+  IContentRepository,
+  UpdateContentArguments,
+} from '../../domain/repository/contentRepositoryInterface';
 import { ContentEntity } from '../database/entity/content.entity';
 import { ScoreEntity } from '../database/entity/score.entity';
 import { Vote } from '../../domain/vote';
@@ -53,7 +56,7 @@ export class ContentRepository implements IContentRepository {
     return content;
   }
 
-  async save(receivedContent: Content): Promise<number> {
+  async create(receivedContent: Content): Promise<number> {
     const contentRepository = this.dataSource.getRepository(ContentEntity);
     const content = new ContentEntity();
     content.name = receivedContent.name;
@@ -62,6 +65,19 @@ export class ContentRepository implements IContentRepository {
     content.approvalStatus = ApprovalStatus.INPROGRESS;
     const savedContent = await contentRepository.save(content);
     return savedContent.id;
+  }
+
+  async update(
+    id: number,
+    { name, description, imageUrl }: UpdateContentArguments,
+  ): Promise<Content | undefined> {
+    const contentRepository = this.dataSource.getRepository(ContentEntity);
+    await contentRepository.update(id, {
+      name,
+      description,
+      imageUrl,
+    });
+    return await this.findOne(id);
   }
 
   async updateApprovalStatus(

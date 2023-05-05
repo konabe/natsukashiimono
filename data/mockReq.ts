@@ -21,6 +21,15 @@ export const getPOSTMockReqWithToken = (obj: any) => {
   });
 };
 
+export const getPUTMockReqWithToken = (obj: any, params: any) => {
+  return getMockReq({
+    method: 'PUT',
+    body: obj,
+    params: params,
+    header: headerMock(),
+  });
+};
+
 export const getPATCHMockReqWithToken = (obj: any) => {
   return getMockReq({
     method: 'PATCH',

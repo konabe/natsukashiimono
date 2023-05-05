@@ -12,7 +12,7 @@ describe('PostContentController', () => {
   beforeEach(() => {
     contentRepository = {
       ...contentRepositoryMock,
-      save: jest.fn().mockResolvedValue(0),
+      create: jest.fn().mockResolvedValue(0),
     };
     postContentController = new PostContentController({
       contentRepository,
@@ -24,7 +24,7 @@ describe('PostContentController', () => {
     contentRepository = {
       ...contentRepository,
       findOne: jest.fn().mockResolvedValue(content2),
-      save: jest.fn().mockResolvedValue(2),
+      create: jest.fn().mockResolvedValue(2),
     };
     postContentController = new PostContentController({ contentRepository });
     const req = getMockReq({
@@ -36,7 +36,7 @@ describe('PostContentController', () => {
       },
     });
     await postContentController.invoke(req, res);
-    expect(contentRepository.save).toBeCalledWith({
+    expect(contentRepository.create).toBeCalledWith({
       name: '名前です',
       description: '説明です',
       imageUrl: 'https://example.com/index.png',
