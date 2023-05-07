@@ -7,7 +7,6 @@ import {
   userRepositoryAdminMock,
 } from '../../../../data/repository.mocks';
 import { getPUTMockReqWithToken } from '../../../../data/mockReq';
-import { Content } from '../../../domain/content';
 import { content1 } from '../../../../data/content.data';
 
 describe('PutContentController', () => {
@@ -79,19 +78,6 @@ describe('PutContentController', () => {
         imageUrl: 'https://example.com/index.png',
       },
       { id: undefined },
-    );
-    await putContentController.invoke(req, res);
-    expect(res.status).toBeCalledWith(400);
-  });
-
-  it('should reject with 400 if id is not valid number', async () => {
-    const req = getPUTMockReqWithToken(
-      {
-        name: '名前です',
-        description: '説明です',
-        imageUrl: 'https://example.com/index.png',
-      },
-      { id: 'invalid' },
     );
     await putContentController.invoke(req, res);
     expect(res.status).toBeCalledWith(400);

@@ -1,5 +1,4 @@
-import * as express from 'express';
-import { ControllerAdaptor } from '../../controllerAdaptor';
+import { ControllerAdaptor, StatusCode } from '../../controllerAdaptor';
 import { IContentRepository } from '../../../domain/repository/contentRepositoryInterface';
 import { ApprovalStatus } from '../../../domain/approvalStatus';
 import {
@@ -8,18 +7,20 @@ import {
 } from '../../../infrastructure/api/model/request/postRequestDeclinedAPI';
 import { IUserRepository } from '../../../domain/repository/userRepositoryInterface';
 
-export type PostRequestDeclinedControllerDependencies = {
-  userRepository: IUserRepository;
-  contentRepository: IContentRepository;
-};
-
-export class PostRequestDeclinedController extends ControllerAdaptor<PostRequestDeclinedRequest> {
-  allowed = ['admin'];
+export class PostRequestDeclinedController extends ControllerAdaptor<
+  PostRequestDeclinedRequest,
+  PostRequestDeclinedResponse
+> {
+  protected readonly allowed = ['admin'];
   private readonly contentRepository: IContentRepository;
+
   constructor({
     userRepository,
     contentRepository,
-  }: PostRequestDeclinedControllerDependencies) {
+  }: {
+    userRepository: IUserRepository;
+    contentRepository: IContentRepository;
+  }) {
     super(userRepository);
     this.contentRepository = contentRepository;
   }
@@ -28,18 +29,15 @@ export class PostRequestDeclinedController extends ControllerAdaptor<PostRequest
     return PostRequestDeclinedRequest.instantiateBy(req);
   }
 
-  async validated(
-    reqModel: PostRequestDeclinedRequest,
-    res: express.Response,
-  ): Promise<void> {
+  async validated(reqModel: PostRequestDeclinedRequest): Promise<void> {
     const id = await this.contentRepository.updateApprovalStatus(
       reqModel.contentId,
       ApprovalStatus.DECLINED,
     );
     if (id === undefined) {
-      res.status(404).send();
+      this.returnWithError(StatusCode.NotFound);
       return;
     }
-    res.status(200).json(new PostRequestDeclinedResponse());
+    this.returnWithSuccess(new PostRequestDeclinedResponse());
   }
 }

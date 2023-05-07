@@ -1,4 +1,7 @@
-import { BaseRequest } from '../../../../controller/controllerAdaptor';
+import {
+  BaseRequest,
+  BaseResponse,
+} from '../../../../controller/controllerAdaptor';
 
 export class PostVerifyRequest extends BaseRequest {
   private constructor(readonly email: string, readonly code: string) {
@@ -14,8 +17,10 @@ export class PostVerifyRequest extends BaseRequest {
   }
 }
 
-export class PostVerifyResponse {
-  private constructor(readonly verified: boolean) {}
+export class PostVerifyResponse extends BaseResponse {
+  private constructor(readonly verified: boolean) {
+    super();
+  }
 
   static instantiateBy(verified: boolean): PostVerifyResponse {
     return new PostVerifyResponse(verified);

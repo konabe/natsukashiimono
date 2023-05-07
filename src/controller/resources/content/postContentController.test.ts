@@ -58,6 +58,7 @@ describe('PostContentController', () => {
     });
     await postContentController.invoke(req, res);
     expect(res.status).toBeCalledWith(400);
+    expect(res.send).toBeCalledTimes(1);
   });
 
   it('should notify 400 error when body is not valid', async () => {
@@ -71,5 +72,6 @@ describe('PostContentController', () => {
     });
     await postContentController.invoke(req, res);
     expect(res.status).toBeCalledWith(400);
+    expect(res.send).toBeCalledTimes(1);
   });
 });

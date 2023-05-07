@@ -1,4 +1,3 @@
-import * as express from 'express';
 import {
   GetContentRequest,
   GetContentResponse,
@@ -6,15 +5,18 @@ import {
 import { IContentRepository } from '../../../domain/repository/contentRepositoryInterface';
 import { ControllerAdaptor } from '../../controllerAdaptor';
 
-export type GetContentControllerDependencies = {
-  contentRepository: IContentRepository;
-};
-
-export class GetContentController extends ControllerAdaptor<GetContentRequest> {
+export class GetContentController extends ControllerAdaptor<
+  GetContentRequest,
+  GetContentResponse
+> {
   readonly allowed = [];
   private readonly contentRepository: IContentRepository;
 
-  constructor({ contentRepository }: GetContentControllerDependencies) {
+  constructor({
+    contentRepository,
+  }: {
+    contentRepository: IContentRepository;
+  }) {
     super();
     this.contentRepository = contentRepository;
   }
@@ -23,12 +25,9 @@ export class GetContentController extends ControllerAdaptor<GetContentRequest> {
     return new GetContentRequest();
   }
 
-  async validated(
-    _: GetContentRequest,
-    res: express.Response<GetContentResponse>,
-  ): Promise<void> {
+  async validated(_: GetContentRequest): Promise<void> {
     const resultContents = await this.contentRepository.findApproved();
-    res.status(200).json(new GetContentResponse(resultContents));
+    this.returnWithSuccess(new GetContentResponse(resultContents));
     return;
   }
 }

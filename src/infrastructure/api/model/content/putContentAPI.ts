@@ -1,4 +1,7 @@
-import { BaseRequest } from '../../../../controller/controllerAdaptor';
+import {
+  BaseRequest,
+  BaseResponse,
+} from '../../../../controller/controllerAdaptor';
 import { Content } from '../../../../domain/content';
 
 export class PutContentRequest extends BaseRequest {
@@ -23,14 +26,16 @@ export class PutContentRequest extends BaseRequest {
   }
 }
 
-export class PutContentResponse {
+export class PutContentResponse extends BaseResponse {
   private constructor(
     readonly id: number,
     readonly name: string,
     readonly description: string,
     readonly imageUrl: string,
     readonly score: number,
-  ) {}
+  ) {
+    super();
+  }
 
   static instantiateBy(
     content: Content | undefined,

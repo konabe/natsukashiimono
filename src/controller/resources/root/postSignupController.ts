@@ -1,4 +1,3 @@
-import * as express from 'express';
 import {
   PostSignupRequest,
   PostSignupResponse,
@@ -6,15 +5,14 @@ import {
 import { IUserRepository } from '../../../domain/repository/userRepositoryInterface';
 import { ControllerAdaptor } from '../../controllerAdaptor';
 
-export type PostSignupControllerDependencies = {
-  userRepository: IUserRepository;
-};
-
-export class PostSignupController extends ControllerAdaptor<PostSignupRequest> {
-  allowed = [];
+export class PostSignupController extends ControllerAdaptor<
+  PostSignupRequest,
+  PostSignupResponse
+> {
+  protected readonly allowed = [];
   protected readonly userRepository: IUserRepository;
 
-  constructor({ userRepository }: PostSignupControllerDependencies) {
+  constructor({ userRepository }: { userRepository: IUserRepository }) {
     super(userRepository);
   }
 
@@ -22,12 +20,9 @@ export class PostSignupController extends ControllerAdaptor<PostSignupRequest> {
     return PostSignupRequest.instantiateBy(req);
   }
 
-  async validated(
-    reqModel: PostSignupRequest,
-    res: express.Response,
-  ): Promise<void> {
+  async validated(reqModel: PostSignupRequest): Promise<void> {
     const { email, password } = reqModel;
     const successed = await this.userRepository.create(email, password);
-    res.status(200).json(PostSignupResponse.instantiateBy(successed));
+    this.returnWithSuccess(PostSignupResponse.instantiateBy(successed));
   }
 }

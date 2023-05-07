@@ -1,20 +1,22 @@
-import { Response } from 'express';
 import { IUserRepository } from '../../../domain/repository/userRepositoryInterface';
 import {
   GetUserRequest,
   GetUserResponse,
 } from '../../../infrastructure/api/model/user/getUserAPI';
-import { ControllerAdaptor, ValidatedOptions } from '../../controllerAdaptor';
+import {
+  ControllerAdaptor,
+  StatusCode,
+  ValidatedOptions,
+} from '../../controllerAdaptor';
 
-export type GetUserControllerDependencies = {
-  userRepository: IUserRepository;
-};
-
-export class GetUserController extends ControllerAdaptor<GetUserRequest> {
-  allowed = ['user', 'admin'];
+export class GetUserController extends ControllerAdaptor<
+  GetUserRequest,
+  GetUserResponse
+> {
+  protected readonly allowed = ['user', 'admin'];
   protected readonly userRepository: IUserRepository;
 
-  constructor({ userRepository }: GetUserControllerDependencies) {
+  constructor({ userRepository }: { userRepository: IUserRepository }) {
     super(userRepository);
   }
 
@@ -22,22 +24,19 @@ export class GetUserController extends ControllerAdaptor<GetUserRequest> {
     return new GetUserRequest();
   }
 
-  async validated(
-    _: GetUserRequest,
-    res: Response<any, Record<string, any>>,
-    options: ValidatedOptions,
-  ): Promise<void> {
+  async validated(_: GetUserRequest, options: ValidatedOptions): Promise<void> {
     const userId = options.authorizedUser?.id;
+    // FIXME: userIdが必ずundefinedでないことを保証するControllerAdaptorを作成する
     if (userId === undefined) {
-      res.status(404).send();
+      this.returnWithError(StatusCode.Forbidden);
       return;
     }
     const user = await this.userRepository.findUserById(userId);
     if (user === undefined) {
-      res.status(404).send();
+      this.returnWithError(StatusCode.NotFound);
       return;
     }
-    res.status(200).json(new GetUserResponse(user));
+    this.returnWithSuccess(new GetUserResponse(user));
     return;
   }
 }

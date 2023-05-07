@@ -1,20 +1,18 @@
-import * as express from 'express';
 import {
   PostSigninRequest,
   PostSigninResponse,
 } from '../../../infrastructure/api/model/root/postSigninAPI';
 import { IUserRepository } from '../../../domain/repository/userRepositoryInterface';
-import { ControllerAdaptor } from '../../controllerAdaptor';
+import { ControllerAdaptor, StatusCode } from '../../controllerAdaptor';
 
-export type PostSigninControllerDependencies = {
-  userRepository: IUserRepository;
-};
-
-export class PostSigninController extends ControllerAdaptor<PostSigninRequest> {
-  allowed = [];
+export class PostSigninController extends ControllerAdaptor<
+  PostSigninRequest,
+  PostSigninResponse
+> {
+  protected readonly allowed = [];
   protected readonly userRepository: IUserRepository;
 
-  constructor({ userRepository }: PostSigninControllerDependencies) {
+  constructor({ userRepository }: { userRepository: IUserRepository }) {
     super(userRepository);
   }
 
@@ -22,16 +20,13 @@ export class PostSigninController extends ControllerAdaptor<PostSigninRequest> {
     return PostSigninRequest.instantiateBy(req);
   }
 
-  async validated(
-    reqModel: PostSigninRequest,
-    res: express.Response<any, Record<string, any>>,
-  ): Promise<void> {
+  async validated(reqModel: PostSigninRequest): Promise<void> {
     const { email, password } = reqModel;
     const token = await this.userRepository.findToken(email, password);
     if (token === undefined) {
-      res.status(401).send();
+      this.returnWithError(StatusCode.Unauthorized);
       return;
     }
-    res.status(200).json(PostSigninResponse.instantiateBy(token));
+    this.returnWithSuccess(PostSigninResponse.instantiateBy(token));
   }
 }

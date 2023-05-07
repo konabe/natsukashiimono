@@ -1,4 +1,3 @@
-import * as express from 'express';
 import { IUserRepository } from '../../../domain/repository/userRepositoryInterface';
 import {
   PostResendRequest,
@@ -6,15 +5,14 @@ import {
 } from '../../../infrastructure/api/model/root/postResendAPI';
 import { ControllerAdaptor } from '../../controllerAdaptor';
 
-export type PostResendControllerDependencies = {
-  userRepository: IUserRepository;
-};
-
-export class PostResendController extends ControllerAdaptor<PostResendRequest> {
-  allowed = [];
+export class PostResendController extends ControllerAdaptor<
+  PostResendRequest,
+  PostResendResponse
+> {
+  protected readonly allowed = [];
   protected readonly userRepository: IUserRepository;
 
-  constructor({ userRepository }: PostResendControllerDependencies) {
+  constructor({ userRepository }: { userRepository: IUserRepository }) {
     super(userRepository);
   }
 
@@ -22,12 +20,9 @@ export class PostResendController extends ControllerAdaptor<PostResendRequest> {
     return PostResendRequest.instantiateBy(req);
   }
 
-  async validated(
-    reqModel: PostResendRequest,
-    res: express.Response,
-  ): Promise<void> {
+  async validated(reqModel: PostResendRequest): Promise<void> {
     const { email } = reqModel;
     const sent = await this.userRepository.resendCode(email);
-    res.status(200).json(PostResendResponse.instantiateBy(sent));
+    this.returnWithSuccess(PostResendResponse.instantiateBy(sent));
   }
 }

@@ -1,4 +1,7 @@
-import { BaseRequest } from '../../../../controller/controllerAdaptor';
+import {
+  BaseRequest,
+  BaseResponse,
+} from '../../../../controller/controllerAdaptor';
 
 export class PostSigninRequest extends BaseRequest {
   private constructor(readonly email: string, readonly password: string) {
@@ -14,8 +17,10 @@ export class PostSigninRequest extends BaseRequest {
   }
 }
 
-export class PostSigninResponse {
-  private constructor(readonly token: string) {}
+export class PostSigninResponse extends BaseResponse {
+  private constructor(readonly token: string) {
+    super();
+  }
 
   static instantiateBy(token: string): PostSigninResponse {
     return new PostSigninResponse(token);

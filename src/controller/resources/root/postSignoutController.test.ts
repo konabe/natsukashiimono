@@ -1,9 +1,7 @@
-import { getMockReq, getMockRes } from '@jest-mock/express';
+import { getMockRes } from '@jest-mock/express';
 import { IUserRepository } from '../../../domain/repository/userRepositoryInterface';
 import { PostSignoutController } from './postSignoutController';
-import { userRepositoryMock } from '../../../../data/repository.mocks';
-import { User } from '../../../domain/user';
-import { Role } from '../../../domain/role';
+import { userRepositoryAdminMock } from '../../../../data/repository.mocks';
 import { adminUser } from '../../../../data/user.data';
 import { getPOSTMockReqWithToken } from '../../../../data/mockReq';
 
@@ -14,10 +12,8 @@ describe('PostSignoutController', () => {
 
   beforeEach(() => {
     userRepository = {
-      ...userRepositoryMock,
+      ...userRepositoryAdminMock,
       signout: jest.fn().mockResolvedValue(true),
-      findUserIdByToken: jest.fn().mockResolvedValue(adminUser.id),
-      findUserById: jest.fn().mockResolvedValue(adminUser),
     };
     postSignoutController = new PostSignoutController({ userRepository });
     clearMockRes();

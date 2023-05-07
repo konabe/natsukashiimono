@@ -1,4 +1,7 @@
-import { BaseRequest } from '../../../../controller/controllerAdaptor';
+import {
+  BaseRequest,
+  BaseResponse,
+} from '../../../../controller/controllerAdaptor';
 
 export class PostRequestApprovedRequest extends BaseRequest {
   private constructor(readonly contentId: number) {
@@ -14,4 +17,4 @@ export class PostRequestApprovedRequest extends BaseRequest {
   }
 }
 
-export class PostRequestApprovalResponse {}
+export class PostRequestApprovalResponse extends BaseResponse {}

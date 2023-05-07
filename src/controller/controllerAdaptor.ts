@@ -3,6 +3,17 @@ import { IUserRepository } from '../domain/repository/userRepositoryInterface';
 
 export abstract class BaseRequest {}
 
+export abstract class BaseResponse {}
+
+export enum StatusCode {
+  OK = 200,
+  BadRequest = 400,
+  Unauthorized = 401,
+  Forbidden = 403,
+  NotFound = 404,
+  InternalServerError = 500,
+}
+
 export type AuthorizedUser = {
   id: string;
   role: string;
@@ -13,17 +24,17 @@ export type ValidatedOptions = {
   pathId?: string;
 };
 
-export abstract class ControllerAdaptor<TReq extends BaseRequest> {
-  readonly allowed: string[];
+export abstract class ControllerAdaptor<
+  TReq extends BaseRequest,
+  TRes extends BaseResponse,
+> {
+  protected readonly allowed: string[] = [];
+  private expRes: express.Response | undefined;
 
   constructor(protected readonly userRepository?: IUserRepository) {}
 
   abstract createRequest(req: any): TReq | undefined;
-  abstract validated(
-    reqModel: TReq,
-    res: express.Response,
-    options?: ValidatedOptions,
-  ): Promise<void>;
+  abstract validated(reqModel: TReq, options?: ValidatedOptions): Promise<void>;
 
   async authorize(req: express.Request): Promise<AuthorizedUser | undefined> {
     const authorizationHeaderValue = req.header('Authorization');
@@ -51,11 +62,12 @@ export abstract class ControllerAdaptor<TReq extends BaseRequest> {
   }
 
   async invoke(req: express.Request, res: express.Response): Promise<void> {
+    this.expRes = res;
     let authorizedUser: AuthorizedUser | undefined;
     if (this.allowed.length !== 0) {
       authorizedUser = await this.authorize(req);
       if (authorizedUser === undefined) {
-        res.status(403).send();
+        this.returnWithError(StatusCode.Forbidden);
         return;
       }
     }
@@ -66,13 +78,39 @@ export abstract class ControllerAdaptor<TReq extends BaseRequest> {
       reqModel = this.createRequest(req.body);
     }
     if (reqModel === undefined) {
-      res.status(400).send();
+      this.returnWithError(StatusCode.BadRequest);
       return;
     }
     let pathId = req.params.id;
-    return await this.validated(reqModel, res, {
+    return await this.validated(reqModel, {
       authorizedUser,
       pathId,
     });
+  }
+
+  // TODO: 最終的にはIDオブジェクトを生成させる流れがよさそう
+  protected tryExtractNumberIdFromPath(
+    pathIdRaw: string | undefined,
+  ): number | undefined {
+    if (pathIdRaw === undefined) {
+      return undefined;
+    }
+    const pathId = Number(pathIdRaw);
+    if (Number.isNaN(pathId)) {
+      return undefined;
+    }
+    return pathId;
+  }
+
+  protected returnWithSuccess(response: TRes | undefined) {
+    if (response === undefined) {
+      this.expRes?.status(StatusCode.InternalServerError).json();
+      return;
+    }
+    this.expRes?.status(StatusCode.OK).json(response);
+  }
+
+  protected returnWithError(code: StatusCode) {
+    this.expRes?.status(code).send();
   }
 }

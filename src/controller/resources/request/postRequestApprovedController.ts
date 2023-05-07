@@ -1,5 +1,4 @@
-import * as express from 'express';
-import { ControllerAdaptor } from '../../controllerAdaptor';
+import { ControllerAdaptor, StatusCode } from '../../controllerAdaptor';
 import {
   PostRequestApprovalResponse,
   PostRequestApprovedRequest,
@@ -8,18 +7,20 @@ import { IContentRepository } from '../../../domain/repository/contentRepository
 import { ApprovalStatus } from '../../../domain/approvalStatus';
 import { IUserRepository } from '../../../domain/repository/userRepositoryInterface';
 
-export type PostRequestApprovedControllerDependencies = {
-  userRepository: IUserRepository;
-  contentRepository: IContentRepository;
-};
-
-export class PostRequestApprovedController extends ControllerAdaptor<PostRequestApprovedRequest> {
-  allowed = ['admin'];
+export class PostRequestApprovedController extends ControllerAdaptor<
+  PostRequestApprovedRequest,
+  PostRequestApprovalResponse
+> {
+  protected readonly allowed = ['admin'];
   private readonly contentRepository: IContentRepository;
+
   constructor({
     userRepository,
     contentRepository,
-  }: PostRequestApprovedControllerDependencies) {
+  }: {
+    userRepository: IUserRepository;
+    contentRepository: IContentRepository;
+  }) {
     super(userRepository);
     this.contentRepository = contentRepository;
   }
@@ -28,18 +29,15 @@ export class PostRequestApprovedController extends ControllerAdaptor<PostRequest
     return PostRequestApprovedRequest.instantiateBy(req);
   }
 
-  async validated(
-    reqModel: PostRequestApprovedRequest,
-    res: express.Response,
-  ): Promise<void> {
+  async validated(reqModel: PostRequestApprovedRequest): Promise<void> {
     const id = await this.contentRepository.updateApprovalStatus(
       reqModel.contentId,
       ApprovalStatus.APPROVED,
     );
     if (id === undefined) {
-      res.status(404).send();
+      this.returnWithError(StatusCode.NotFound);
       return;
     }
-    res.status(200).json(new PostRequestApprovalResponse());
+    this.returnWithSuccess(new PostRequestApprovalResponse());
   }
 }

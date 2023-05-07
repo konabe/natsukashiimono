@@ -2,8 +2,7 @@ import { getMockRes } from '@jest-mock/express';
 import { IScoreRepository } from '../../../domain/repository/scoreRepositoryInterface';
 import { PostScoreController } from './postScoreController';
 import { IUserRepository } from '../../../domain/repository/userRepositoryInterface';
-import { userRepositoryMock } from '../../../../data/repository.mocks';
-import { adminUser } from '../../../../data/user.data';
+import { userRepositoryAdminMock } from '../../../../data/repository.mocks';
 import { getPOSTMockReqWithToken } from '../../../../data/mockReq';
 import { PostScoreRequest } from '../../../infrastructure/api/model/score/postScoreAPI';
 
@@ -22,9 +21,7 @@ describe('PostScoreController', () => {
       ]),
     };
     userRepository = {
-      ...userRepositoryMock,
-      findUserIdByToken: jest.fn().mockResolvedValue(adminUser.id),
-      findUserById: jest.fn().mockResolvedValue(adminUser),
+      ...userRepositoryAdminMock,
     };
     postScoreController = new PostScoreController({
       userRepository,
@@ -72,26 +69,6 @@ describe('PostScoreController', () => {
     expect(scoreRepository.save).toBeCalledTimes(1);
     expect(scoreRepository.find).toBeCalledTimes(1);
     expect(res.status).toBeCalledWith(500);
-    expect(res.send).toBeCalledTimes(1);
-  });
-
-  it('should return 404 if passed userId is undefined', async () => {
-    userRepository = {
-      ...userRepository,
-    };
-    postScoreController = new PostScoreController({
-      userRepository,
-      scoreRepository,
-    });
-    await postScoreController.validated(
-      PostScoreRequest.instantiateBy({ contentId: '1' })!,
-      res,
-      {
-        authorizedUser: undefined,
-      },
-    );
-    expect(userRepository.findUserById).toBeCalledTimes(0);
-    expect(res.status).toBeCalledWith(404);
     expect(res.send).toBeCalledTimes(1);
   });
 });

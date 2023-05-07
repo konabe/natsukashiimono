@@ -1,4 +1,7 @@
-import { BaseRequest } from '../../../../controller/controllerAdaptor';
+import {
+  BaseRequest,
+  BaseResponse,
+} from '../../../../controller/controllerAdaptor';
 
 export class PostSignoutRequest extends BaseRequest {
   private constructor() {
@@ -10,8 +13,10 @@ export class PostSignoutRequest extends BaseRequest {
   }
 }
 
-export class PostSignoutResponse {
-  private constructor(readonly successed: boolean) {}
+export class PostSignoutResponse extends BaseResponse {
+  private constructor(readonly successed: boolean) {
+    super();
+  }
 
   static instantiateBy(successed: boolean): PostSignoutResponse {
     return new PostSignoutResponse(successed);
