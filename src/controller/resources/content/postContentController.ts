@@ -1,5 +1,4 @@
 import { IContentRepository } from '../../../domain/repository/contentRepositoryInterface';
-import { Content } from '../../../domain/content';
 import {
   PostContentRequest,
   PostContentResponse,
@@ -27,13 +26,7 @@ export class PostContentController extends ControllerAdaptor<
   }
 
   async validated(reqModel: PostContentRequest): Promise<void> {
-    // FIXME: PostContentRequestがContentを生成する責務を持ったほうがいい
-    const content = Content.instantiate({
-      name: reqModel.name,
-      description: reqModel.description,
-      imageUrl: reqModel.imageUrl,
-      votes: [],
-    });
+    const content = reqModel.createContent();
     if (content === undefined) {
       // Contentエンティティの作成に失敗した要因がリクエストによるもの
       this.returnWithError(StatusCode.BadRequest);

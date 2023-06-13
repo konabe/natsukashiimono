@@ -1,4 +1,4 @@
-import { Content } from 'src/domain/content';
+import { Content } from '../../../../domain/content';
 import {
   BaseRequest,
   BaseResponse,
@@ -23,6 +23,16 @@ export class PostContentRequest extends BaseRequest {
       return undefined;
     }
     return new PostContentRequest(name, description, imageUrl);
+  }
+
+  createContent(): Content | undefined {
+    const content = Content.instantiate({
+      name: this.name,
+      description: this.description,
+      imageUrl: this.imageUrl,
+      votes: [],
+    });
+    return content;
   }
 }
 
