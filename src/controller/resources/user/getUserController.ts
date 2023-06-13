@@ -18,6 +18,7 @@ export class GetUserController extends ControllerAdaptor<
 
   constructor({ userRepository }: { userRepository: IUserRepository }) {
     super(userRepository);
+    this.userRepository = userRepository;
   }
 
   createRequest(_: any): GetUserRequest {

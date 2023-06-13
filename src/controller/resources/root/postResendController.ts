@@ -14,6 +14,7 @@ export class PostResendController extends ControllerAdaptor<
 
   constructor({ userRepository }: { userRepository: IUserRepository }) {
     super(userRepository);
+    this.userRepository = userRepository;
   }
 
   createRequest(req: any): PostResendRequest | undefined {

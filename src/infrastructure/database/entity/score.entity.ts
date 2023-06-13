@@ -9,17 +9,17 @@ import {
 @Entity('score')
 export class ScoreEntity {
   @PrimaryGeneratedColumn()
-  id: number;
+  id!: number;
 
   @Column()
-  contentId: number;
+  contentId!: number;
 
   @Column({ type: 'varchar', length: 36 })
-  userId: string;
+  userId!: string;
 
   @CreateDateColumn()
-  readonly createdAt: Date;
+  readonly createdAt!: Date;
 
   @UpdateDateColumn()
-  readonly updatedAt: Date;
+  readonly updatedAt!: Date;
 }

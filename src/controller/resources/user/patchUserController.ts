@@ -18,6 +18,7 @@ export class PatchUserController extends ControllerAdaptor<
 
   constructor({ userRepository }: { userRepository: IUserRepository }) {
     super(userRepository);
+    this.userRepository = userRepository;
   }
 
   createRequest(obj: any): PatchUserRequest | undefined {

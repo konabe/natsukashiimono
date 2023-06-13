@@ -5,9 +5,12 @@ import {
   BaseResponse,
 } from '../../../../controller/controllerAdaptor';
 
-export class GetContentRequest extends BaseRequest {}
+export class GetContentRequest extends BaseRequest {
+  _getContentRequesT!: never;
+}
 
 export class GetContentResponse extends BaseResponse {
+  _getContentResponse!: never;
   readonly contents: ContentResponseModel[];
   constructor(contents: Content[]) {
     super();

@@ -18,6 +18,7 @@ export class PostSignoutController extends ControllerAdaptor<
 
   constructor({ userRepository }: { userRepository: IUserRepository }) {
     super(userRepository);
+    this.userRepository = userRepository;
   }
 
   createRequest(req: any): PostSignoutRequest | undefined {

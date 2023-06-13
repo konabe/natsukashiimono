@@ -9,14 +9,14 @@ import {
 @Entity('user')
 export class UserEntity {
   @PrimaryColumn()
-  id: string;
+  id!: string;
 
   @Column({ type: 'int', nullable: true })
-  age: number;
+  age!: number;
 
   @CreateDateColumn()
-  readonly createdAt: Date;
+  readonly createdAt!: Date;
 
   @UpdateDateColumn()
-  readonly updatedAt: Date;
+  readonly updatedAt!: Date;
 }
