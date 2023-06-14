@@ -1,21 +1,22 @@
-import * as express from 'express';
 import { IContentRepository } from '../../../domain/repository/contentRepositoryInterface';
-import { Content } from '../../../domain/content';
 import {
   PostContentRequest,
   PostContentResponse,
 } from '../../../infrastructure/api/model/content/postContentAPI';
-import { ControllerAdaptor } from '../../controllerAdaptor';
+import { ControllerAdaptor, StatusCode } from '../../controllerAdaptor';
 
-export type PostContentControllerDependencies = {
-  contentRepository: IContentRepository;
-};
-
-export class PostContentController extends ControllerAdaptor<PostContentRequest> {
+export class PostContentController extends ControllerAdaptor<
+  PostContentRequest,
+  PostContentResponse
+> {
   readonly allowed = [];
   private readonly contentRepository: IContentRepository;
 
-  constructor({ contentRepository }: PostContentControllerDependencies) {
+  constructor({
+    contentRepository,
+  }: {
+    contentRepository: IContentRepository;
+  }) {
     super();
     this.contentRepository = contentRepository;
   }
@@ -24,23 +25,16 @@ export class PostContentController extends ControllerAdaptor<PostContentRequest>
     return PostContentRequest.instantiateBy(req);
   }
 
-  async validated(
-    reqModel: PostContentRequest,
-    res: express.Response,
-  ): Promise<void> {
-    const content = Content.instantiate({
-      name: reqModel.name,
-      description: reqModel.description,
-      imageUrl: reqModel.imageUrl,
-      votes: [],
-    });
+  async validated(reqModel: PostContentRequest): Promise<void> {
+    const content = reqModel.createContent();
     if (content === undefined) {
-      res.status(400);
+      // Contentエンティティの作成に失敗した要因がリクエストによるもの
+      this.returnWithError(StatusCode.BadRequest);
       return;
     }
     const savedContentId = await this.contentRepository.create(content);
     const savedContent = await this.contentRepository.findOne(savedContentId);
-    res.status(200).json(PostContentResponse.instantiateBy(savedContent));
+    this.returnWithSuccess(PostContentResponse.instantiateBy(savedContent));
     return;
   }
 }

@@ -1,4 +1,4 @@
-import { getMockReq, getMockRes } from '@jest-mock/express';
+import { getMockRes } from '@jest-mock/express';
 import { IUserRepository } from '../../../domain/repository/userRepositoryInterface';
 import { PostResendController } from './postResendController';
 import { userRepositoryMock } from '../../../../data/repository.mocks';

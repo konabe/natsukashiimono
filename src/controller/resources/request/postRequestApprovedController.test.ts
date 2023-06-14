@@ -5,9 +5,8 @@ import { ApprovalStatus } from '../../../domain/approvalStatus';
 import { IUserRepository } from '../../../domain/repository/userRepositoryInterface';
 import {
   contentRepositoryMock,
-  userRepositoryMock,
+  userRepositoryAdminMock,
 } from '../../../../data/repository.mocks';
-import { adminUser } from '../../../../data/user.data';
 import { getPOSTMockReqWithToken } from '../../../../data/mockReq';
 
 describe('postRequestApprovedController', () => {
@@ -21,9 +20,7 @@ describe('postRequestApprovedController', () => {
       ...contentRepositoryMock,
     };
     userRepository = {
-      ...userRepositoryMock,
-      findUserIdByToken: jest.fn().mockResolvedValue(adminUser.id),
-      findUserById: jest.fn().mockResolvedValue(adminUser),
+      ...userRepositoryAdminMock,
     };
     postRequestApprovedController = new PostRequestApprovedController({
       userRepository,

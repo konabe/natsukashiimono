@@ -4,8 +4,8 @@ import { PostContentRequest, PostContentResponse } from './postContentAPI';
 const commonImageUrl = 'https://example.com/index.png';
 
 describe('PostContentRequest', () => {
-  describe('#instantiateBy', () => {
-    test.each`
+  describe('#instantiateBy & #createDomain', () => {
+    it.each`
       name         | description  | imageUrl          | result
       ${'名前'}    | ${'説明'}    | ${commonImageUrl} | ${true}
       ${undefined} | ${'説明'}    | ${commonImageUrl} | ${false}
@@ -14,10 +14,13 @@ describe('PostContentRequest', () => {
     `(
       'should judge that object is valid (${result})',
       ({ name, description, imageUrl, result }) => {
-        expect(
-          PostContentRequest.instantiateBy({ name, description, imageUrl }) !==
-            undefined,
-        ).toBe(result);
+        const request = PostContentRequest.instantiateBy({
+          name,
+          description,
+          imageUrl,
+        });
+        expect(request !== undefined).toBe(result);
+        expect(request?.createContent() !== undefined).toBe(result);
       },
     );
   });

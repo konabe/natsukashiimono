@@ -2,9 +2,8 @@ import { content1 } from '../../../../data/content.data';
 import { getGETMockReqWithToken } from '../../../../data/mockReq';
 import {
   contentRepositoryMock,
-  userRepositoryMock,
+  userRepositoryAdminMock,
 } from '../../../../data/repository.mocks';
-import { adminUser } from '../../../../data/user.data';
 import { IContentRepository } from '../../../domain/repository/contentRepositoryInterface';
 import { IUserRepository } from '../../../domain/repository/userRepositoryInterface';
 import { GetRequestController } from '../request/getRequestController';
@@ -22,9 +21,7 @@ describe('getContentController', () => {
       findInprogress: jest.fn().mockResolvedValue([content1]),
     };
     userRepository = {
-      ...userRepositoryMock,
-      findUserIdByToken: jest.fn().mockResolvedValue(adminUser.id),
-      findUserById: jest.fn().mockResolvedValue(adminUser),
+      ...userRepositoryAdminMock,
     };
     getRequestController = new GetRequestController({
       userRepository,

@@ -1,7 +1,11 @@
-import { Content } from 'src/domain/content';
-import { BaseRequest } from '../../../../controller/controllerAdaptor';
+import { Content } from '../../../../domain/content';
+import {
+  BaseRequest,
+  BaseResponse,
+} from '../../../../controller/controllerAdaptor';
 
 export class PostContentRequest extends BaseRequest {
+  _postContentRequest!: never;
   private constructor(
     readonly name: string,
     readonly description: string,
@@ -21,16 +25,29 @@ export class PostContentRequest extends BaseRequest {
     }
     return new PostContentRequest(name, description, imageUrl);
   }
+
+  createContent(): Content | undefined {
+    const content = Content.instantiate({
+      name: this.name,
+      description: this.description,
+      imageUrl: this.imageUrl,
+      votes: [],
+    });
+    return content;
+  }
 }
 
-export class PostContentResponse {
+export class PostContentResponse extends BaseResponse {
+  _postContentResponse!: never;
   private constructor(
     readonly id: number,
     readonly name: string,
     readonly description: string,
     readonly imageUrl: string,
     readonly score: number,
-  ) {}
+  ) {
+    super();
+  }
 
   static instantiateBy(
     content: Content | undefined,

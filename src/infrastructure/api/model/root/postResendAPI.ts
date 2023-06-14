@@ -1,6 +1,10 @@
-import { BaseRequest } from '../../../../controller/controllerAdaptor';
+import {
+  BaseRequest,
+  BaseResponse,
+} from '../../../../controller/controllerAdaptor';
 
 export class PostResendRequest extends BaseRequest {
+  _postResendRequest!: never;
   private constructor(readonly email: string) {
     super();
   }
@@ -14,8 +18,11 @@ export class PostResendRequest extends BaseRequest {
   }
 }
 
-export class PostResendResponse {
-  private constructor(readonly sent: boolean) {}
+export class PostResendResponse extends BaseResponse {
+  _postResendResponse!: never;
+  private constructor(readonly sent: boolean) {
+    super();
+  }
 
   static instantiateBy(sent: boolean): PostResendResponse {
     return new PostResendResponse(sent);

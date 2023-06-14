@@ -9,23 +9,23 @@ import {
 @Entity('content')
 export class ContentEntity {
   @PrimaryGeneratedColumn()
-  id: number;
+  id!: number;
 
   @Column({ length: 100 })
-  name: string;
+  name!: string;
 
   @Column('text')
-  description: string;
+  description!: string;
 
   @Column('text')
-  imageUrl: string;
+  imageUrl!: string;
 
   @Column('text')
-  approvalStatus: string;
+  approvalStatus!: string;
 
   @CreateDateColumn()
-  readonly createdAt: Date;
+  readonly createdAt!: Date;
 
   @UpdateDateColumn()
-  readonly updatedAt: Date;
+  readonly updatedAt!: Date;
 }

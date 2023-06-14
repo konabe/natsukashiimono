@@ -1,21 +1,24 @@
-import { Response } from 'express';
 import { IUserRepository } from '../../../domain/repository/userRepositoryInterface';
 import {
   PatchUserRequest,
   PatchUserResponse,
 } from '../../../infrastructure/api/model/user/patchUserAPI';
-import { ControllerAdaptor, ValidatedOptions } from '../../controllerAdaptor';
+import {
+  ControllerAdaptor,
+  StatusCode,
+  ValidatedOptions,
+} from '../../controllerAdaptor';
 
-export type PatchUserControllerDependencies = {
-  userRepository: IUserRepository;
-};
-
-export class PatchUserController extends ControllerAdaptor<PatchUserRequest> {
-  allowed = ['user', 'admin'];
+export class PatchUserController extends ControllerAdaptor<
+  PatchUserRequest,
+  PatchUserResponse
+> {
+  protected readonly allowed = ['user', 'admin'];
   protected readonly userRepository: IUserRepository;
 
-  constructor({ userRepository }: PatchUserControllerDependencies) {
+  constructor({ userRepository }: { userRepository: IUserRepository }) {
     super(userRepository);
+    this.userRepository = userRepository;
   }
 
   createRequest(obj: any): PatchUserRequest | undefined {
@@ -24,20 +27,20 @@ export class PatchUserController extends ControllerAdaptor<PatchUserRequest> {
 
   async validated(
     req: PatchUserRequest,
-    res: Response,
     options: ValidatedOptions,
   ): Promise<void> {
     const userId = options.authorizedUser?.id;
+    // FIXME: userIdが必ずundefinedでないことを保証するControllerAdaptorを作成する
     if (userId === undefined) {
-      res.status(404).send();
+      this.returnWithError(StatusCode.Forbidden);
       return;
     }
     const user = await this.userRepository.updateAge(userId, req.age);
     if (user === undefined) {
-      res.status(404).send();
+      this.returnWithError(StatusCode.NotFound);
       return;
     }
-    res.status(200).json(new PatchUserResponse(user));
+    this.returnWithSuccess(new PatchUserResponse(user));
     return;
   }
 }

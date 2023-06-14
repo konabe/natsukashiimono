@@ -69,23 +69,4 @@ describe('PatchUserController', () => {
     expect(res.status).toBeCalledWith(404);
     expect(res.send).toBeCalledTimes(1);
   });
-
-  it('should return 404 if passed userId is undefined', async () => {
-    userRepository = {
-      ...userRepository,
-    };
-    patchUserController = new PatchUserController({
-      userRepository,
-    });
-    await patchUserController.validated(
-      PatchUserRequest.instantiateBy({ age: 20 })!,
-      res,
-      {
-        authorizedUser: undefined,
-      },
-    );
-    expect(userRepository.findUserById).toBeCalledTimes(0);
-    expect(res.status).toBeCalledWith(404);
-    expect(res.send).toBeCalledTimes(1);
-  });
 });

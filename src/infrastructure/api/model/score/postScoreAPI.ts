@@ -1,7 +1,11 @@
-import { BaseRequest } from '../../../../controller/controllerAdaptor';
+import {
+  BaseRequest,
+  BaseResponse,
+} from '../../../../controller/controllerAdaptor';
 import { Vote } from '../../../../domain/vote';
 
 export class PostScoreRequest extends BaseRequest {
+  _postScoreRequest!: never;
   private constructor(readonly contentId: number) {
     super();
   }
@@ -15,8 +19,11 @@ export class PostScoreRequest extends BaseRequest {
   }
 }
 
-export class PostScoreResponse {
-  private constructor(readonly contentId: number, readonly total: number) {}
+export class PostScoreResponse extends BaseResponse {
+  _postScoreResponse!: never;
+  private constructor(readonly contentId: number, readonly total: number) {
+    super();
+  }
 
   static instantiateBy(votes: Vote[]): PostScoreResponse | undefined {
     const vote = votes[0];

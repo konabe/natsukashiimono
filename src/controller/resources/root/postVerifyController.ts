@@ -1,4 +1,3 @@
-import * as express from 'express';
 import {
   PostVerifyRequest,
   PostVerifyResponse,
@@ -6,28 +5,25 @@ import {
 import { IUserRepository } from '../../../domain/repository/userRepositoryInterface';
 import { ControllerAdaptor } from '../../controllerAdaptor';
 
-export type PostVerifyControllerDependencies = {
-  userRepository: IUserRepository;
-};
-
-export class PostVerifyController extends ControllerAdaptor<PostVerifyRequest> {
-  allowed = [];
+export class PostVerifyController extends ControllerAdaptor<
+  PostVerifyRequest,
+  PostVerifyResponse
+> {
+  protected readonly allowed = [];
   protected readonly userRepository: IUserRepository;
 
-  constructor({ userRepository }: PostVerifyControllerDependencies) {
+  constructor({ userRepository }: { userRepository: IUserRepository }) {
     super(userRepository);
+    this.userRepository = userRepository;
   }
 
   createRequest(req: any): PostVerifyRequest | undefined {
     return PostVerifyRequest.instantiateBy(req);
   }
 
-  async validated(
-    reqModel: PostVerifyRequest,
-    res: express.Response<any, Record<string, any>>,
-  ): Promise<void> {
+  async validated(reqModel: PostVerifyRequest): Promise<void> {
     const { email, code } = reqModel;
     const verified = await this.userRepository.verify(email, code);
-    res.status(200).json(PostVerifyResponse.instantiateBy(verified));
+    this.returnWithSuccess(PostVerifyResponse.instantiateBy(verified));
   }
 }

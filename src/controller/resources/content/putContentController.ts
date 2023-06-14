@@ -1,26 +1,29 @@
-import * as express from 'express';
 import { IContentRepository } from '../../../domain/repository/contentRepositoryInterface';
+import { IUserRepository } from '../../../domain/repository/userRepositoryInterface';
 import {
   PutContentRequest,
   PutContentResponse,
 } from '../../../infrastructure/api/model/content/putContentAPI';
-import { ControllerAdaptor, ValidatedOptions } from '../../controllerAdaptor';
-import { Content } from '../../../domain/content';
-import { IUserRepository } from '../../../domain/repository/userRepositoryInterface';
+import {
+  ControllerAdaptor,
+  StatusCode,
+  ValidatedOptions,
+} from '../../controllerAdaptor';
 
-export type PutContentControllerDependencies = {
-  userRepository: IUserRepository;
-  contentRepository: IContentRepository;
-};
-
-export class PutContentController extends ControllerAdaptor<PutContentRequest> {
-  allowed = ['admin'];
+export class PutContentController extends ControllerAdaptor<
+  PutContentRequest,
+  PutContentResponse
+> {
+  protected readonly allowed = ['admin'];
   private readonly contentRepository: IContentRepository;
 
   constructor({
     userRepository,
     contentRepository,
-  }: PutContentControllerDependencies) {
+  }: {
+    userRepository: IUserRepository;
+    contentRepository: IContentRepository;
+  }) {
     super(userRepository);
     this.contentRepository = contentRepository;
   }
@@ -31,28 +34,16 @@ export class PutContentController extends ControllerAdaptor<PutContentRequest> {
 
   async validated(
     reqModel: PutContentRequest,
-    res: express.Response,
     options?: ValidatedOptions | undefined,
   ): Promise<void> {
-    const pathIdRaw = options?.pathId;
-    if (pathIdRaw === undefined) {
-      res.status(400);
+    const pathId = this.tryExtractNumberIdFromPath(options?.pathId);
+    if (pathId === undefined) {
+      this.returnWithError(StatusCode.BadRequest);
       return;
     }
-    const pathId = Number(pathIdRaw);
-    if (Number.isNaN(pathId)) {
-      res.status(400);
-      return;
-    }
-    const content = Content.instantiate({
-      id: pathId,
-      name: reqModel.name,
-      description: reqModel.description,
-      imageUrl: reqModel.imageUrl,
-      votes: [],
-    });
+    const content = reqModel.createContent();
     if (content === undefined) {
-      res.status(400);
+      this.returnWithError(StatusCode.BadRequest);
       return;
     }
     const savedContent = await this.contentRepository.update(pathId, {
@@ -60,6 +51,6 @@ export class PutContentController extends ControllerAdaptor<PutContentRequest> {
       description: content.description,
       imageUrl: content.imageUrl,
     });
-    res.status(200).json(PutContentResponse.instantiateBy(savedContent));
+    this.returnWithSuccess(PutContentResponse.instantiateBy(savedContent));
   }
 }

@@ -1,4 +1,3 @@
-import * as express from 'express';
 import { IContentRepository } from '../../../domain/repository/contentRepositoryInterface';
 import {
   GetRequestRequest,
@@ -7,19 +6,20 @@ import {
 import { ControllerAdaptor } from '../../controllerAdaptor';
 import { IUserRepository } from '../../../domain/repository/userRepositoryInterface';
 
-export type GetRequestControllerDependencies = {
-  userRepository: IUserRepository;
-  contentRepository: IContentRepository;
-};
-
-export class GetRequestController extends ControllerAdaptor<GetRequestRequest> {
-  allowed = ['admin'];
+export class GetRequestController extends ControllerAdaptor<
+  GetRequestRequest,
+  GetRequestResponse
+> {
+  protected readonly allowed = ['admin'];
   private readonly contentRepository: IContentRepository;
 
   constructor({
     userRepository,
     contentRepository,
-  }: GetRequestControllerDependencies) {
+  }: {
+    userRepository: IUserRepository;
+    contentRepository: IContentRepository;
+  }) {
     super(userRepository);
     this.contentRepository = contentRepository;
   }
@@ -28,9 +28,9 @@ export class GetRequestController extends ControllerAdaptor<GetRequestRequest> {
     return new GetRequestRequest();
   }
 
-  async validated(_: GetRequestRequest, res: express.Response): Promise<void> {
+  async validated(_: GetRequestRequest): Promise<void> {
     const resultContents = await this.contentRepository.findInprogress();
-    res.status(200).json(new GetRequestResponse(resultContents));
+    this.returnWithSuccess(new GetRequestResponse(resultContents));
     return;
   }
 }

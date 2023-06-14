@@ -1,21 +1,24 @@
-import * as express from 'express';
+import { IUserRepository } from '../../../domain/repository/userRepositoryInterface';
 import {
   PostSignoutRequest,
   PostSignoutResponse,
 } from '../../../infrastructure/api/model/root/postSignoutAPI';
-import { IUserRepository } from '../../../domain/repository/userRepositoryInterface';
-import { ControllerAdaptor, ValidatedOptions } from '../../controllerAdaptor';
+import {
+  ControllerAdaptor,
+  StatusCode,
+  ValidatedOptions,
+} from '../../controllerAdaptor';
 
-export type PostSignoutControllerDependencies = {
-  userRepository: IUserRepository;
-};
-
-export class PostSignoutController extends ControllerAdaptor<PostSignoutRequest> {
-  allowed = ['admin', 'user'];
+export class PostSignoutController extends ControllerAdaptor<
+  PostSignoutRequest,
+  PostSignoutResponse
+> {
+  protected readonly allowed = ['admin', 'user'];
   protected readonly userRepository: IUserRepository;
 
-  constructor({ userRepository }: PostSignoutControllerDependencies) {
+  constructor({ userRepository }: { userRepository: IUserRepository }) {
     super(userRepository);
+    this.userRepository = userRepository;
   }
 
   createRequest(req: any): PostSignoutRequest | undefined {
@@ -24,14 +27,15 @@ export class PostSignoutController extends ControllerAdaptor<PostSignoutRequest>
 
   async validated(
     _: PostSignoutRequest,
-    res: express.Response,
     options: ValidatedOptions,
   ): Promise<void> {
     const userId = options.authorizedUser?.id;
+    // FIXME: userIdが必ずundefinedでないことを保証するControllerAdaptorを作成する
     if (userId === undefined) {
+      this.returnWithError(StatusCode.Forbidden);
       return;
     }
     const successed = await this.userRepository.signout(userId);
-    res.status(200).json(PostSignoutResponse.instantiateBy(successed));
+    this.returnWithSuccess(PostSignoutResponse.instantiateBy(successed));
   }
 }

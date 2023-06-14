@@ -1,4 +1,4 @@
-import { getMockReq, getMockRes } from '@jest-mock/express';
+import { getMockRes } from '@jest-mock/express';
 import { IContentRepository } from '../../../domain/repository/contentRepositoryInterface';
 import { PostRequestDeclinedController } from './postRequestDeclinedController';
 import { ApprovalStatus } from '../../../domain/approvalStatus';
@@ -7,8 +7,6 @@ import {
   userRepositoryMock,
 } from '../../../../data/repository.mocks';
 import { IUserRepository } from '../../../domain/repository/userRepositoryInterface';
-import { User } from '../../../domain/user';
-import { Role } from '../../../domain/role';
 import { adminUser } from '../../../../data/user.data';
 import { getPOSTMockReqWithToken } from '../../../../data/mockReq';
 

@@ -1,26 +1,30 @@
-import * as express from 'express';
 import { IScoreRepository } from '../../../domain/repository/scoreRepositoryInterface';
+import { IUserRepository } from '../../../domain/repository/userRepositoryInterface';
 import { Vote } from '../../../domain/vote';
 import {
   PostScoreRequest,
   PostScoreResponse,
 } from '../../../infrastructure/api/model/score/postScoreAPI';
-import { ControllerAdaptor, ValidatedOptions } from '../../controllerAdaptor';
-import { IUserRepository } from '../../../domain/repository/userRepositoryInterface';
+import {
+  ControllerAdaptor,
+  StatusCode,
+  ValidatedOptions,
+} from '../../controllerAdaptor';
 
-export type PostScoreControllerDependencies = {
-  userRepository: IUserRepository;
-  scoreRepository: IScoreRepository;
-};
-
-export class PostScoreController extends ControllerAdaptor<PostScoreRequest> {
-  allowed = ['user', 'admin'];
+export class PostScoreController extends ControllerAdaptor<
+  PostScoreRequest,
+  PostScoreResponse
+> {
+  protected readonly allowed = ['user', 'admin'];
   private readonly scoreRepository: IScoreRepository;
 
   constructor({
     userRepository,
     scoreRepository,
-  }: PostScoreControllerDependencies) {
+  }: {
+    userRepository: IUserRepository;
+    scoreRepository: IScoreRepository;
+  }) {
     super(userRepository);
     this.scoreRepository = scoreRepository;
   }
@@ -31,22 +35,18 @@ export class PostScoreController extends ControllerAdaptor<PostScoreRequest> {
 
   async validated(
     reqModel: PostScoreRequest,
-    res: express.Response,
     options: ValidatedOptions,
   ): Promise<void> {
     const userId = options.authorizedUser?.id;
+    // FIXME: userIdが必ずundefinedでないことを保証するControllerAdaptorを作成する
     if (userId === undefined) {
-      res.status(404).send();
+      this.returnWithError(StatusCode.Forbidden);
       return;
     }
     await this.scoreRepository.save(new Vote(reqModel.contentId, userId));
     const scoreEntities = await this.scoreRepository.find(reqModel.contentId);
     const response = PostScoreResponse.instantiateBy(scoreEntities);
-    if (response === undefined) {
-      res.status(500).send();
-      return;
-    }
-    res.status(200).json(response);
+    this.returnWithSuccess(response);
     return;
   }
 }
