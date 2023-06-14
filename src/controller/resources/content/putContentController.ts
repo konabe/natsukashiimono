@@ -1,4 +1,5 @@
 import { IContentRepository } from '../../../domain/repository/contentRepositoryInterface';
+import { IUserRepository } from '../../../domain/repository/userRepositoryInterface';
 import {
   PutContentRequest,
   PutContentResponse,
@@ -8,8 +9,6 @@ import {
   StatusCode,
   ValidatedOptions,
 } from '../../controllerAdaptor';
-import { Content } from '../../../domain/content';
-import { IUserRepository } from '../../../domain/repository/userRepositoryInterface';
 
 export class PutContentController extends ControllerAdaptor<
   PutContentRequest,
@@ -42,14 +41,7 @@ export class PutContentController extends ControllerAdaptor<
       this.returnWithError(StatusCode.BadRequest);
       return;
     }
-    // FIXME: PutContentRequestがContentを生成する責務を持ったほうがいい
-    const content = Content.instantiate({
-      id: pathId,
-      name: reqModel.name,
-      description: reqModel.description,
-      imageUrl: reqModel.imageUrl,
-      votes: [],
-    });
+    const content = reqModel.createContent();
     if (content === undefined) {
       this.returnWithError(StatusCode.BadRequest);
       return;

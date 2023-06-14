@@ -4,6 +4,7 @@ import {
 } from '../../../../controller/controllerAdaptor';
 
 export class PostSignoutRequest extends BaseRequest {
+  _postSignoutRequest!: never;
   private constructor() {
     super();
   }
@@ -14,6 +15,7 @@ export class PostSignoutRequest extends BaseRequest {
 }
 
 export class PostSignoutResponse extends BaseResponse {
+  _postSignoutResponse!: never;
   private constructor(readonly successed: boolean) {
     super();
   }

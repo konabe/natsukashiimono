@@ -5,9 +5,12 @@ import {
 import { Content } from '../../../../domain/content';
 import { ContentResponseModel } from '../models';
 
-export class GetRequestRequest extends BaseRequest {}
+export class GetRequestRequest extends BaseRequest {
+  _getRequestRequest!: never;
+}
 
 export class GetRequestResponse extends BaseResponse {
+  _getRequestResponse!: never;
   readonly contents: ContentResponseModel[];
   constructor(contents: Content[]) {
     super();

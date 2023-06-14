@@ -5,6 +5,7 @@ import {
 import { User } from '../../../../domain/user';
 
 export class PatchUserRequest extends BaseRequest {
+  _patchUserRequest!: never;
   private constructor(readonly age: number) {
     super();
   }
@@ -22,6 +23,7 @@ export class PatchUserRequest extends BaseRequest {
 }
 
 export class PatchUserResponse extends BaseResponse {
+  _patchUserResponse!: never;
   readonly id: string;
   readonly roles: string[];
   readonly age: number | undefined;

@@ -4,6 +4,7 @@ import {
 } from '../../../../controller/controllerAdaptor';
 
 export class PostRequestApprovedRequest extends BaseRequest {
+  _postRequestApprovadRequest!: never;
   private constructor(readonly contentId: number) {
     super();
   }
@@ -17,4 +18,6 @@ export class PostRequestApprovedRequest extends BaseRequest {
   }
 }
 
-export class PostRequestApprovalResponse extends BaseResponse {}
+export class PostRequestApprovalResponse extends BaseResponse {
+  _postRequestApprovadResponse!: never;
+}

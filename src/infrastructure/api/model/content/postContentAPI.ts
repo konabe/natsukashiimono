@@ -5,6 +5,7 @@ import {
 } from '../../../../controller/controllerAdaptor';
 
 export class PostContentRequest extends BaseRequest {
+  _postContentRequest!: never;
   private constructor(
     readonly name: string,
     readonly description: string,
@@ -37,6 +38,7 @@ export class PostContentRequest extends BaseRequest {
 }
 
 export class PostContentResponse extends BaseResponse {
+  _postContentResponse!: never;
   private constructor(
     readonly id: number,
     readonly name: string,

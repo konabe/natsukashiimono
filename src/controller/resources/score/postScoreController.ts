@@ -1,4 +1,5 @@
 import { IScoreRepository } from '../../../domain/repository/scoreRepositoryInterface';
+import { IUserRepository } from '../../../domain/repository/userRepositoryInterface';
 import { Vote } from '../../../domain/vote';
 import {
   PostScoreRequest,
@@ -9,7 +10,6 @@ import {
   StatusCode,
   ValidatedOptions,
 } from '../../controllerAdaptor';
-import { IUserRepository } from '../../../domain/repository/userRepositoryInterface';
 
 export class PostScoreController extends ControllerAdaptor<
   PostScoreRequest,
@@ -46,10 +46,6 @@ export class PostScoreController extends ControllerAdaptor<
     await this.scoreRepository.save(new Vote(reqModel.contentId, userId));
     const scoreEntities = await this.scoreRepository.find(reqModel.contentId);
     const response = PostScoreResponse.instantiateBy(scoreEntities);
-    if (response === undefined) {
-      this.returnWithError(StatusCode.InternalServerError);
-      return;
-    }
     this.returnWithSuccess(response);
     return;
   }

@@ -4,6 +4,7 @@ import {
 } from '../../../../controller/controllerAdaptor';
 
 export class PostVerifyRequest extends BaseRequest {
+  _postVerifyRequest!: never;
   private constructor(readonly email: string, readonly code: string) {
     super();
   }
@@ -18,6 +19,7 @@ export class PostVerifyRequest extends BaseRequest {
 }
 
 export class PostVerifyResponse extends BaseResponse {
+  _postVerifyResponse!: never;
   private constructor(readonly verified: boolean) {
     super();
   }

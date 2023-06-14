@@ -4,6 +4,7 @@ import {
 } from '../../../../controller/controllerAdaptor';
 
 export class PostResendRequest extends BaseRequest {
+  _postResendRequest!: never;
   private constructor(readonly email: string) {
     super();
   }
@@ -18,6 +19,7 @@ export class PostResendRequest extends BaseRequest {
 }
 
 export class PostResendResponse extends BaseResponse {
+  _postResendResponse!: never;
   private constructor(readonly sent: boolean) {
     super();
   }

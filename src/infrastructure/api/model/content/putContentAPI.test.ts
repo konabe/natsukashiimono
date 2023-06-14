@@ -4,7 +4,7 @@ import { PutContentRequest, PutContentResponse } from './putContentAPI';
 const commonImageUrl = 'https://example.com/index.png';
 
 describe('PutContentRequest', () => {
-  describe('#instantiateBy', () => {
+  describe('#instantiateBy & #createDomain', () => {
     test.each`
       name         | description  | imageUrl          | result
       ${'名前'}    | ${'説明'}    | ${commonImageUrl} | ${true}
@@ -14,10 +14,13 @@ describe('PutContentRequest', () => {
     `(
       'should judge that object is valid (${result})',
       ({ name, description, imageUrl, result }) => {
-        expect(
-          PutContentRequest.instantiateBy({ name, description, imageUrl }) !==
-            undefined,
-        ).toBe(result);
+        const request = PutContentRequest.instantiateBy({
+          name,
+          description,
+          imageUrl,
+        });
+        expect(request !== undefined).toBe(result);
+        expect(request?.createContent() !== undefined).toBe(result);
       },
     );
   });

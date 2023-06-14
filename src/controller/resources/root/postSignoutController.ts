@@ -1,8 +1,8 @@
+import { IUserRepository } from '../../../domain/repository/userRepositoryInterface';
 import {
   PostSignoutRequest,
   PostSignoutResponse,
 } from '../../../infrastructure/api/model/root/postSignoutAPI';
-import { IUserRepository } from '../../../domain/repository/userRepositoryInterface';
 import {
   ControllerAdaptor,
   StatusCode,

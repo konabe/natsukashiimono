@@ -4,6 +4,7 @@ import {
 } from '../../../../controller/controllerAdaptor';
 
 export class PostSigninRequest extends BaseRequest {
+  _postSigninRequest!: never;
   private constructor(readonly email: string, readonly password: string) {
     super();
   }
@@ -18,6 +19,7 @@ export class PostSigninRequest extends BaseRequest {
 }
 
 export class PostSigninResponse extends BaseResponse {
+  _postSigninResponse!: never;
   private constructor(readonly token: string) {
     super();
   }

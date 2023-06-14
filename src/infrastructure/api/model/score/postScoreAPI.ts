@@ -5,6 +5,7 @@ import {
 import { Vote } from '../../../../domain/vote';
 
 export class PostScoreRequest extends BaseRequest {
+  _postScoreRequest!: never;
   private constructor(readonly contentId: number) {
     super();
   }
@@ -19,6 +20,7 @@ export class PostScoreRequest extends BaseRequest {
 }
 
 export class PostScoreResponse extends BaseResponse {
+  _postScoreResponse!: never;
   private constructor(readonly contentId: number, readonly total: number) {
     super();
   }

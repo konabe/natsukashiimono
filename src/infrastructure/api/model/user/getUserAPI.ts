@@ -4,9 +4,12 @@ import {
 } from '../../../../controller/controllerAdaptor';
 import { User } from '../../../../domain/user';
 
-export class GetUserRequest extends BaseRequest {}
+export class GetUserRequest extends BaseRequest {
+  _getUserRequest!: never;
+}
 
 export class GetUserResponse extends BaseResponse {
+  _getUserResponse!: never;
   readonly id: string;
   readonly roles: string[];
   readonly age: number | undefined;

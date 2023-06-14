@@ -5,6 +5,7 @@ import {
 import { Content } from '../../../../domain/content';
 
 export class PutContentRequest extends BaseRequest {
+  _putContentRequest!: never;
   private constructor(
     readonly name: string,
     readonly description: string,
@@ -24,9 +25,20 @@ export class PutContentRequest extends BaseRequest {
     }
     return new PutContentRequest(name, description, imageUrl);
   }
+
+  createContent(): Content | undefined {
+    const content = Content.instantiate({
+      name: this.name,
+      description: this.description,
+      imageUrl: this.imageUrl,
+      votes: [],
+    });
+    return content;
+  }
 }
 
 export class PutContentResponse extends BaseResponse {
+  _putContentResponse!: never;
   private constructor(
     readonly id: number,
     readonly name: string,

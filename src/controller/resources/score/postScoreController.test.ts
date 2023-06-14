@@ -1,10 +1,9 @@
 import { getMockRes } from '@jest-mock/express';
-import { IScoreRepository } from '../../../domain/repository/scoreRepositoryInterface';
-import { PostScoreController } from './postScoreController';
-import { IUserRepository } from '../../../domain/repository/userRepositoryInterface';
-import { userRepositoryAdminMock } from '../../../../data/repository.mocks';
 import { getPOSTMockReqWithToken } from '../../../../data/mockReq';
-import { PostScoreRequest } from '../../../infrastructure/api/model/score/postScoreAPI';
+import { userRepositoryAdminMock } from '../../../../data/repository.mocks';
+import { IScoreRepository } from '../../../domain/repository/scoreRepositoryInterface';
+import { IUserRepository } from '../../../domain/repository/userRepositoryInterface';
+import { PostScoreController } from './postScoreController';
 
 describe('PostScoreController', () => {
   let postScoreController: PostScoreController;
@@ -50,25 +49,6 @@ describe('PostScoreController', () => {
     expect(scoreRepository.save).toBeCalledTimes(0);
     expect(scoreRepository.find).toBeCalledTimes(0);
     expect(res.status).toBeCalledWith(400);
-    expect(res.send).toBeCalledTimes(1);
-  });
-
-  it('should notify 500 error when result is empty', async () => {
-    scoreRepository = {
-      save: jest.fn(),
-      find: jest.fn().mockResolvedValue([]),
-    };
-    postScoreController = new PostScoreController({
-      userRepository,
-      scoreRepository,
-    });
-    const req = getPOSTMockReqWithToken({
-      contentId: 1,
-    });
-    await postScoreController.invoke(req, res);
-    expect(scoreRepository.save).toBeCalledTimes(1);
-    expect(scoreRepository.find).toBeCalledTimes(1);
-    expect(res.status).toBeCalledWith(500);
     expect(res.send).toBeCalledTimes(1);
   });
 });
